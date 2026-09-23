@@ -301,15 +301,15 @@ const listings = [
    desc:'Studio meublé, proche des transports et commerces. Eau et électricité incluses.',
    owner:'Nirina F.', ownerSub:'Propriétaire · 4.9 ★ · 6 biens loués',
    offers:1, thread:[{who:'buyer', amount:'190 000 Ar'}, {who:'status', text:'Offre envoyée, en attente'}]},
-  {id:3, type:'Chambre', title:'Chambre chez l\\'habitant — Isotry', quartier:'Isotry', meta:'Isotry · quartier animé', beds:1, baths:'partagée', size:14, price:85000,
+  {id:3, type:'Chambre', title:'Chambre chez l\'habitant — Isotry', quartier:'Isotry', meta:'Isotry · quartier animé', beds:1, baths:'partagée', size:14, price:85000,
    photos:[img('trano-room1',500,340)],
    desc:'Chambre simple dans une maison familiale, accès cuisine partagé. Idéal étudiant ou jeune actif.',
    owner:'Hery R.', ownerSub:'Propriétaire · 4.3 ★ · 3 biens loués',
    offers:0, thread:[]},
   {id:4, type:'Appartement', title:'Appartement T2 — Ivandry', quartier:'Ivandry', meta:'Ivandry · résidentiel', beds:2, baths:'1', size:55, price:650000,
    photos:[img('trano-apt1',500,340), img('trano-apt1b',500,340), img('trano-apt1c',500,340)],
-   desc:'Appartement récent dans résidence sécurisée, parking disponible. Proche zone d\\'affaires.',
-   owner:'Malala', ownerSub:'C\\'est toi · propriétaire',
+   desc:'Appartement récent dans résidence sécurisée, parking disponible. Proche zone d\'affaires.',
+   owner:'Malala', ownerSub:'C\'est toi · propriétaire',
    offers:3, thread:[{who:'buyer', amount:'580 000 Ar'}, {who:'seller', amount:'620 000 Ar'}, {who:'buyer', amount:'600 000 Ar'}, {who:'status', text:'Accepté par le propriétaire'}]},
   {id:5, type:'Appartement', title:'Appartement T1 — Andraharo', quartier:'Andraharo', meta:'Andraharo · calme', beds:1, baths:'1', size:38, price:310000,
    photos:[img('trano-apt2',500,340), img('trano-apt2b',500,340)],
@@ -485,7 +485,7 @@ listings.filter(p => p.owner === 'Malala').forEach(p => {
   myListingsEl.appendChild(div);
 });
 if(myListingsEl.children.length === 0){
-  myListingsEl.innerHTML = '<div class="empty-state">Tu n\\'as pas encore d\\'annonce publiée.</div>';
+  myListingsEl.innerHTML = '<div class="empty-state">Tu n\'as pas encore d\'annonce publiée.</div>';
 }
 
 function publish(){

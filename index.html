@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard Call Center</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent2: #16a34a;
+    --accent3: #dc2626;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --card-bg: #1a1d24; --text: #f0f0f0; --muted: #9ca3af; --border: #2a2d36;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --card-bg: #1a1d24; --text: #f0f0f0; --muted: #9ca3af; --border: #2a2d36;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 20px; max-width: 1100px; margin-inline: auto;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  #status { color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
+  .filters { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  select, input[type="date"] {
+    background: var(--card-bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 10px; font-size: 0.85rem;
+  }
+  .filters label { font-size: 0.78rem; color: var(--muted); margin-right: -6px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi {
+    background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--kpi-color, var(--accent));
+    border-radius: 10px; padding: 14px;
+  }
+  .kpi .label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+  .kpi .value { font-size: 1.4rem; font-weight: 600; color: var(--kpi-color, var(--text)); }
+  .chart-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 20px; height: 320px;
+  }
+  .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.82rem; white-space: nowrap; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body>
+  <h1>Dashboard Call Center</h1>
+  <div id="status">Chargement...</div>
+
+  <div class="filters">
+    <select id="filter-canal"><option value="">Tous les canaux</option></select>
+    <select id="filter-agent"><option value="">Tous les agents</option></select>
+    <label for="filter-date-from">Du</label>
+    <input type="date" id="filter-date-from">
+    <label for="filter-date-to">Au</label>
+    <input type="date" id="filter-date-to">
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="chart-card"><canvas id="chart"></canvas></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr id="header-row"></tr></thead>
+      <tbody id="body-rows"></tbody>
+    </table>
+  </div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTV77FVCMkqbkMHufFm_jGNf1Jv-tzfYudPUwROtJmc1A3K6mhusy6SaQHTeJMmv-CffAw2CZRbbXi_/pub?gid=0&single=true&output=csv";
+
+// Aperçu statique des données test — utilisé uniquement si le fetch en direct échoue
+// (bloqué dans l'aperçu Claude ; fonctionnera normalement une fois déployé sur GitHub Pages / Vercel)
+const FALLBACK_DATA = [
+  {Date:"20/09/2026",Heure:"09:00",Canal:"Voix",Appels_recus:"479",Appels_traites:"420",Appels_abandonnes:"24",Temps_moyen_traitement:"261",Taux_resolution:"0.87",Agent_actif:"Agent_A"},
+  {Date:"21/09/2026",Heure:"10:00",Canal:"SMS",Appels_recus:"305",Appels_traites:"243",Appels_abandonnes:"87",Temps_moyen_traitement:"240",Taux_resolution:"0.88",Agent_actif:"Agent_A"},
+  {Date:"22/09/2026",Heure:"11:00",Canal:"App",Appels_recus:"368",Appels_traites:"342",Appels_abandonnes:"35",Temps_moyen_traitement:"299",Taux_resolution:"0.89",Agent_actif:"Agent_A"},
+  {Date:"23/09/2026",Heure:"12:00",Canal:"Voix",Appels_recus:"260",Appels_traites:"191",Appels_abandonnes:"22",Temps_moyen_traitement:"244",Taux_resolution:"0.90",Agent_actif:"Agent_B"},
+  {Date:"24/09/2026",Heure:"13:00",Canal:"SMS",Appels_recus:"132",Appels_traites:"115",Appels_abandonnes:"14",Temps_moyen_traitement:"250",Taux_resolution:"0.91",Agent_actif:"Agent_B"},
+  {Date:"25/09/2026",Heure:"14:00",Canal:"App",Appels_recus:"417",Appels_traites:"360",Appels_abandonnes:"25",Temps_moyen_traitement:"225",Taux_resolution:"0.92",Agent_actif:"Agent_B"},
+  {Date:"26/09/2026",Heure:"15:00",Canal:"Voix",Appels_recus:"351",Appels_traites:"285",Appels_abandonnes:"64",Temps_moyen_traitement:"217",Taux_resolution:"0.93",Agent_actif:"Agent_B"},
+  {Date:"27/09/2026",Heure:"16:00",Canal:"SMS",Appels_recus:"259",Appels_traites:"224",Appels_abandonnes:"18",Temps_moyen_traitement:"251",Taux_resolution:"0.94",Agent_actif:"Agent_A"},
+  {Date:"28/09/2026",Heure:"17:00",Canal:"App",Appels_recus:"119",Appels_traites:"70",Appels_abandonnes:"50",Temps_moyen_traitement:"261",Taux_resolution:"0.95",Agent_actif:"Agent_A"},
+  {Date:"29/09/2026",Heure:"18:00",Canal:"Voix",Appels_recus:"376",Appels_traites:"286",Appels_abandonnes:"48",Temps_moyen_traitement:"298",Taux_resolution:"0.96",Agent_actif:"Agent_A"},
+  {Date:"30/09/2026",Heure:"19:00",Canal:"SMS",Appels_recus:"282",Appels_traites:"195",Appels_abandonnes:"87",Temps_moyen_traitement:"211",Taux_resolution:"0.97",Agent_actif:"Agent_A"},
+  {Date:"01/10/2026",Heure:"20:00",Canal:"App",Appels_recus:"408",Appels_traites:"367",Appels_abandonnes:"41",Temps_moyen_traitement:"232",Taux_resolution:"0.98",Agent_actif:"Agent_A"},
+  {Date:"02/10/2026",Heure:"21:00",Canal:"Voix",Appels_recus:"101",Appels_traites:"80",Appels_abandonnes:"21",Temps_moyen_traitement:"201",Taux_resolution:"0.99",Agent_actif:"Agent_C"},
+  {Date:"03/10/2026",Heure:"22:00",Canal:"SMS",Appels_recus:"101",Appels_traites:"74",Appels_abandonnes:"27",Temps_moyen_traitement:"296",Taux_resolution:"1.00",Agent_actif:"Agent_C"},
+  {Date:"04/10/2026",Heure:"23:00",Canal:"App",Appels_recus:"160",Appels_traites:"115",Appels_abandonnes:"45",Temps_moyen_traitement:"230",Taux_resolution:"1.00",Agent_actif:"Agent_C"},
+  {Date:"05/10/2026",Heure:"00:00",Canal:"Voix",Appels_recus:"370",Appels_traites:"274",Appels_abandonnes:"96",Temps_moyen_traitement:"254",Taux_resolution:"1.00",Agent_actif:"Agent_A"},
+  {Date:"06/10/2026",Heure:"01:00",Canal:"SMS",Appels_recus:"300",Appels_traites:"297",Appels_abandonnes:"3",Temps_moyen_traitement:"225",Taux_resolution:"1.00",Agent_actif:"Agent_A"}
+];
+
+let allRows = [];
+let chartInstance = null;
+
+function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+function uniqueValues(rows, key) {
+  return [...new Set(rows.map(r => r[key]).filter(Boolean))];
+}
+
+// Convertit "JJ/MM/AAAA" en objet Date pour comparaison
+function parseFrDate(str) {
+  if (!str) return null;
+  const [d, m, y] = str.split("/").map(Number);
+  if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+function populateFilters(rows) {
+  const canalSel = document.getElementById("filter-canal");
+  const agentSel = document.getElementById("filter-agent");
+  uniqueValues(rows, "Canal").forEach(v => canalSel.insertAdjacentHTML("beforeend", `<option value="${v}">${v}</option>`));
+  uniqueValues(rows, "Agent_actif").forEach(v => agentSel.insertAdjacentHTML("beforeend", `<option value="${v}">${v}</option>`));
+  canalSel.addEventListener("change", applyFilters);
+  agentSel.addEventListener("change", applyFilters);
+  document.getElementById("filter-date-from").addEventListener("change", applyFilters);
+  document.getElementById("filter-date-to").addEventListener("change", applyFilters);
+}
+
+function applyFilters() {
+  const canal = document.getElementById("filter-canal").value;
+  const agent = document.getElementById("filter-agent").value;
+  const dateFrom = document.getElementById("filter-date-from").value ? new Date(document.getElementById("filter-date-from").value) : null;
+  const dateTo = document.getElementById("filter-date-to").value ? new Date(document.getElementById("filter-date-to").value) : null;
+  const filtered = allRows.filter(r => {
+    if (canal && r.Canal !== canal) return false;
+    if (agent && r.Agent_actif !== agent) return false;
+    const rowDate = parseFrDate(r.Date);
+    if (dateFrom && rowDate && rowDate < dateFrom) return false;
+    if (dateTo && rowDate && rowDate > dateTo) return false;
+    return true;
+  });
+  render(filtered);
+}
+
+function renderKpis(rows) {
+  const kpis = document.getElementById("kpis");
+  if (!rows.length) { kpis.innerHTML = ""; return; }
+  const sum = (key) => rows.reduce((a, r) => a + num(r[key]), 0);
+  const avg = (key) => sum(key) / rows.length;
+  const recus = sum("Appels_recus");
+  const traites = sum("Appels_traites");
+  const abandons = sum("Appels_abandonnes");
+  const tauxTraitement = recus ? (traites / recus) * 100 : 0;
+  const tauxAbandon = recus ? (abandons / recus) * 100 : 0;
+  const tauxResolution = Math.min(avg("Taux_resolution"), 1) * 100;
+  const dmt = Math.round(avg("Temps_moyen_traitement"));
+
+  const cards = [
+    ["Appels reçus", recus, "#2563eb"],
+    ["Appels traités", traites, "#16a34a"],
+    ["Taux de traitement", tauxTraitement.toFixed(1) + "%", "#0891b2"],
+    ["Abandons", abandons, "#dc2626"],
+    ["Taux d'abandon", tauxAbandon.toFixed(1) + "%", "#ea580c"],
+    ["Taux résolution moy.", tauxResolution.toFixed(1) + "%", "#7c3aed"],
+    ["DMT (s)", dmt, "#ca8a04"]
+  ];
+  kpis.innerHTML = cards.map(([label, value, color]) =>
+    `<div class="kpi" style="--kpi-color:${color}"><div class="label">${label}</div><div class="value">${value}</div></div>`
+  ).join("");
+}
+
+function renderChart(rows) {
+  const ctx = document.getElementById("chart");
+  const labels = rows.map(r => `${r.Date} ${r.Heure}`);
+  const data = {
+    labels,
+    datasets: [
+      { label: "Reçus", data: rows.map(r => num(r.Appels_recus)), borderColor: "#2563eb", backgroundColor: "#2563eb33", fill: true, tension: 0.3, borderWidth: 2 },
+      { label: "Traités", data: rows.map(r => num(r.Appels_traites)), borderColor: "#16a34a", backgroundColor: "#16a34a33", fill: true, tension: 0.3, borderWidth: 2 },
+      { label: "Abandons", data: rows.map(r => num(r.Appels_abandonnes)), borderColor: "#dc2626", backgroundColor: "#dc262633", fill: true, tension: 0.3, borderWidth: 2 }
+    ]
+  };
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data,
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } },
+      scales: { x: { ticks: { maxRotation: 45, minRotation: 45 } } }
+    }
+  });
+}
+
+function renderTable(rows) {
+  if (!rows.length) {
+    document.getElementById("header-row").innerHTML = "";
+    document.getElementById("body-rows").innerHTML = "<tr><td>Aucune donnée</td></tr>";
+    return;
+  }
+  const headers = Object.keys(rows[0]);
+  document.getElementById("header-row").innerHTML = headers.map(h => `<th>${h}</th>`).join("");
+  document.getElementById("body-rows").innerHTML = rows.slice(0, 100).map(r =>
+    `<tr>${headers.map(h => `<td>${r[h] ?? ""}</td>`).join("")}</tr>`
+  ).join("");
+}
+
+function render(rows) {
+  renderKpis(rows);
+  renderChart(rows);
+  renderTable(rows);
+}
+
+try {
+  Papa.parse(CSV_URL, {
+    download: true, header: true, skipEmptyLines: true,
+    complete: (results) => {
+      allRows = results.data;
+      document.getElementById("status").textContent = `${allRows.length} lignes chargées (source live)`;
+      populateFilters(allRows);
+      render(allRows);
+    },
+    error: () => {
+      allRows = FALLBACK_DATA;
+      document.getElementById("status").textContent = `${allRows.length} lignes — aperçu avec données test (le fetch live sera actif une fois déployé)`;
+      populateFilters(allRows);
+      render(allRows);
+    }
+  });
+} catch (e) {
+  allRows = FALLBACK_DATA;
+  document.getElementById("status").textContent = `${allRows.length} lignes — aperçu avec données test`;
+  populateFilters(allRows);
+  render(allRows);
+}
+</script>
+</body>
+</html>

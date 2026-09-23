@@ -2,246 +2,503 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dashboard Call Center</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trano — Prototype complet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f5f6f8;
-    --card-bg: #ffffff;
-    --text: #1a1a1a;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --accent: #2563eb;
-    --accent2: #16a34a;
-    --accent3: #dc2626;
-    box-sizing: border-box;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+  :root{
+    --navy:#141C26;
+    --navy-2:#1C2733;
+    --slate:#3C4A59;
+    --paper:#F3EFE6;
+    --card:#FFFFFF;
+    --brass:#B8863B;
+    --brass-dark:#7A5522;
+    --brass-light:#EFDDB8;
+    --clay:#A8452F;
+    --green:#4E7A52;
+    --text-primary:#1C2733;
+    --text-secondary:#6B7580;
+    --text-muted:#9CA3AB;
+    --line:#E4DFD2;
+    --font-display:'Fraunces', serif;
+    --font-body:'Work Sans', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0f1115; --card-bg: #1a1d24; --text: #f0f0f0; --muted: #9ca3af; --border: #2a2d36;
-    }
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .stage{ background:#E7E2D4; padding:32px 16px; display:flex; justify-content:center; font-family:var(--font-body); }
+  .phone{
+    width:390px; height:780px;
+    background:var(--paper);
+    border-radius:28px;
+    border:1px solid #D8D0BA;
+    overflow:hidden;
+    box-shadow:0 20px 45px rgba(20,28,38,0.18);
+    display:flex; flex-direction:column; position:relative;
   }
-  :root[data-theme="dark"] {
-    --bg: #0f1115; --card-bg: #1a1d24; --text: #f0f0f0; --muted: #9ca3af; --border: #2a2d36;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: 20px; max-width: 1100px; margin-inline: auto;
-  }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
-  #status { color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
-  .filters { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-  select, input[type="date"] {
-    background: var(--card-bg); color: var(--text); border: 1px solid var(--border);
-    border-radius: 8px; padding: 7px 10px; font-size: 0.85rem;
-  }
-  .filters label { font-size: 0.78rem; color: var(--muted); margin-right: -6px; }
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .kpi {
-    background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--kpi-color, var(--accent));
-    border-radius: 10px; padding: 14px;
-  }
-  .kpi .label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
-  .kpi .value { font-size: 1.4rem; font-weight: 600; color: var(--kpi-color, var(--text)); }
-  .chart-card {
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px; margin-bottom: 20px; height: 320px; position: relative;
-  }
-  .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 0.82rem; white-space: nowrap; }
-  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 500; }
+  .content{ flex:1; overflow-y:auto; }
+  .content::-webkit-scrollbar{ display:none; }
+
+  .topbar{ background:var(--navy); color:var(--paper); padding:20px 18px 16px; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; }
+  .brand{ font-family:var(--font-display); font-size:22px; font-weight:600; letter-spacing:0.3px; }
+  .brand span{ color:var(--brass); }
+  .add-btn{ width:32px;height:32px;border-radius:50%; background:var(--brass); color:#2E1F0A; display:flex;align-items:center;justify-content:center; font-size:18px; border:none; }
+  .count-pill{ font-family:var(--font-mono); font-size:10px; color:#AEB9C4; border:1px solid #33404F; border-radius:20px; padding:4px 10px; }
+  .loc{ font-size:11.5px; color:#9BA7B3; margin-top:6px; }
+  .filters{ display:flex; gap:8px; padding:14px 18px 4px; overflow-x:auto; }
+  .filter-chip{ flex:none; font-size:11.5px; font-weight:500; padding:7px 13px; border-radius:20px; border:1px solid var(--line); background:var(--card); color:var(--text-primary); white-space:nowrap; cursor:pointer; }
+  .filter-chip.active{ background:var(--navy); border-color:var(--navy); color:var(--paper); }
+
+  .feed{ padding:14px 18px 90px; display:flex; flex-direction:column; gap:12px; }
+  .listing{ background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; }
+  .listing-img{ height:130px; position:relative; background-size:cover; background-position:center; }
+  .neg-badge{ position:absolute; top:9px; left:9px; background:rgba(20,28,38,0.85); color:var(--brass-light); font-family:var(--font-mono); font-size:9.5px; padding:3px 8px; border-radius:6px; }
+  .fav-btn{ position:absolute; top:9px; right:9px; width:26px;height:26px;border-radius:50%; background:rgba(255,255,255,0.9); display:flex;align-items:center;justify-content:center; font-size:13px; }
+  .listing-body{ padding:11px 13px 13px; }
+  .listing-title{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--text-primary); margin:0 0 3px; }
+  .listing-meta{ font-size:11.5px; color:var(--text-secondary); margin:0 0 9px; }
+  .listing-foot{ display:flex; justify-content:space-between; align-items:baseline; }
+  .rent-price{ font-family:var(--font-mono); font-weight:600; font-size:15px; color:var(--brass-dark); }
+  .rent-price .unit{ font-size:10px; color:var(--text-muted); }
+  .offer-count{ font-size:10.5px; color:var(--clay); font-family:var(--font-mono); }
+  .empty-state{ text-align:center; padding:40px 20px; color:var(--text-muted); font-size:13px; }
+
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+
+  .detail-hero{ height:210px; position:relative; background-size:cover; background-position:center; }
+  .gallery-strip{ position:absolute; bottom:10px; left:0; right:0; display:flex; gap:6px; justify-content:center; }
+  .gallery-dot{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); }
+  .gallery-dot.on{ background:#fff; }
+  .back-btn{ position:absolute; top:14px; left:14px; width:32px;height:32px; border-radius:50%; background:rgba(243,239,230,0.92); display:flex;align-items:center;justify-content:center; font-size:16px; color:var(--navy); border:1px solid var(--line); }
+  .thumb-row{ display:flex; gap:6px; padding:10px 18px; }
+  .thumb-row .th{ width:52px; height:40px; border-radius:6px; background-size:cover; background-position:center; border:1px solid var(--line); }
+  .detail-body{ padding:6px 18px 90px; }
+  .detail-title{ font-family:var(--font-display); font-size:20px; font-weight:600; color:var(--text-primary); margin:8px 0 4px; }
+  .detail-meta{ font-size:12.5px; color:var(--text-secondary); margin:0 0 14px; }
+  .spec-row{ display:flex; gap:10px; margin-bottom:16px; }
+  .spec{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:9px; text-align:center; }
+  .spec .val{ font-family:var(--font-mono); font-weight:600; font-size:15px; color:var(--navy); }
+  .spec .lbl{ font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; margin-top:2px; }
+  .asking{ background:var(--brass-light); border:1px dashed var(--brass); border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .asking-label{ font-size:10.5px; color:var(--brass-dark); text-transform:uppercase; letter-spacing:0.5px; }
+  .asking-price{ font-family:var(--font-mono); font-weight:700; font-size:23px; color:var(--brass-dark); }
+  .desc{ font-size:13.5px; line-height:1.6; color:var(--text-primary); margin-bottom:14px; }
+  .owner-row{ display:flex; align-items:center; gap:10px; padding:12px; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:18px; }
+  .owner-avatar{ width:38px;height:38px;border-radius:50%; background:var(--navy-2); color:var(--brass-light); display:flex;align-items:center;justify-content:center; font-size:15px; flex:none; font-family:var(--font-display); }
+  .owner-name{ font-size:13px; font-weight:500; color:var(--text-primary); margin:0; }
+  .owner-sub{ font-size:11px; color:var(--text-muted); margin:1px 0 0; }
+
+  .thread-label{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin:0 0 10px; }
+  .thread{ display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
+  .ticket{ max-width:78%; border-radius:10px; padding:9px 12px; font-size:13px; }
+  .ticket .who{ font-size:10px; text-transform:uppercase; letter-spacing:0.4px; opacity:0.7; margin-bottom:2px; }
+  .ticket .amount{ font-family:var(--font-mono); font-weight:600; font-size:15px; }
+  .ticket.buyer{ align-self:flex-start; background:var(--card); border:1px solid var(--line); color:var(--text-primary); }
+  .ticket.seller{ align-self:flex-end; background:var(--navy); color:var(--paper); }
+  .ticket.seller .amount{ color:var(--brass-light); }
+  .ticket.status{ align-self:center; background:transparent; color:var(--text-muted); font-size:11px; font-style:italic; }
+
+  .offer-row{ display:flex; gap:8px; }
+  .offer-input{ flex:1; display:flex; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:0 12px; }
+  .offer-input span{ font-family:var(--font-mono); font-size:12px; color:var(--text-muted); }
+  .offer-input input{ border:none; background:transparent; outline:none; padding:11px 6px; font-family:var(--font-mono); font-weight:600; font-size:15px; color:var(--text-primary); width:100%; }
+  .send-btn{ background:var(--brass); color:#2E1F0A; border:none; border-radius:10px; padding:0 18px; height:44px; font-weight:600; font-size:13px; font-family:var(--font-body); }
+
+  .search-screen{ padding:18px 18px 90px; }
+  .search-title{ font-family:var(--font-display); font-size:19px; font-weight:600; color:var(--text-primary); margin:0 0 14px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; }
+  .field input, .field select{ width:100%; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-family:var(--font-body); font-size:13px; color:var(--text-primary); outline:none; }
+  .field-row{ display:flex; gap:10px; }
+  .field-row .field{ flex:1; }
+  .apply-btn{ width:100%; background:var(--navy); color:var(--paper); border:none; border-radius:10px; padding:13px; font-weight:600; font-size:13.5px; font-family:var(--font-body); margin:4px 0 20px; }
+  .room-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .room-chip{ padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); font-size:12.5px; color:var(--text-primary); cursor:pointer; }
+  .room-chip.active{ background:var(--brass-light); border-color:var(--brass); color:var(--brass-dark); }
+  .search-results-label{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin:4px 0 10px; }
+
+  .form-screen{ padding:20px 18px 90px; }
+  .field textarea{ width:100%; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-family:var(--font-body); font-size:13px; color:var(--text-primary); outline:none; resize:none; height:70px; }
+  .photo-upload{ display:flex; gap:8px; margin-bottom:16px; }
+  .photo-slot{ width:64px; height:64px; border-radius:10px; border:1.5px dashed var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:20px; }
+  .publish-btn{ width:100%; background:var(--brass); color:#2E1F0A; border:none; border-radius:12px; padding:14px; font-family:var(--font-display); font-weight:700; font-size:14px; margin-top:6px; }
+
+  .messages-screen{ padding:16px 18px 90px; }
+  .msg-item{ display:flex; gap:11px; padding:12px 0; border-bottom:1px solid var(--line); align-items:center; cursor:pointer; }
+  .msg-avatar{ width:46px; height:46px; border-radius:10px; background-size:cover; background-position:center; flex:none; }
+  .msg-body{ flex:1; min-width:0; }
+  .msg-name{ font-size:13.5px; font-weight:500; color:var(--text-primary); margin:0 0 2px; }
+  .msg-preview{ font-size:12px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .msg-unread{ width:8px;height:8px;border-radius:50%; background:var(--clay); flex:none; }
+
+  .profile-screen{ padding:20px 18px 90px; }
+  .profile-head{ display:flex; align-items:center; gap:13px; margin-bottom:20px; }
+  .avatar-lg{ width:56px;height:56px;border-radius:50%; background:var(--navy); color:var(--brass-light); display:flex;align-items:center;justify-content:center; font-size:20px; font-family:var(--font-display); font-weight:600; }
+  .profile-name{ font-family:var(--font-display); font-size:17px; font-weight:600; color:var(--text-primary); margin:0; }
+  .profile-role{ font-size:11.5px; color:var(--text-muted); margin:2px 0 0; }
+  .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .stat-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px; }
+  .stat-label{ font-size:10.5px; color:var(--text-muted); text-transform:uppercase; margin-bottom:5px; }
+  .stat-value{ font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--brass-dark); }
+  .add-listing-btn{ width:100%; background:var(--navy); color:var(--paper); border:none; border-radius:10px; padding:12px; font-weight:500; font-size:13px; font-family:var(--font-body); margin-bottom:18px; }
+  .listing-row{ display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); }
+  .listing-row .name{ font-size:13px; color:var(--text-primary); }
+  .status-badge{ font-family:var(--font-mono); font-size:9.5px; padding:3px 9px; border-radius:20px; }
+  .status-badge.active{ background:#E8EFE8; color:var(--green); border:1px solid #BFD3C0; }
+  .status-badge.pending{ background:#F3E4DF; color:var(--clay); border:1px solid #E0BDB2; }
+
+  .navbar{ position:absolute; bottom:0; left:0; right:0; background:rgba(255,253,247,0.95); border-top:1px solid var(--line); display:flex; padding:10px 10px 14px; }
+  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-muted); font-size:9.5px; cursor:pointer; }
+  .nav-item.active{ color:var(--brass-dark); }
+  .nav-item svg{ width:20px; height:20px; }
 </style>
 </head>
 <body>
-  <h1>Dashboard Call Center</h1>
-  <div id="status">Chargement...</div>
+<div class="stage">
+  <div class="phone">
+    <div class="content" id="content">
 
-  <div class="filters">
-    <select id="filter-canal"><option value="">Tous les canaux</option></select>
-    <select id="filter-agent"><option value="">Tous les agents</option></select>
-    <label for="filter-date-from">Du</label>
-    <input type="date" id="filter-date-from">
-    <label for="filter-date-to">Au</label>
-    <input type="date" id="filter-date-to">
+      <div id="feed-screen" class="screen active">
+        <div class="topbar">
+          <div class="brand-row">
+            <div class="brand">Trano<span>.</span></div>
+            <button class="add-btn" onclick="showTab('form')">+</button>
+          </div>
+          <div class="loc">Antananarivo · tous fokontany</div>
+        </div>
+        <div class="filters" id="cat-filters"></div>
+        <div class="feed" id="feed"></div>
+      </div>
+
+      <div id="detail-screen" class="screen">
+        <div class="detail-hero" id="detail-hero">
+          <div class="back-btn" onclick="goFeed()">&#8592;</div>
+          <div class="gallery-strip" id="gallery-dots"></div>
+        </div>
+        <div class="thumb-row" id="thumb-row"></div>
+        <div class="detail-body">
+          <p class="detail-title" id="d-title"></p>
+          <p class="detail-meta" id="d-meta"></p>
+          <div class="spec-row" id="d-specs"></div>
+          <div class="asking">
+            <div><div class="asking-label">Loyer demandé</div><div class="asking-price" id="d-price"></div></div>
+            <div style="text-align:right;"><div class="asking-label">Par</div><div style="font-family:var(--font-mono); font-size:13px; color:var(--brass-dark);">mois</div></div>
+          </div>
+          <p class="desc" id="d-desc"></p>
+          <div class="owner-row">
+            <div class="owner-avatar" id="d-owner-initial"></div>
+            <div><p class="owner-name" id="d-owner-name"></p><p class="owner-sub" id="d-owner-sub"></p></div>
+          </div>
+          <p class="thread-label">Négociation du loyer</p>
+          <div class="thread" id="thread"></div>
+          <div class="offer-row">
+            <div class="offer-input"><span>Ar</span><input type="number" id="offer-amount" placeholder="Ton offre / mois"></div>
+            <button class="send-btn" onclick="sendOffer()">Proposer</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="search-screen" class="screen search-screen">
+        <p class="search-title">Recherche avancée</p>
+        <div class="field"><label>Quartier / fokontany</label>
+          <select id="s-quartier"><option value="">Tous les quartiers</option><option>Ambohipo</option><option>Analakely</option><option>Isotry</option><option>Ivandry</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Budget min (Ar)</label><input type="number" id="s-min" placeholder="50 000"></div>
+          <div class="field"><label>Budget max (Ar)</label><input type="number" id="s-max" placeholder="700 000"></div>
+        </div>
+        <div class="field">
+          <label>Chambres</label>
+          <div class="room-chips" id="room-chips">
+            <div class="room-chip active" data-rooms="">Toutes</div>
+            <div class="room-chip" data-rooms="1">1</div>
+            <div class="room-chip" data-rooms="2">2</div>
+            <div class="room-chip" data-rooms="3">3+</div>
+          </div>
+        </div>
+        <button class="apply-btn" onclick="applySearch()">Appliquer les filtres</button>
+        <p class="search-results-label" id="search-count"></p>
+        <div class="feed" id="search-results" style="padding:0;"></div>
+      </div>
+
+      <div id="messages-screen" class="screen messages-screen">
+        <p class="search-title">Messages</p>
+        <div id="msg-list"></div>
+      </div>
+
+      <div id="profile-screen" class="screen profile-screen">
+        <div class="profile-head">
+          <div class="avatar-lg">M</div>
+          <div><p class="profile-name">Malala</p><p class="profile-role">Propriétaire · 3 biens</p></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Biens loués</div><div class="stat-value">7</div></div>
+          <div class="stat-card"><div class="stat-label">Note moyenne</div><div class="stat-value">4.7</div></div>
+          <div class="stat-card"><div class="stat-label">Annonces actives</div><div class="stat-value">3</div></div>
+          <div class="stat-card"><div class="stat-label">Taux de réponse</div><div class="stat-value">92%</div></div>
+        </div>
+        <button class="add-listing-btn" onclick="showTab('form')">+ Publier une nouvelle annonce</button>
+        <p class="thread-label">Mes annonces</p>
+        <div id="my-listings"></div>
+      </div>
+
+      <div id="form-screen" class="screen form-screen">
+        <p class="search-title" style="display:flex; align-items:center; gap:10px;"><span class="back-btn" style="position:static;" onclick="showTab('profile')">&#8592;</span>Publier une annonce</p>
+        <div class="field"><label>Titre de l'annonce</label><input type="text" placeholder="Ex : Studio meublé — Analakely"></div>
+        <div class="field-row">
+          <div class="field"><label>Type</label><select><option>Chambre</option><option>Studio</option><option>Appartement</option><option>Maison</option></select></div>
+          <div class="field"><label>Quartier</label><input type="text" placeholder="Ex : Ivandry"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Chambres</label><input type="number" placeholder="2"></div>
+          <div class="field"><label>Surface (m²)</label><input type="number" placeholder="55"></div>
+        </div>
+        <div class="field"><label>Loyer demandé (Ar / mois)</label><input type="number" placeholder="450000"></div>
+        <div class="field"><label>Photos</label>
+          <div class="photo-upload">
+            <div class="photo-slot">+</div><div class="photo-slot">+</div><div class="photo-slot">+</div>
+          </div>
+        </div>
+        <div class="field"><label>Description</label><textarea placeholder="Détails, équipements, conditions…"></textarea></div>
+        <button class="publish-btn" onclick="publish()">Publier l'annonce</button>
+      </div>
+
+    </div>
+
+    <div class="navbar">
+      <div class="nav-item active" id="nav-feed" onclick="showTab('feed')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>Accueil
+      </div>
+      <div class="nav-item" id="nav-search" onclick="showTab('search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Chercher
+      </div>
+      <div class="nav-item" id="nav-messages" onclick="showTab('messages')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>Messages
+      </div>
+      <div class="nav-item" id="nav-profile" onclick="showTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Profil
+      </div>
+    </div>
   </div>
-
-  <div class="kpis" id="kpis"></div>
-
-  <div class="chart-card"><canvas id="chart"></canvas></div>
-
-  <div class="table-wrap">
-    <table>
-      <thead><tr id="header-row"></tr></thead>
-      <tbody id="body-rows"></tbody>
-    </table>
-  </div>
+</div>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTV77FVCMkqbkMHufFm_jGNf1Jv-tzfYudPUwROtJmc1A3K6mhusy6SaQHTeJMmv-CffAw2CZRbbXi_/pub?gid=0&single=true&output=csv";
+const img = (seed, w, h) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
-// Aperçu statique des données test — utilisé uniquement si le fetch en direct échoue
-// (bloqué dans l'aperçu Claude ; fonctionnera normalement une fois déployé sur GitHub Pages / Vercel)
-const FALLBACK_DATA = [
-  {Date:"20/09/2026",Heure:"09:00",Canal:"Voix",Appels_recus:"479",Appels_traites:"420",Appels_abandonnes:"24",Temps_moyen_traitement:"261",Taux_resolution:"0.87",Agent_actif:"Agent_A"},
-  {Date:"21/09/2026",Heure:"10:00",Canal:"SMS",Appels_recus:"305",Appels_traites:"243",Appels_abandonnes:"87",Temps_moyen_traitement:"240",Taux_resolution:"0.88",Agent_actif:"Agent_A"},
-  {Date:"22/09/2026",Heure:"11:00",Canal:"App",Appels_recus:"368",Appels_traites:"342",Appels_abandonnes:"35",Temps_moyen_traitement:"299",Taux_resolution:"0.89",Agent_actif:"Agent_A"},
-  {Date:"23/09/2026",Heure:"12:00",Canal:"Voix",Appels_recus:"260",Appels_traites:"191",Appels_abandonnes:"22",Temps_moyen_traitement:"244",Taux_resolution:"0.90",Agent_actif:"Agent_B"},
-  {Date:"24/09/2026",Heure:"13:00",Canal:"SMS",Appels_recus:"132",Appels_traites:"115",Appels_abandonnes:"14",Temps_moyen_traitement:"250",Taux_resolution:"0.91",Agent_actif:"Agent_B"},
-  {Date:"25/09/2026",Heure:"14:00",Canal:"App",Appels_recus:"417",Appels_traites:"360",Appels_abandonnes:"25",Temps_moyen_traitement:"225",Taux_resolution:"0.92",Agent_actif:"Agent_B"},
-  {Date:"26/09/2026",Heure:"15:00",Canal:"Voix",Appels_recus:"351",Appels_traites:"285",Appels_abandonnes:"64",Temps_moyen_traitement:"217",Taux_resolution:"0.93",Agent_actif:"Agent_B"},
-  {Date:"27/09/2026",Heure:"16:00",Canal:"SMS",Appels_recus:"259",Appels_traites:"224",Appels_abandonnes:"18",Temps_moyen_traitement:"251",Taux_resolution:"0.94",Agent_actif:"Agent_A"},
-  {Date:"28/09/2026",Heure:"17:00",Canal:"App",Appels_recus:"119",Appels_traites:"70",Appels_abandonnes:"50",Temps_moyen_traitement:"261",Taux_resolution:"0.95",Agent_actif:"Agent_A"},
-  {Date:"29/09/2026",Heure:"18:00",Canal:"Voix",Appels_recus:"376",Appels_traites:"286",Appels_abandonnes:"48",Temps_moyen_traitement:"298",Taux_resolution:"0.96",Agent_actif:"Agent_A"},
-  {Date:"30/09/2026",Heure:"19:00",Canal:"SMS",Appels_recus:"282",Appels_traites:"195",Appels_abandonnes:"87",Temps_moyen_traitement:"211",Taux_resolution:"0.97",Agent_actif:"Agent_A"},
-  {Date:"01/10/2026",Heure:"20:00",Canal:"App",Appels_recus:"408",Appels_traites:"367",Appels_abandonnes:"41",Temps_moyen_traitement:"232",Taux_resolution:"0.98",Agent_actif:"Agent_A"},
-  {Date:"02/10/2026",Heure:"21:00",Canal:"Voix",Appels_recus:"101",Appels_traites:"80",Appels_abandonnes:"21",Temps_moyen_traitement:"201",Taux_resolution:"0.99",Agent_actif:"Agent_C"},
-  {Date:"03/10/2026",Heure:"22:00",Canal:"SMS",Appels_recus:"101",Appels_traites:"74",Appels_abandonnes:"27",Temps_moyen_traitement:"296",Taux_resolution:"1.00",Agent_actif:"Agent_C"},
-  {Date:"04/10/2026",Heure:"23:00",Canal:"App",Appels_recus:"160",Appels_traites:"115",Appels_abandonnes:"45",Temps_moyen_traitement:"230",Taux_resolution:"1.00",Agent_actif:"Agent_C"},
-  {Date:"05/10/2026",Heure:"00:00",Canal:"Voix",Appels_recus:"370",Appels_traites:"274",Appels_abandonnes:"96",Temps_moyen_traitement:"254",Taux_resolution:"1.00",Agent_actif:"Agent_A"},
-  {Date:"06/10/2026",Heure:"01:00",Canal:"SMS",Appels_recus:"300",Appels_traites:"297",Appels_abandonnes:"3",Temps_moyen_traitement:"225",Taux_resolution:"1.00",Agent_actif:"Agent_A"}
+const listings = [
+  {id:1, type:'Maison', title:'Maison 3 pièces — Ambohipo', quartier:'Ambohipo', meta:'Ambohipo · proche université', beds:3, baths:'1', size:75, price:450000,
+   photos:[img('trano-house1',500,340), img('trano-house1b',500,340), img('trano-house1c',500,340)],
+   desc:'Maison indépendante avec cour, eau courante, quartier calme. Idéal pour famille ou colocation étudiante.',
+   owner:'Rakoto H.', ownerSub:'Propriétaire · 4.6 ★ · 12 biens loués',
+   offers:2, thread:[{who:'buyer', amount:'380 000 Ar'}, {who:'seller', amount:'420 000 Ar'}, {who:'status', text:'En attente de ta réponse'}]},
+  {id:2, type:'Studio', title:'Studio meublé — Analakely', quartier:'Analakely', meta:'Analakely · centre-ville', beds:1, baths:'1', size:22, price:220000,
+   photos:[img('trano-studio1',500,340), img('trano-studio1b',500,340)],
+   desc:'Studio meublé, proche des transports et commerces. Eau et électricité incluses.',
+   owner:'Nirina F.', ownerSub:'Propriétaire · 4.9 ★ · 6 biens loués',
+   offers:1, thread:[{who:'buyer', amount:'190 000 Ar'}, {who:'status', text:'Offre envoyée, en attente'}]},
+  {id:3, type:'Chambre', title:'Chambre chez l\\'habitant — Isotry', quartier:'Isotry', meta:'Isotry · quartier animé', beds:1, baths:'partagée', size:14, price:85000,
+   photos:[img('trano-room1',500,340)],
+   desc:'Chambre simple dans une maison familiale, accès cuisine partagé. Idéal étudiant ou jeune actif.',
+   owner:'Hery R.', ownerSub:'Propriétaire · 4.3 ★ · 3 biens loués',
+   offers:0, thread:[]},
+  {id:4, type:'Appartement', title:'Appartement T2 — Ivandry', quartier:'Ivandry', meta:'Ivandry · résidentiel', beds:2, baths:'1', size:55, price:650000,
+   photos:[img('trano-apt1',500,340), img('trano-apt1b',500,340), img('trano-apt1c',500,340)],
+   desc:'Appartement récent dans résidence sécurisée, parking disponible. Proche zone d\\'affaires.',
+   owner:'Malala', ownerSub:'C\\'est toi · propriétaire',
+   offers:3, thread:[{who:'buyer', amount:'580 000 Ar'}, {who:'seller', amount:'620 000 Ar'}, {who:'buyer', amount:'600 000 Ar'}, {who:'status', text:'Accepté par le propriétaire'}]},
+  {id:5, type:'Appartement', title:'Appartement T1 — Andraharo', quartier:'Andraharo', meta:'Andraharo · calme', beds:1, baths:'1', size:38, price:310000,
+   photos:[img('trano-apt2',500,340), img('trano-apt2b',500,340)],
+   desc:'Appartement lumineux au 2e étage, cuisine équipée, proche arrêt de bus.',
+   owner:'Voninavoko S.', ownerSub:'Propriétaire · 4.5 ★ · 2 biens loués',
+   offers:0, thread:[]},
 ];
 
-let allRows = [];
-let chartInstance = null;
+const categories = ['Tous', 'Chambre', 'Studio', 'Appartement', 'Maison'];
+let activeCategory = 'Tous';
 
-function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
-
-function uniqueValues(rows, key) {
-  return [...new Set(rows.map(r => r[key]).filter(Boolean))];
-}
-
-// Convertit "JJ/MM/AAAA" en objet Date pour comparaison
-function parseFrDate(str) {
-  if (!str) return null;
-  const [d, m, y] = str.split("/").map(Number);
-  if (!d || !m || !y) return null;
-  return new Date(y, m - 1, d);
-}
-
-function populateFilters(rows) {
-  const canalSel = document.getElementById("filter-canal");
-  const agentSel = document.getElementById("filter-agent");
-  uniqueValues(rows, "Canal").forEach(v => canalSel.insertAdjacentHTML("beforeend", `<option value="${v}">${v}</option>`));
-  uniqueValues(rows, "Agent_actif").forEach(v => agentSel.insertAdjacentHTML("beforeend", `<option value="${v}">${v}</option>`));
-  canalSel.addEventListener("change", applyFilters);
-  agentSel.addEventListener("change", applyFilters);
-  document.getElementById("filter-date-from").addEventListener("change", applyFilters);
-  document.getElementById("filter-date-to").addEventListener("change", applyFilters);
-}
-
-function applyFilters() {
-  const canal = document.getElementById("filter-canal").value;
-  const agent = document.getElementById("filter-agent").value;
-  const dateFrom = document.getElementById("filter-date-from").value ? new Date(document.getElementById("filter-date-from").value) : null;
-  const dateTo = document.getElementById("filter-date-to").value ? new Date(document.getElementById("filter-date-to").value) : null;
-  const filtered = allRows.filter(r => {
-    if (canal && r.Canal !== canal) return false;
-    if (agent && r.Agent_actif !== agent) return false;
-    const rowDate = parseFrDate(r.Date);
-    if (dateFrom && rowDate && rowDate < dateFrom) return false;
-    if (dateTo && rowDate && rowDate > dateTo) return false;
-    return true;
-  });
-  render(filtered);
-}
-
-function renderKpis(rows) {
-  const kpis = document.getElementById("kpis");
-  if (!rows.length) { kpis.innerHTML = ""; return; }
-  const sum = (key) => rows.reduce((a, r) => a + num(r[key]), 0);
-  const avg = (key) => sum(key) / rows.length;
-  const recus = sum("Appels_recus");
-  const traites = sum("Appels_traites");
-  const abandons = sum("Appels_abandonnes");
-  const tauxTraitement = recus ? (traites / recus) * 100 : 0;
-  const tauxAbandon = recus ? (abandons / recus) * 100 : 0;
-  const tauxResolution = Math.min(avg("Taux_resolution"), 1) * 100;
-  const dmt = Math.round(avg("Temps_moyen_traitement"));
-
-  const cards = [
-    ["Appels reçus", recus, "#2563eb"],
-    ["Appels traités", traites, "#16a34a"],
-    ["Taux de traitement", tauxTraitement.toFixed(1) + "%", "#0891b2"],
-    ["Abandons", abandons, "#dc2626"],
-    ["Taux d'abandon", tauxAbandon.toFixed(1) + "%", "#ea580c"],
-    ["Taux résolution moy.", tauxResolution.toFixed(1) + "%", "#7c3aed"],
-    ["DMT (s)", dmt, "#ca8a04"]
-  ];
-  kpis.innerHTML = cards.map(([label, value, color]) =>
-    `<div class="kpi" style="--kpi-color:${color}"><div class="label">${label}</div><div class="value">${value}</div></div>`
-  ).join("");
-}
-
-function renderChart(rows) {
-  const ctx = document.getElementById("chart");
-  const labels = rows.map(r => `${r.Date} ${r.Heure}`);
-  const data = {
-    labels,
-    datasets: [
-      { label: "Reçus", data: rows.map(r => num(r.Appels_recus)), borderColor: "#2563eb", backgroundColor: "#2563eb33", fill: true, tension: 0.3, borderWidth: 2 },
-      { label: "Traités", data: rows.map(r => num(r.Appels_traites)), borderColor: "#16a34a", backgroundColor: "#16a34a33", fill: true, tension: 0.3, borderWidth: 2 },
-      { label: "Abandons", data: rows.map(r => num(r.Appels_abandonnes)), borderColor: "#dc2626", backgroundColor: "#dc262633", fill: true, tension: 0.3, borderWidth: 2 }
-    ]
+const catFiltersEl = document.getElementById('cat-filters');
+categories.forEach(c => {
+  const chip = document.createElement('div');
+  chip.className = 'filter-chip' + (c === 'Tous' ? ' active' : '');
+  chip.textContent = c;
+  chip.onclick = () => {
+    activeCategory = c;
+    document.querySelectorAll('#cat-filters .filter-chip').forEach(el => el.classList.remove('active'));
+    chip.classList.add('active');
+    renderFeed();
   };
-  if (chartInstance) chartInstance.destroy();
-  chartInstance = new Chart(ctx, {
-    type: "line",
-    data,
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } },
-      scales: { x: { ticks: { maxRotation: 45, minRotation: 45 } } }
-    }
-  });
-}
+  catFiltersEl.appendChild(chip);
+});
 
-function renderTable(rows) {
-  if (!rows.length) {
-    document.getElementById("header-row").innerHTML = "";
-    document.getElementById("body-rows").innerHTML = "<tr><td>Aucune donnée</td></tr>";
+function renderFeed(){
+  const feedEl = document.getElementById('feed');
+  feedEl.innerHTML = '';
+  const filtered = listings.filter(p => activeCategory === 'Tous' || p.type === activeCategory);
+  if(filtered.length === 0){
+    feedEl.innerHTML = '<div class="empty-state">Aucune annonce dans cette catégorie pour le moment.</div>';
     return;
   }
-  const headers = Object.keys(rows[0]);
-  document.getElementById("header-row").innerHTML = headers.map(h => `<th>${h}</th>`).join("");
-  document.getElementById("body-rows").innerHTML = rows.slice(0, 100).map(r =>
-    `<tr>${headers.map(h => `<td>${r[h] ?? ""}</td>`).join("")}</tr>`
-  ).join("");
+  filtered.forEach(p => feedEl.appendChild(buildListingCard(p)));
 }
 
-function render(rows) {
-  renderKpis(rows);
-  renderChart(rows);
-  renderTable(rows);
+function buildListingCard(p){
+  const card = document.createElement('div');
+  card.className = 'listing';
+  card.onclick = () => openDetail(p.id);
+  card.innerHTML = `
+    <div class="listing-img" style="background-image:url('${p.photos[0]}')">
+      ${p.offers > 0 ? `<div class="neg-badge">${p.offers} offre${p.offers>1?'s':''} en cours</div>` : ''}
+      <div class="fav-btn">&#9825;</div>
+    </div>
+    <div class="listing-body">
+      <p class="listing-title">${p.title}</p>
+      <p class="listing-meta">${p.meta} · ${p.beds} ch · ${p.size} m²</p>
+      <div class="listing-foot"><span class="rent-price">${p.price.toLocaleString('fr-FR')} Ar<span class="unit"> / mois</span></span></div>
+    </div>
+  `;
+  return card;
 }
 
-try {
-  Papa.parse(CSV_URL, {
-    download: true, header: true, skipEmptyLines: true,
-    complete: (results) => {
-      allRows = results.data;
-      document.getElementById("status").textContent = `${allRows.length} lignes chargées (source live)`;
-      populateFilters(allRows);
-      render(allRows);
-    },
-    error: () => {
-      allRows = FALLBACK_DATA;
-      document.getElementById("status").textContent = `${allRows.length} lignes — aperçu avec données test (le fetch live sera actif une fois déployé)`;
-      populateFilters(allRows);
-      render(allRows);
+renderFeed();
+
+let currentId = null;
+
+function openDetail(id){
+  currentId = id;
+  const p = listings.find(l => l.id === id);
+  document.getElementById('detail-hero').style.backgroundImage = `url('${p.photos[0]}')`;
+  document.getElementById('gallery-dots').innerHTML = p.photos.map((_, i) => `<div class="gallery-dot ${i===0?'on':''}"></div>`).join('');
+  document.getElementById('thumb-row').innerHTML = p.photos.map(src => `<div class="th" style="background-image:url('${src}')" onclick="document.getElementById('detail-hero').style.backgroundImage='url(${src})'"></div>`).join('');
+  document.getElementById('d-title').textContent = p.title;
+  document.getElementById('d-meta').textContent = p.meta;
+  document.getElementById('d-price').textContent = p.price.toLocaleString('fr-FR') + ' Ar';
+  document.getElementById('d-desc').textContent = p.desc;
+  document.getElementById('d-owner-initial').textContent = p.owner.charAt(0);
+  document.getElementById('d-owner-name').textContent = p.owner;
+  document.getElementById('d-owner-sub').textContent = p.ownerSub;
+  document.getElementById('d-specs').innerHTML = `
+    <div class="spec"><div class="val">${p.beds}</div><div class="lbl">Chambres</div></div>
+    <div class="spec"><div class="val">${p.baths}</div><div class="lbl">SDB</div></div>
+    <div class="spec"><div class="val">${p.size} m²</div><div class="lbl">Surface</div></div>
+  `;
+  renderThread(p.thread);
+  showTab('detail');
+}
+
+function goFeed(){ showTab('feed'); }
+
+function renderThread(thread){
+  const el = document.getElementById('thread');
+  el.innerHTML = '';
+  if(thread.length === 0){
+    el.innerHTML = '<p class="detail-meta" style="margin:0;">Aucune offre pour le moment. Sois le premier à proposer un loyer.</p>';
+    return;
+  }
+  thread.forEach(t => {
+    const div = document.createElement('div');
+    if(t.who === 'status'){
+      div.className = 'ticket status';
+      div.textContent = t.text;
+    } else {
+      div.className = 'ticket ' + t.who;
+      div.innerHTML = `<div class="who">${t.who === 'buyer' ? 'Toi' : 'Propriétaire'}</div><div class="amount">${t.amount}</div>`;
     }
+    el.appendChild(div);
   });
-} catch (e) {
-  allRows = FALLBACK_DATA;
-  document.getElementById("status").textContent = `${allRows.length} lignes — aperçu avec données test`;
-  populateFilters(allRows);
-  render(allRows);
+}
+
+function sendOffer(){
+  const input = document.getElementById('offer-amount');
+  const val = parseInt(input.value, 10);
+  if(!val || val <= 0) return;
+  const formatted = val.toLocaleString('fr-FR') + ' Ar';
+  const p = listings.find(l => l.id === currentId);
+  p.thread.push({who:'buyer', amount: formatted});
+  p.thread.push({who:'status', text:'Offre envoyée, en attente de réponse du propriétaire'});
+  renderThread(p.thread);
+  input.value = '';
+}
+
+document.querySelectorAll('.room-chip').forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll('.room-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  };
+});
+
+function applySearch(){
+  const quartier = document.getElementById('s-quartier').value;
+  const min = parseInt(document.getElementById('s-min').value, 10) || 0;
+  const max = parseInt(document.getElementById('s-max').value, 10) || Infinity;
+  const roomsChip = document.querySelector('.room-chip.active');
+  const rooms = roomsChip ? roomsChip.dataset.rooms : '';
+
+  const results = listings.filter(p => {
+    if(quartier && p.quartier !== quartier) return false;
+    if(p.price < min || p.price > max) return false;
+    if(rooms === '1' && p.beds !== 1) return false;
+    if(rooms === '2' && p.beds !== 2) return false;
+    if(rooms === '3' && p.beds < 3) return false;
+    return true;
+  });
+
+  document.getElementById('search-count').textContent = results.length + ' résultat' + (results.length > 1 ? 's' : '');
+  const resEl = document.getElementById('search-results');
+  resEl.innerHTML = '';
+  if(results.length === 0){
+    resEl.innerHTML = '<div class="empty-state">Aucun bien ne correspond à ces critères.</div>';
+    return;
+  }
+  results.forEach(p => resEl.appendChild(buildListingCard(p)));
+}
+
+const conversations = [
+  {photo: img('trano-apt1',80,80), name:'Rakoto H. — Maison Ambohipo', preview:'Contre-offre : 420 000 Ar / mois', unread:true, listingId:1},
+  {photo: img('trano-studio1',80,80), name:'Nirina F. — Studio Analakely', preview:'Ton offre a été envoyée', unread:false, listingId:2},
+  {photo: img('trano-apt1',80,80), name:'Malala — Appartement Ivandry', preview:'Loyer accepté à 600 000 Ar ✓', unread:false, listingId:4},
+  {photo: img('trano-apt2',80,80), name:'Voninavoko S. — T1 Andraharo', preview:'Disponible pour visite samedi', unread:true, listingId:5},
+];
+
+const msgListEl = document.getElementById('msg-list');
+conversations.forEach(c => {
+  const div = document.createElement('div');
+  div.className = 'msg-item';
+  div.onclick = () => openDetail(c.listingId);
+  div.innerHTML = `
+    <div class="msg-avatar" style="background-image:url('${c.photo}')"></div>
+    <div class="msg-body"><p class="msg-name">${c.name}</p><p class="msg-preview">${c.preview}</p></div>
+    ${c.unread ? '<div class="msg-unread"></div>' : ''}
+  `;
+  msgListEl.appendChild(div);
+});
+
+const myListingsEl = document.getElementById('my-listings');
+listings.filter(p => p.owner === 'Malala').forEach(p => {
+  const div = document.createElement('div');
+  div.className = 'listing-row';
+  div.innerHTML = `<span class="name">${p.title}</span><span class="status-badge ${p.offers > 0 ? 'pending' : 'active'}">${p.offers > 0 ? p.offers + ' offre' + (p.offers>1?'s':'') : 'Active'}</span>`;
+  myListingsEl.appendChild(div);
+});
+if(myListingsEl.children.length === 0){
+  myListingsEl.innerHTML = '<div class="empty-state">Tu n\\'as pas encore d\\'annonce publiée.</div>';
+}
+
+function publish(){
+  showTab('feed');
+}
+
+function showTab(tab){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(tab + '-screen').classList.add('active');
+  document.getElementById('content').scrollTop = 0;
+  const navMap = {feed:'nav-feed', search:'nav-search', messages:'nav-messages', profile:'nav-profile'};
+  if(navMap[tab]) document.getElementById(navMap[tab]).classList.add('active');
 }
 </script>
 </body>

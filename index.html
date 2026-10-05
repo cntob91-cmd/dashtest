@@ -72,6 +72,18 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 #go{width:100%;margin-top:18px;font:inherit;font-weight:600;border:0;border-radius:10px;padding:11px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#E23CD0,#8E54F0);box-shadow:0 0 calc(var(--blur)*1.5px) -2px #E23CD0}
 #go:disabled{opacity:.6;cursor:wait}#go:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 #err{min-height:20px;margin-top:10px;font-size:13px;color:var(--coral);text-align:center}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--line)}
+.usr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
+.tabs{display:flex;gap:6px}.tab,.seg button,.dd summary,.ddb button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer}
+.tab[aria-pressed=true],.seg button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
+.seg{display:inline-flex;gap:4px}.seg button{padding:4px 12px}
+.hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}.hd h2{margin:0}
+.dd{position:relative}.dd summary{list-style:none;padding:5px 14px}.dd summary::-webkit-details-marker{display:none}
+.ddp{position:absolute;z-index:8;top:calc(100% + 6px);left:0;min-width:260px;max-height:320px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.ddb{display:flex;gap:6px;margin-bottom:6px}.ddb button{padding:3px 12px}
+.ddp label{display:flex;gap:8px;align-items:center;padding:4px 2px;font-size:13px;color:var(--ink)}
+#heat table{text-align:center}#heat th{text-align:center}#heat td{min-width:62px;border:2px solid var(--card);border-radius:6px;font-weight:600}
+@media(max-width:900px){.bar{padding:10px 14px}}
 </style>
 </head>
 <body>
@@ -87,6 +99,11 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
  </div>
 </section>
 <div id="app" hidden>
+<div class="bar">
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="AE">Appels entrants</button></nav>
+ <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
+</div>
+<div id="p1">
 <header class="top">
  <div><h1>Satisfaction client We Light</h1><p class="mut" id="per"></p></div>
  <div class="flt">
@@ -95,9 +112,6 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
   <label>Village <input type="search" id="vq" placeholder="Rechercher un village" list="vl" autocomplete="off"></label><datalist id="vl"></datalist>
   <label>CSA <span id="chips" role="group" aria-label="Filtrer par CSA"></span></label>
   <button class="lnk" id="rst">Réinitialiser</button>
-  <span class="mut" id="who"></span>
-  <button class="lnk" id="rf">Actualiser</button>
-  <button class="lnk" id="out">Se déconnecter</button>
  </div>
  <p class="mut" id="cnt" aria-live="polite"></p>
 </header>
@@ -120,6 +134,60 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
  <footer>Les réponses au questionnaire (résolution, satisfaction, réactivité, attente) ne concernent que les appels au statut Qualifié.</footer>
 </main>
 </div>
+
+<div id="p2" hidden>
+ <header class="top">
+  <div><h1>Appels entrants (AE)</h1><p class="mut" id="aper"></p></div>
+  <div class="flt">
+   <label>Du <input type="date" id="afrom"></label>
+   <label>Au <input type="date" id="ato"></label>
+   <span id="apre" class="seg"><button data-d="30">30 jours</button><button data-d="90">3 mois</button><button data-d="0">Tout</button></span>
+   <details class="dd"><summary id="asum">Agents</summary><div class="ddp"><div class="ddb"><button data-a="all">Tous</button><button data-a="none">Aucun</button></div><div id="alist"></div></div></details>
+   <button class="lnk" id="arst">Réinitialiser</button>
+  </div>
+  <p class="mut" id="acnt" aria-live="polite"></p>
+ </header>
+ <main>
+  <p class="mut" id="astate" style="padding:6px 0">Chargement des appels entrants…</p>
+  <div id="abody" hidden>
+   <section class="hero" id="ahero"></section>
+   <section class="pills" id="akp"></section>
+   <section class="grid">
+    <article class="card c8"><div class="hd"><h2>Appels par période</h2><span class="seg" id="agran"><button data-g="d">Jour</button><button data-g="w">Semaine</button><button data-g="m">Mois</button></span></div><div class="cv"><canvas id="ae1"></canvas></div></article>
+    <article class="card c4"><h2>Réactivité de la réponse</h2><div class="cv"><canvas id="ae2"></canvas></div></article>
+    <article class="card c6"><h2>Appels par tranche horaire (taux d'abandon sous l'heure)</h2><div class="cv"><canvas id="ae3"></canvas></div></article>
+    <article class="card c6"><h2>Niveau de service et abandon par mois (%)</h2><div class="cv"><canvas id="ae4"></canvas></div></article>
+    <article class="card c6"><h2>Appels traités par agent</h2><div class="cv t"><canvas id="ae5"></canvas></div></article>
+    <article class="card c6"><h2>Durées moyennes par agent (10 appels traités ou plus)</h2><div class="cv t"><canvas id="ae6"></canvas></div></article>
+    <article class="card c12"><div class="hd"><h2>Jour de la semaine et tranche horaire</h2><span class="seg" id="aheat"><button data-m="n">Appels reçus</button><button data-m="a">Taux d'abandon</button></span></div><div class="tb" id="heat"></div></article>
+   </section>
+   <footer id="anote">Durées calculées sur les appels traités. Niveau de service : appels décrochés en moins de 20 s sur appels reçus. DMT = conversation + post-appel.</footer>
+  </div>
+ </main>
+</div>
+</div>
+<script>
+(function(){
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim(),fm=n=>n==null?'—':n.toLocaleString('fr-FR');
+Chart.register({id:'glow',beforeDatasetDraw(c,a){const b=+css('--blur'),d=c.data.datasets[a.index],col=c.getDatasetMeta(a.index).type==='line'?d.borderColor:d.backgroundColor;c._g=b&&!Array.isArray(col);if(c._g){c.ctx.save();c.ctx.shadowColor=col;c.ctx.shadowBlur=b}},afterDatasetDraw(c){if(c._g){c.ctx.restore();c._g=false}}});
+Chart.register({id:'dl',afterDatasetsDraw(c){const x=c.ctx,ink=css('--ink'),on=css('--on'),fam="'Instrument Sans',system-ui,sans-serif";
+ c.data.datasets.forEach((d,i)=>{if(!d.dl||!c.isDatasetVisible(i))return;const m=c.getDatasetMeta(i),o=d.dl,hz=c.options.indexAxis==='y',k=d.tag?d.data.indexOf(Math.max(...d.data)):-1;
+  m.data.forEach((e,j)=>{const v=d.data[j];if(!v||j===k||o.skip)return;let px=e.x,py=e.y,al='center',bl='middle',col=ink;
+   if(m.type==='doughnut'){if(e.endAngle-e.startAngle<.3)return;const p=e.tooltipPosition();px=p.x;py=p.y;col=on}
+   else if(m.type==='bar'){if(o.pos==='in'){if(Math.abs(hz?e.x-e.base:e.y-e.base)<(hz?30:14))return;const p=e.getCenterPoint();px=p.x;py=p.y;col=on}else if(hz){px=e.x+6;al='left'}else{py=e.y-6;bl='bottom'}}
+   else if(o.pos==='bottom'){py=e.y+10;bl='top'}else{py=e.y-10;bl='bottom'}
+   x.save();x.font='600 12px '+fam;x.textAlign=al;x.textBaseline=bl;x.fillStyle=col;x.fillText(o.fmt?o.fmt(v):fm(v),px,py);x.restore()});
+  if(k>=0){const e=m.data[k],tx='Max '+fm(d.data[k]);x.save();x.font='600 12px '+fam;const w=x.measureText(tx).width+20,bx=Math.min(Math.max(e.x-w/2,c.chartArea.left),c.chartArea.right+14-w),by=e.y-40;
+   x.globalAlpha=.3;x.fillStyle=d.borderColor;x.beginPath();x.arc(e.x,e.y,11,0,7);x.fill();x.globalAlpha=1;x.beginPath();x.arc(e.x,e.y,5,0,7);x.fill();
+   x.fillStyle=css('--navy');x.beginPath();x.roundRect?x.roundRect(bx,by,w,24,7):x.rect(bx,by,w,24);x.fill();x.beginPath();x.moveTo(e.x-5,by+24);x.lineTo(e.x+5,by+24);x.lineTo(e.x,by+30);x.fill();
+   x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(tx,bx+w/2,by+12);x.restore()}})}});
+window.wlTheme=function(){
+ Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');const D2=Chart.defaults,tt=D2.plugins.tooltip;D2.elements.bar.borderRadius=6;D2.elements.bar.borderSkipped=false;D2.elements.line.borderWidth=3;D2.elements.point.radius=4;D2.elements.point.hoverRadius=7;D2.elements.arc.borderRadius=6;D2.elements.arc.borderWidth=3;D2.elements.arc.hoverOffset=8;D2.scale.grid.borderDash=[];D2.layout.padding={top:22,right:16,left:2,bottom:2};D2.animation.duration=700;
+ tt.backgroundColor=css('--card');tt.borderColor=css('--teal');tt.borderWidth=1;tt.titleColor=css('--ink');tt.bodyColor=css('--ink');tt.padding=10;tt.cornerRadius=8;tt.boxPadding=4;
+ Chart.defaults.font.family="'Instrument Sans',system-ui,sans-serif";
+};
+})();
+</script>
 <script>
 window.start=function(D){
 const $=s=>document.querySelector(s),fm=n=>n==null?'—':n.toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null;
@@ -139,27 +207,13 @@ dF.onchange=dT.onchange=$('#vq').oninput=()=>render();
 $('#rst').onclick=()=>{$('#vq').value='';dF.value=d0;dT.value=d1;CSAS.forEach(x=>sel.add(x));sync();render()};
 const st=R=>{const f=k=>R.filter(r=>r[k]),c=(k,v)=>cn(R,k,v);
  return{T:R.length,ab:R.filter(r=>r.e).length,q:c('s','Qualifié'),n1:f('q1').length,res:c('q1','R'),n2:f('q2').length,s2:c('q2','S'),n4:f('q4').length,s4:c('q4','S'),n6:f('q6').length,t6:c('q6','T'),n7:f('q7').length,w1:c('q7','1'),wm:c('q7','M'),days:new Set(R.map(r=>r.d)).size,vil:new Set(R.filter(r=>r.v!=='Non renseigné').map(r=>r.v)).size,rem:R.filter(r=>r.r||r.t).length}};
-Chart.register({id:'glow',beforeDatasetDraw(c,a){const b=+css('--blur'),d=c.data.datasets[a.index],col=c.getDatasetMeta(a.index).type==='line'?d.borderColor:d.backgroundColor;c._g=b&&!Array.isArray(col);if(c._g){c.ctx.save();c.ctx.shadowColor=col;c.ctx.shadowBlur=b}},afterDatasetDraw(c){if(c._g){c.ctx.restore();c._g=false}}});
-Chart.register({id:'dl',afterDatasetsDraw(c){const x=c.ctx,ink=css('--ink'),on=css('--on'),fam="'Instrument Sans',system-ui,sans-serif";
- c.data.datasets.forEach((d,i)=>{if(!d.dl||!c.isDatasetVisible(i))return;const m=c.getDatasetMeta(i),o=d.dl,hz=c.options.indexAxis==='y',k=d.tag?d.data.indexOf(Math.max(...d.data)):-1;
-  m.data.forEach((e,j)=>{const v=d.data[j];if(!v||j===k)return;let px=e.x,py=e.y,al='center',bl='middle',col=ink;
-   if(m.type==='doughnut'){if(e.endAngle-e.startAngle<.3)return;const p=e.tooltipPosition();px=p.x;py=p.y;col=on}
-   else if(m.type==='bar'){if(o.pos==='in'){const p=e.getCenterPoint();px=p.x;py=p.y;col=on}else if(hz){px=e.x+6;al='left'}else{py=e.y-6;bl='bottom'}}
-   else if(o.pos==='bottom'){py=e.y+10;bl='top'}else{py=e.y-10;bl='bottom'}
-   x.save();x.font='600 12px '+fam;x.textAlign=al;x.textBaseline=bl;x.fillStyle=col;x.fillText(fm(v),px,py);x.restore()});
-  if(k>=0){const e=m.data[k],tx='Max '+fm(d.data[k]);x.save();x.font='600 12px '+fam;const w=x.measureText(tx).width+20,bx=Math.min(Math.max(e.x-w/2,c.chartArea.left),c.chartArea.right+14-w),by=e.y-40;
-   x.globalAlpha=.3;x.fillStyle=d.borderColor;x.beginPath();x.arc(e.x,e.y,11,0,7);x.fill();x.globalAlpha=1;x.beginPath();x.arc(e.x,e.y,5,0,7);x.fill();
-   x.fillStyle=css('--navy');x.beginPath();x.roundRect?x.roundRect(bx,by,w,24,7):x.rect(bx,by,w,24);x.fill();x.beginPath();x.moveTo(e.x-5,by+24);x.lineTo(e.x+5,by+24);x.lineTo(e.x,by+30);x.fill();
-   x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(tx,bx+w/2,by+12);x.restore()}})}});
 const chs={};
 function mk(id,type,data,opt){chs[id]&&chs[id].destroy();
  chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
 const noLeg={plugins:{legend:{display:false}}},int={y:{beginAtZero:true,ticks:{precision:0}}};
 function render(){
  const R=D.filter(r=>r.d>=dF.value&&r.d<=dT.value&&sel.has(r.c)&&nf(r.v).includes(nf($('#vq').value.trim()))),s=st(R);
- Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');const D2=Chart.defaults,tt=D2.plugins.tooltip;D2.elements.bar.borderRadius=6;D2.elements.bar.borderSkipped=false;D2.elements.line.borderWidth=3;D2.elements.point.radius=4;D2.elements.point.hoverRadius=7;D2.elements.arc.borderRadius=6;D2.elements.arc.borderWidth=3;D2.elements.arc.hoverOffset=8;D2.scale.grid.borderDash=[];D2.layout.padding={top:22,right:16,left:2,bottom:2};D2.animation.duration=700;
- tt.backgroundColor=css('--card');tt.borderColor=css('--teal');tt.borderWidth=1;tt.titleColor=css('--ink');tt.bodyColor=css('--ink');tt.padding=10;tt.cornerRadius=8;tt.boxPadding=4;
- Chart.defaults.font.family="'Instrument Sans',system-ui,sans-serif";
+ wlTheme();
  const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card');
  $('#per').textContent=`Appels qualité du ${fd(dF.value)} au ${fd(dT.value)}`;
  $('#cnt').textContent=s.T?`${s.T} appels sur ${D.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
@@ -210,6 +264,100 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 };
 </script>
 <script>
+window.startAE=function(DATA){
+const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
+const mmss=s=>{if(s==null||isNaN(s))return '—';s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const dur=s=>{if(s==null||isNaN(s))return null;s=Math.round(s);return [Math.floor(s/60),String(s%60).padStart(2,'0')]};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+const AG=DATA.ag,RW=DATA.rows,MN=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],WD=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const short=s=>s.length>24?s.slice(0,23)+'…':s,hh=h=>String(h).padStart(2,'0')+'h';
+$('#astate').hidden=false;
+if(!RW.length){$('#astate').textContent='Aucune donnée dans l\'onglet AE.';return}
+$('#astate').hidden=true;$('#abody').hidden=false;
+const ds=RW.map(r=>r[0]).sort(),d0=ds[0],d1=ds[ds.length-1],aF=$('#afrom'),aT=$('#ato');
+aF.min=aT.min=d0;aF.max=aT.max=d1;aF.value=d0;aT.value=d1;
+const sel=new Set(AG.map((_,i)=>i));let gran='w',heat='n';
+const all=()=>sel.size===AG.length;
+$('#alist').innerHTML=AG.map((n,i)=>`<label><input type="checkbox" data-i="${i}" checked> ${esc(n)}</label>`).join('');
+const sync=()=>{[...$('#alist').querySelectorAll('input')].forEach(c=>c.checked=sel.has(+c.dataset.i));$('#asum').textContent=`Agents (${sel.size}/${AG.length})`};
+$('#alist').onchange=e=>{const i=+e.target.dataset.i;e.target.checked?sel.add(i):sel.delete(i);sync();render()};
+$('.ddb').onclick=e=>{const a=e.target.dataset.a;if(!a)return;sel.clear();if(a==='all')AG.forEach((_,i)=>sel.add(i));sync();render()};
+const seg=(id,key,fn)=>{[...$(id).children].forEach(b=>b.onclick=()=>{fn(b.dataset[key]);render()})};
+seg('#agran','g',v=>gran=v);seg('#aheat','m',v=>heat=v);
+const shift=n=>new Date(Date.parse(d1+'T00:00:00Z')-(n-1)*864e5).toISOString().slice(0,10);
+[...$('#apre').children].forEach(b=>b.onclick=()=>{const n=+b.dataset.d,s=n?shift(n):d0;aT.value=d1;aF.value=s<d0?d0:s;render()});
+aF.onchange=aT.onchange=()=>render();
+$('#arst').onclick=()=>{aF.value=d0;aT.value=d1;AG.forEach((_,i)=>sel.add(i));sync();render()};
+sync();
+const S=R=>R.reduce((x,r)=>{x.n+=r[3];x.l+=r[4];x.t+=r[5];x.s+=r[6];x.D+=r[7];x.P+=r[8];return x},{n:0,l:0,t:0,s:0,D:0,P:0});
+const mon=d=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()-(t.getUTCDay()+6)%7);return t.toISOString().slice(0,10)};
+const chs={};
+function mk(id,type,data,opt){chs[id]&&chs[id].destroy();chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
+const noLeg={legend:{display:false}},int={y:{beginAtZero:true,ticks:{precision:0}}};
+function render(){
+ const R=RW.filter(r=>r[0]>=aF.value&&r[0]<=aT.value&&(r[2]<0?all():sel.has(r[2]))),s=S(R);
+ wlTheme();
+ for(const b of $('#agran').children)b.setAttribute('aria-pressed',b.dataset.g===gran);
+ for(const b of $('#aheat').children)b.setAttribute('aria-pressed',b.dataset.m===heat);
+ const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),card=css('--card'),ink=css('--ink');
+ $('#aper').textContent=`Appels entrants du ${fd(aF.value)} au ${fd(aT.value)}`;
+ $('#acnt').textContent=s.n?`${fm(s.n)} appels sur ${fm(RW.reduce((x,r)=>x+r[3],0))}`+(all()?'':' (appels perdus exclus : ils n\'ont pas d\'agent)'):'Aucun appel sur cette sélection.';
+ const hv=v=>{if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
+ const ht=x=>{const q=dur(x);return q?`${q[0]}<small> min </small>${q[1]}<small> s</small>`:'—'};
+ const dmc=s.t?s.D/s.t:null,post=s.t?s.P/s.t:null,dmt=s.t?(s.D+s.P)/s.t:null;
+ const days=new Set(R.map(r=>r[0])).size,ag=new Set(R.filter(r=>r[5]).map(r=>r[2])).size;
+ const HR={};R.forEach(r=>{const c=HR[r[1]]||(HR[r[1]]={n:0,l:0});c.n+=r[3];c.l+=r[4]});
+ const hk=Object.keys(HR).map(Number).sort((a,b)=>a-b),slot=h=>hh(h)+' à '+hh(h+1);
+ const peak=hk.length?hk.reduce((a,b)=>HR[b].n>HR[a].n?b:a):null,minN=Math.max(20,s.n*.02),bad=hk.filter(h=>HR[h].n>=minN);
+ const worst=bad.length?bad.reduce((a,b)=>HR[b].l/HR[b].n>HR[a].l/HR[a].n?b:a):null;
+ const H=[['Taux de réponse',hv(P(s.t,s.n)),`${fm(s.t)} traités sur ${fm(s.n)} reçus`,'h1'],['Niveau de service 20 s',hv(P(s.s,s.n)),`${fm(s.s)} décrochés en moins de 20 s`,'h2'],['Taux d\'abandon',hv(P(s.l,s.n)),`${fm(s.l)} appels perdus`,'h3'],['Durée moyenne de traitement',ht(dmt),'conversation + post-appel','h4']];
+ $('#ahero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${h[1]}</b><em>${h[2]}</em></div>`).join('');
+ const K=[['Appels reçus',fm(s.n),`${days} jour(s) d'activité`,'n'],['Appels traités',fm(s.t),fp(P(s.t,s.n))+' des appels reçus','g'],['Appels perdus',fm(s.l),fp(P(s.l,s.n))+' des appels reçus','b'],
+ ['Traités en moins de 20 s',fp(P(s.s,s.t)),`${fm(s.s)} sur ${fm(s.t)} traités`,'g'],['Conversation moyenne (DMC)',mmss(dmc),'minutes:secondes','n'],['Post-appel moyen',mmss(post),'minutes:secondes','n'],
+ ['Temps total de conversation',s.D?(s.D/3600).toFixed(1).replace('.',',')+' h':'—','tous agents','n'],['Agents actifs',fm(ag),'au moins 1 appel traité','n'],['Appels reçus par jour',days?fm(s.n/days):'—','moyenne','n'],
+ ['Traités par agent actif',ag?fm(s.t/ag):'—','sur la période','n'],['Pic d\'appels',peak==null?'—':hh(peak),peak==null?'':slot(peak)+' : '+fm(HR[peak].n)+' appels','n'],['Pire taux d\'abandon',worst==null?'—':hh(worst),worst==null?'':slot(worst)+' : '+fp(P(HR[worst].l,HR[worst].n)),'b']];
+ $('#akp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
+ // 1 évolution
+ const key={d:x=>x,w:mon,m:x=>x.slice(0,7)}[gran],B={};
+ R.forEach(r=>{const k=key(r[0]),b=B[k]||(B[k]={n:0,l:0,t:0,s:0});b.n+=r[3];b.l+=r[4];b.t+=r[5];b.s+=r[6]});
+ const ks=Object.keys(B).sort(),lbl=ks.length<=24,pr=ks.length>40?0:4;
+ const lab=k=>gran==='m'?MN[+k.slice(5,7)-1]+' '+k.slice(2,4):k.slice(8)+'/'+k.slice(5,7)+'/'+k.slice(2,4);
+ const ln=(label,f,c,x)=>Object.assign({label,data:ks.map(k=>B[k][f]),borderColor:c,backgroundColor:c,pointBackgroundColor:card,pointBorderWidth:2,pointRadius:pr,tension:.35},x);
+ mk('ae1','line',{labels:ks.map(lab),datasets:[ln('Reçus','n',teal,{dl:{pos:'top',skip:!lbl},tag:true}),ln('Traités','t',nav,{borderDash:[2,6],borderCapStyle:'round'}),ln('Perdus','l',cor,{dl:{pos:'bottom',skip:!lbl}})]},
+  {layout:{padding:{top:44,right:18,left:2,bottom:2}},scales:{y:{beginAtZero:true,grace:'10%',ticks:{precision:0}},x:{ticks:{maxTicksLimit:14,maxRotation:0}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'line',boxWidth:26,boxHeight:6}}}});
+ // 2 réactivité
+ mk('ae2','doughnut',{labels:['Décrochés en moins de 20 s','Décrochés après 20 s','Perdus'],datasets:[{data:[s.s,s.t-s.s,s.l],backgroundColor:[teal,amb,cor],borderColor:card,dl:{}}]},{cutout:'50%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}});
+ // 3 tranches horaires
+ const H3=hk.map(h=>HR[h]),TR={};R.forEach(r=>{TR[r[1]]=(TR[r[1]]||0)+r[5]});
+ mk('ae3','bar',{labels:hk.map((h,i)=>[hh(h),Math.round(H3[i].n?H3[i].l/H3[i].n*100:0)+' %']),datasets:[{type:'line',label:'Taux d\'abandon',data:H3.map(c=>c.n?+(c.l/c.n*100).toFixed(1):0),borderColor:nav,backgroundColor:nav,pointBackgroundColor:card,pointBorderWidth:2,tension:.35,yAxisID:'y1',order:0},
+  {label:'Traités',data:hk.map(h=>TR[h]||0),backgroundColor:teal,stack:'a',dl:{pos:'in'}},{label:'Perdus',data:hk.map(h=>HR[h].l),backgroundColor:cor,stack:'a',dl:{pos:'in'}}]},
+  {scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}},y1:{position:'right',min:0,max:100,grace:'10%',grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}}});
+ // 4 mensuel
+ const M={};R.forEach(r=>{const k=r[0].slice(0,7),b=M[k]||(M[k]={n:0,l:0,s:0});b.n+=r[3];b.l+=r[4];b.s+=r[6]});
+ const mk4=Object.keys(M).sort(),ml=mk4.length<=24,pl=(label,f,c,pos)=>({label,data:mk4.map(k=>+(f(M[k])).toFixed(1)),borderColor:c,backgroundColor:c,pointBackgroundColor:card,pointBorderWidth:2,tension:.35,dl:{pos,skip:!ml,fmt:v=>Math.round(v)}});
+ mk('ae4','line',{labels:mk4.map(k=>MN[+k.slice(5,7)-1]+' '+k.slice(2,4)),datasets:[pl('Niveau de service',m=>m.s/m.n*100,teal,'top'),pl('Abandon',m=>m.l/m.n*100,cor,'bottom')]},{layout:{padding:{top:22,right:18}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}});
+ // 5 / 6 agents
+ const A={};R.forEach(r=>{if(r[2]<0)return;const a=A[r[2]]||(A[r[2]]={t:0,D:0,P:0});a.t+=r[5];a.D+=r[7];a.P+=r[8]});
+ const ai=Object.keys(A).map(Number).filter(i=>A[i].t>0).sort((x,y)=>A[y].t-A[x].t);
+ mk('ae5','bar',{labels:ai.map(i=>short(AG[i])),datasets:[{label:'Traités',data:ai.map(i=>A[i].t),backgroundColor:nav,dl:{}}]},{indexAxis:'y',plugins:noLeg,scales:{x:{beginAtZero:true,ticks:{precision:0}}},layout:{padding:{right:34}}});
+ const a6=ai.filter(i=>A[i].t>=10);
+ mk('ae6','bar',{labels:a6.map(i=>short(AG[i])),datasets:[{label:'Conversation (DMC)',data:a6.map(i=>A[i].D/A[i].t),backgroundColor:teal,stack:'a',dl:{pos:'in',fmt:mmss}},{label:'Post-appel',data:a6.map(i=>A[i].P/A[i].t),backgroundColor:amb,stack:'a',dl:{pos:'in',fmt:mmss}}]},
+  {indexAxis:'y',scales:{x:{stacked:true,ticks:{callback:v=>mmss(v)}},y:{stacked:true}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}},tooltip:{callbacks:{label:c=>c.dataset.label+' : '+mmss(c.raw)}}}});
+ // 7 carte de chaleur
+ const HM={};R.forEach(r=>{const w=(new Date(r[0]+'T00:00:00Z').getUTCDay()+6)%7,c=HM[w+'|'+r[1]]||(HM[w+'|'+r[1]]={n:0,l:0});c.n+=r[3];c.l+=r[4]});
+ const wds=[0,1,2,3,4,5,6].filter(w=>hk.some(h=>HM[w+'|'+h])),val=c=>c?heat==='n'?c.n:(c.n?c.l/c.n*100:0):0;
+ const mx=Math.max(1,...wds.flatMap(w=>hk.map(h=>val(HM[w+'|'+h])))),base=heat==='n'?'var(--teal)':'var(--coral)',on=css('--on');
+ $('#heat').innerHTML='<table><tr><th></th>'+hk.map(h=>`<th>${hh(h)}</th>`).join('')+'</tr>'+wds.map(w=>`<tr><th style="text-align:left">${WD[w]}</th>`+hk.map(h=>{const c=HM[w+'|'+h],v=val(c),a=v/mx;
+  return `<td style="background:color-mix(in srgb,${base} ${Math.round(a*90+4)}%,transparent);color:${a>.55?on:ink}" title="${WD[w]} ${slot(h)} : ${fm(c?c.n:0)} appels, abandon ${fp(c&&c.n?c.l/c.n*100:null)}">${heat==='n'?fm(v):Math.round(v)+'%'}</td>`}).join('')+'</tr>').join('')+'</table>';
+}
+render();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+};
+</script>
+<script>
 (function(){
 // Collez ici l'URL de votre déploiement Apps Script (se termine par /exec)
 const API='https://script.google.com/macros/s/AKfycbyvVeGwHOruJ4jI0L2KgOVIb1qeWOpwQupa3zXDGnDiumSV4eCDF850P-19oBRLL9Ip/exec';
@@ -217,7 +365,16 @@ const $=s=>document.querySelector(s),SK='wl_tok',UK='wl_user';
 async function call(b){const r=await fetch(API,{method:'POST',body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()}
 const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}};
-function enter(rows,who){$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';window.start(rows)}
+let PAGES=['CSA'],cur='CSA',aeOK=false;
+function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
+async function loadAE(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
+ try{const r=await call({a:'ae',t:sessionStorage.getItem(SK)});
+  if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
+ catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
+function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';tabs();if(p==='AE'&&!aeOK)loadAE()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
+function enter(rows,who,pages){PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
+ if(PAGES.indexOf('CSA')>-1)window.start(rows);go(PAGES[0])}
 async function login(){
  const l=$('#lg').value,p=$('#pw').value,b=$('#go'),e=$('#err');e.textContent='';
  if(!l.trim()||!p){e.textContent='Saisissez votre login et votre mot de passe.';return}
@@ -225,7 +382,7 @@ async function login(){
  b.disabled=true;b.textContent='Vérification…';
  try{const r=await call({a:'login',l:l,p:p});
   if(!r.ok){e.textContent=r.msg||'Login ou mot de passe incorrect.';$('#pw').value='';$('#pw').focus()}
-  else{try{sessionStorage.setItem(SK,r.t);sessionStorage.setItem(UK,r.user)}catch(x){}enter(r.rows,r.user)}}
+  else{try{sessionStorage.setItem(SK,r.t);sessionStorage.setItem(UK,r.user)}catch(x){}enter(r.rows,r.user,r.pages)}}
  catch(x){e.textContent='Impossible de joindre le serveur. Vérifiez votre connexion.'}
  b.disabled=false;b.textContent='Se connecter'}
 $('#go').onclick=login;
@@ -234,7 +391,7 @@ $('#sp').onchange=e=>{$('#pw').type=e.target.checked?'text':'password'};
 $('#rf').onclick=()=>location.reload();
 $('#out').onclick=async()=>{const t=sessionStorage.getItem(SK);try{if(t)await call({a:'logout',t:t})}catch(x){}clear();location.reload()};
 (async()=>{let t;try{t=sessionStorage.getItem(SK)}catch(x){}if(!t||API.indexOf('COLLEZ')>-1)return;
- try{const r=await call({a:'data',t:t});if(r.ok)enter(r.rows,r.user);else clear()}catch(x){}})();
+ try{const r=await call({a:'data',t:t});if(r.ok)enter(r.rows,r.user,r.pages);else clear()}catch(x){}})();
 })();
 </script>
 </body>

@@ -14,27 +14,37 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:radial-gradient(900px 420px at 8% -8%,var(--g1),transparent),radial-gradient(800px 420px at 100% 0,var(--g2),transparent),var(--bg);background-attachment:fixed;color:var(--ink);font:15px/1.5 'Instrument Sans',system-ui,sans-serif}
 h1,h2,.hc b{font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif}
 h1{margin:0;font-size:24px;font-weight:700;text-shadow:0 0 calc(var(--blur)*1.5px) var(--teal)}
-h2{margin:0 0 12px;font-size:14px;font-weight:700}
+h2{margin:0 0 12px;font-size:14px;font-weight:700;letter-spacing:.01em}
 p{margin:0}.mut{color:var(--mut);font-size:13px}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+::-webkit-scrollbar-thumb:hover{background:var(--navy)}
+::-webkit-scrollbar-corner{background:transparent}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center}
 .flt{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
 .flt label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mut)}
 input[type=date],input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
-#chips{display:flex;gap:6px;align-items:center}
-#chips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+#chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#chips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+#chips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
 #chips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
 input[type=search]{width:200px}input:focus-visible{box-shadow:0 0 calc(var(--blur)*1px) var(--teal)}
 .lnk{border-style:dashed}
 button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 main{max-width:1280px;margin:0 auto;padding:20px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:0 0 calc(var(--blur)*2px) -4px var(--gl),inset 0 0 0 1px var(--gl)}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:0 0 calc(var(--blur)*2px) -4px var(--gl),inset 0 0 0 1px var(--gl);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.card::before{content:"";position:absolute;top:-1px;left:18px;right:18px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--teal),var(--navy),var(--coral),transparent);opacity:.5;pointer-events:none;transition:opacity .25s ease}
+.card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--teal) 38%,var(--line));box-shadow:0 10px calc(var(--blur)*3px) -8px var(--gl),0 0 calc(var(--blur)*2px) -6px var(--navy),inset 0 0 0 1px var(--gl)}
+.card:hover::before{opacity:.95}
 .fb{display:grid;grid-template-columns:200px 1fr 110px;gap:10px;align-items:center;margin:6px 0;font-size:14px}
 .fb i{display:block;height:20px;border-radius:5px;background:var(--bc,var(--teal));box-shadow:0 0 calc(var(--blur)*1px) var(--bc,var(--teal));min-width:2px;transition:width .5s}
 .fb:nth-child(n+4){--bc:var(--navy)}
 .fb span{text-align:right}.fb span small{color:var(--mut);margin-left:6px}
 #fun{margin-bottom:14px}
 .hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 14px}
-.hc{position:relative;overflow:hidden;border-radius:18px;padding:18px 20px;color:#fff;min-height:136px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px calc(var(--blur)*2px) -8px var(--c1)}
+.hc{position:relative;overflow:hidden;border-radius:18px;padding:18px 20px;color:#fff;min-height:136px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px calc(var(--blur)*2px) -8px var(--c1);transition:transform .25s ease,box-shadow .25s ease}
+.hc:hover{transform:translateY(-3px);box-shadow:0 14px calc(var(--blur)*3px) -10px var(--c1)}
 .hc::before,.hc::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
 .hc::before{width:130px;height:130px;right:-35px;top:-45px}.hc::after{width:80px;height:80px;left:-22px;bottom:-34px}
 .hc span,.hc b,.hc em{position:relative;text-align:center}
@@ -43,7 +53,8 @@ main{max-width:1280px;margin:0 auto;padding:20px}
 .h1{background:linear-gradient(135deg,#E23CD0,#8E54F0);--c1:#E23CD0}.h2{background:linear-gradient(135deg,#0092AD,#4B4FE8);--c1:#00C2D1}
 .h3{background:linear-gradient(135deg,#8E54F0,#3D6BFF);--c1:#8E54F0}.h4{background:linear-gradient(135deg,#0FA37A,#0E7FA8);--c1:#12B886}
 .pills{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:0 0 14px}
-.pl{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.pl{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;transition:transform .2s ease,border-color .2s ease}
+.pl:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--t) 55%,var(--line))}
 .pl::before{content:"";width:34px;height:34px;border-radius:10px;flex:none;background:color-mix(in srgb,var(--t) 22%,transparent);box-shadow:inset 0 0 0 2px var(--t)}
 .pl div{flex:1;min-width:0}.pl span{display:block;font-size:14px}.pl em{display:block;font-style:normal;font-size:12px;color:var(--mut)}
 .pl b{padding:3px 12px;border-radius:8px;font-size:14px;font-weight:600;background:color-mix(in srgb,var(--t) 20%,transparent);color:var(--t)}
@@ -54,12 +65,14 @@ main{max-width:1280px;margin:0 auto;padding:20px}
 .tb{overflow:auto;max-height:340px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--mut);font-weight:500;position:sticky;top:0;background:var(--card)}
+th{color:var(--mut);font-weight:500;position:sticky;top:0;background:var(--card);z-index:1}
 td.n,th.n{text-align:right;white-space:nowrap}
+tbody tr{transition:background .15s ease}
+tbody tr:hover td{background:color-mix(in srgb,var(--teal) 8%,transparent)}
 .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--coral);color:var(--coral)}
 footer{margin-top:16px;font-size:12px;color:var(--mut)}
 @media(max-width:900px){.c4,.c6,.c8{grid-column:span 12}.fb{grid-template-columns:120px 1fr 90px}main{padding:14px}.top{padding:10px 14px}}
-@media(prefers-reduced-motion:reduce){.fb i{transition:none}}
+@media(prefers-reduced-motion:reduce){.fb i,.card,.hc,.pl{transition:none}.card:hover,.hc:hover,.pl:hover{transform:none}}
 [hidden]{display:none!important}
 #gate{min-height:100vh;display:grid;place-items:center;padding:20px}
 .gc{width:min(380px,100%);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 26px;box-shadow:0 0 calc(var(--blur)*3px) -6px var(--teal),inset 0 0 0 1px var(--gl)}
@@ -69,15 +82,22 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 .gc input[type=text],.gc input[type=password]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .gc input:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
 .gc .sh{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:13px;color:var(--mut)}
-#go{width:100%;margin-top:18px;font:inherit;font-weight:600;border:0;border-radius:10px;padding:11px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#E23CD0,#8E54F0);box-shadow:0 0 calc(var(--blur)*1.5px) -2px #E23CD0}
+#go{width:100%;margin-top:18px;font:inherit;font-weight:600;border:0;border-radius:10px;padding:11px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#E23CD0,#8E54F0);box-shadow:0 0 calc(var(--blur)*1.5px) -2px #E23CD0;transition:filter .2s}
+#go:hover:not(:disabled){filter:brightness(1.08)}
 #go:disabled{opacity:.6;cursor:wait}#go:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 #err{min-height:20px;margin-top:10px;font-size:13px;color:var(--coral);text-align:center}
 .bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--line)}
 .usr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
-.tabs{display:flex;gap:6px}.tab,.seg button,.dd summary,.ddb button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer}
+.tabs{display:flex;gap:6px}.tab,.seg button,.dd summary,.ddb button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.tab:hover,.seg button:hover,.ddb button:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
 .tab[aria-pressed=true],.seg button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
 .seg{display:inline-flex;gap:4px}.seg button{padding:4px 12px}
-.hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}.hd h2{margin:0}
+.hd{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}.hd h2{margin:0}
+.hdc{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.exp{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:600;letter-spacing:.02em;border:1px solid var(--line);background:color-mix(in srgb,var(--teal) 8%,transparent);color:var(--teal);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,border-color .2s,box-shadow .2s}
+.exp:hover{background:var(--teal);color:var(--on);border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1.2px) -2px var(--teal)}
+.exp.ok{background:var(--navy);color:#fff;border-color:var(--navy)}
+.exp svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .dd{position:relative}.dd summary{list-style:none;padding:5px 14px}.dd summary::-webkit-details-marker{display:none}
 .ddp{position:absolute;z-index:8;top:calc(100% + 6px);left:0;min-width:260px;max-height:320px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .ddb{display:flex;gap:6px;margin-bottom:6px}.ddb button{padding:3px 12px}
@@ -118,18 +138,18 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <main>
  <section class="hero" id="hero"></section>
  <section class="pills" id="kp"></section>
- <section class="card" id="fun"><h2>De l'appel à la satisfaction</h2><div id="funb"></div></section>
+ <section class="card" id="fun"><div class="hd"><h2>De l'appel à la satisfaction</h2><button class="exp" type="button" data-exp="csa-fun" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div id="funb"></div></section>
  <section class="grid">
-  <article class="card c8"><h2>Appels par jour : passés et aboutis</h2><div class="cv"><canvas id="ch1"></canvas></div></article>
-  <article class="card c4"><h2>Statut des appels</h2><div class="cv"><canvas id="ch2"></canvas></div></article>
-  <article class="card c4"><h2>Aboutis et non aboutis par CSA</h2><div class="cv"><canvas id="ch3"></canvas></div></article>
-  <article class="card c4"><h2>Problème résolu</h2><div class="cv"><canvas id="ch4"></canvas></div></article>
-  <article class="card c4"><h2>Satisfaction commerciale et technique</h2><div class="cv"><canvas id="ch5"></canvas></div></article>
-  <article class="card c6"><h2>Réactivité de We Light</h2><div class="cv"><canvas id="ch6"></canvas></div></article>
-  <article class="card c6"><h2>Temps d'attente depuis la réclamation</h2><div class="cv"><canvas id="ch7"></canvas></div></article>
-  <article class="card c6"><h2>Top 10 des villages appelés</h2><div class="cv t"><canvas id="ch8"></canvas></div></article>
-  <article class="card c6"><h2>Performance par CSA</h2><div class="tb"><table id="tcsa"></table></div></article>
-  <article class="card c12"><h2>Problèmes non résolus et remarques clients</h2><div class="tb"><table id="trem"></table></div></article>
+  <article class="card c8"><div class="hd"><h2>Appels par jour : passés et aboutis</h2><button class="exp" type="button" data-exp="csa-ch1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch1"></canvas></div></article>
+  <article class="card c4"><div class="hd"><h2>Statut des appels</h2><button class="exp" type="button" data-exp="csa-ch2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch2"></canvas></div></article>
+  <article class="card c4"><div class="hd"><h2>Aboutis et non aboutis par CSA</h2><button class="exp" type="button" data-exp="csa-ch3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch3"></canvas></div></article>
+  <article class="card c4"><div class="hd"><h2>Problème résolu</h2><button class="exp" type="button" data-exp="csa-ch4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch4"></canvas></div></article>
+  <article class="card c4"><div class="hd"><h2>Satisfaction commerciale et technique</h2><button class="exp" type="button" data-exp="csa-ch5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch5"></canvas></div></article>
+  <article class="card c6"><div class="hd"><h2>Réactivité de We Light</h2><button class="exp" type="button" data-exp="csa-ch6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch6"></canvas></div></article>
+  <article class="card c6"><div class="hd"><h2>Temps d'attente depuis la réclamation</h2><button class="exp" type="button" data-exp="csa-ch7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ch7"></canvas></div></article>
+  <article class="card c6"><div class="hd"><h2>Top 10 des villages appelés</h2><button class="exp" type="button" data-exp="csa-ch8" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ch8"></canvas></div></article>
+  <article class="card c6"><div class="hd"><h2>Performance par CSA</h2><button class="exp" type="button" data-exp="csa-tcsa" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="tcsa"></table></div></article>
+  <article class="card c12"><div class="hd"><h2>Problèmes non résolus et remarques clients</h2><button class="exp" type="button" data-exp="csa-trem" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="trem"></table></div></article>
  </section>
  <footer>Les réponses au questionnaire (résolution, satisfaction, réactivité, attente) ne concernent que les appels au statut Qualifié.</footer>
 </main>
@@ -153,13 +173,13 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
    <section class="hero" id="ahero"></section>
    <section class="pills" id="akp"></section>
    <section class="grid">
-    <article class="card c8"><div class="hd"><h2>Appels par période</h2><span class="seg" id="agran"><button data-g="d">Jour</button><button data-g="w">Semaine</button><button data-g="m">Mois</button></span></div><div class="cv"><canvas id="ae1"></canvas></div></article>
-    <article class="card c4"><h2>Réactivité de la réponse</h2><div class="cv"><canvas id="ae2"></canvas></div></article>
-    <article class="card c6"><h2>Appels par tranche horaire (taux d'abandon sous l'heure)</h2><div class="cv"><canvas id="ae3"></canvas></div></article>
-    <article class="card c6"><h2>Traités en moins de 20 s et abandon par mois (%)</h2><div class="cv"><canvas id="ae4"></canvas></div></article>
-    <article class="card c6"><h2>Appels traités par agent</h2><div class="cv t"><canvas id="ae5"></canvas></div></article>
-    <article class="card c6"><h2>Durées moyennes par agent (10 appels traités ou plus)</h2><div class="cv t"><canvas id="ae6"></canvas></div></article>
-    <article class="card c12"><div class="hd"><h2>Jour de la semaine et tranche horaire</h2><span class="seg" id="aheat"><button data-m="n">Appels reçus</button><button data-m="a">Taux d'abandon</button></span></div><div class="tb" id="heat"></div></article>
+    <article class="card c8"><div class="hd"><h2>Appels par période</h2><div class="hdc"><span class="seg" id="agran"><button data-g="d">Jour</button><button data-g="w">Semaine</button><button data-g="m">Mois</button></span><button class="exp" type="button" data-exp="ae-ae1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div></div><div class="cv"><canvas id="ae1"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Réactivité de la réponse</h2><button class="exp" type="button" data-exp="ae-ae2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ae2"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Appels par tranche horaire (taux d'abandon sous l'heure)</h2><button class="exp" type="button" data-exp="ae-ae3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ae3"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Traités en moins de 20 s et abandon par mois (%)</h2><button class="exp" type="button" data-exp="ae-ae4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ae4"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Appels traités par agent</h2><button class="exp" type="button" data-exp="ae-ae5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ae5"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Durées moyennes par agent (10 appels traités ou plus)</h2><button class="exp" type="button" data-exp="ae-ae6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ae6"></canvas></div></article>
+    <article class="card c12"><div class="hd"><h2>Jour de la semaine et tranche horaire</h2><div class="hdc"><span class="seg" id="aheat"><button data-m="n">Appels reçus</button><button data-m="a">Taux d'abandon</button></span><button class="exp" type="button" data-exp="ae-heat" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div></div><div class="tb" id="heat"></div></article>
    </section>
    <footer id="anote">Durées calculées sur les appels traités. Traités en moins de 20 s : part des appels traités décrochés en moins de 20 s. DMT = conversation + post-appel.</footer>
   </div>
@@ -189,9 +209,30 @@ window.wlTheme=function(){
 })();
 </script>
 <script>
+/* --- Export CSV : utilitaire commun + registre d'exports --- */
+window.WLEXPORT=window.WLEXPORT||{};
+window.wlCSV=function(filename,headers,rows){
+ const q=v=>{let s=v==null?'':String(v);if(/[";\r\n]/.test(s))s='"'+s.replace(/"/g,'""')+'"';return s};
+ const lines=[headers.map(q).join(';')];
+ rows.forEach(r=>lines.push(r.map(q).join(';')));
+ const blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+ const a=document.createElement('a'),url=URL.createObjectURL(blob);
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},600);
+};
+document.addEventListener('click',function(e){
+ const b=e.target&&e.target.closest?e.target.closest('.exp'):null;if(!b)return;
+ const d=window.WLEXPORT[b.dataset.exp];if(!d){return}
+ window.wlCSV(d.filename,d.headers,d.rows);
+ const old=b.innerHTML;b.classList.add('ok');b.innerHTML='Exporté ✓';
+ setTimeout(()=>{b.classList.remove('ok');b.innerHTML=old},1400);
+});
+</script>
+<script>
 window.start=function(D){
 const $=s=>document.querySelector(s),fm=n=>n==null?'—':n.toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null;
 const fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %',css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fd=d=>new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
 const cn=(R,k,v)=>R.filter(r=>r[k]===v).length;
@@ -257,6 +298,19 @@ function render(){
  const rr=R.filter(r=>r.r||r.t).sort((a,b)=>b.d.localeCompare(a.d));
  $('#trem').innerHTML='<tr><th>Date</th><th>Village</th><th>CSA</th><th>Problème non résolu</th><th>Remarque</th></tr>'+
   (rr.length?rr.map(r=>`<tr><td class="n">${fd(r.d)}</td><td>${esc(r.v)}</td><td>${esc(r.c)}</td><td>${r.t?`<span class="tag">non résolu</span> ${esc(r.t)}`:''}</td><td>${esc(r.r)}</td></tr>`).join(''):'<tr><td colspan="5">Aucune remarque sur cette sélection.</td></tr>');
+ // --- registre des exports CSV (données à l'écran, filtres compris) ---
+ const E=window.WLEXPORT;
+ E['csa-fun']={filename:'entonnoir-appels.csv',headers:['Étape','Appels','% de l\'étape précédente'],rows:fun.map((x,i)=>[x[0],x[1],i?pn(P(x[1],fun[i-1][1])):''])};
+ E['csa-ch1']={filename:'appels-par-jour.csv',headers:['Date','Appels passés','Aboutis'],rows:ds.map((d,i)=>[d,dTt[i],dAb[i]])};
+ E['csa-ch2']={filename:'statut-des-appels.csv',headers:['Statut','Appels'],rows:SS.map(x=>[x,cn(R,'s',x)])};
+ E['csa-ch3']={filename:'aboutis-par-csa.csv',headers:['CSA','Aboutis','Non aboutis'],rows:cs.map(c=>[c,ab(c),cn(R,'c',c)-ab(c)])};
+ E['csa-ch4']={filename:'probleme-resolu.csv',headers:['Statut','Appels'],rows:[['Résolu',s.res],['Non résolu',s.n1-s.res]]};
+ E['csa-ch5']={filename:'satisfaction-client.csv',headers:['Profil','Satisfait','Pas satisfait'],rows:[['Agent commercial',s.s2,s.n2-s.s2],['Technicien',s.s4,s.n4-s.s4]]};
+ E['csa-ch6']={filename:'reactivite-we-light.csv',headers:['Réactivité','Appels'],rows:[['Très rapide',cn(R,'q6','T')],['Moyennement rapide',cn(R,'q6','M')],['Trop longue',cn(R,'q6','L')]]};
+ E['csa-ch7']={filename:'temps-attente.csv',headers:['Attente','Appels'],rows:[['1 semaine',cn(R,'q7','1')],['2 semaines',cn(R,'q7','2')],["Plus d'1 mois",cn(R,'q7','M')]]};
+ E['csa-ch8']={filename:'top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
+ E['csa-tcsa']={filename:'performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Résolution (%)','Sat. commerciale (%)','Sat. technicienne (%)'],rows:cs.map(c=>{const x=st(R.filter(r=>r.c===c));return [c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.res,x.n1)),pn(P(x.s2,x.n2)),pn(P(x.s4,x.n4))]})};
+ E['csa-trem']={filename:'problemes-et-remarques.csv',headers:['Date','Village','CSA','Problème non résolu','Remarque'],rows:rr.map(r=>[r.d,r.v,r.c,r.t||'',r.r||''])};
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
@@ -267,6 +321,7 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 window.startAE=function(DATA){
 const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
+const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
 const mmss=s=>{if(s==null||isNaN(s))return '—';s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const dur=s=>{if(s==null||isNaN(s))return null;s=Math.round(s);return [Math.floor(s/60),String(s%60).padStart(2,'0')]};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -351,6 +406,15 @@ function render(){
  const mx=Math.max(1,...wds.flatMap(w=>hk.map(h=>val(HM[w+'|'+h])))),base=heat==='n'?'var(--teal)':'var(--coral)',on=css('--on');
  $('#heat').innerHTML='<table><tr><th></th>'+hk.map(h=>`<th>${hh(h)}</th>`).join('')+'</tr>'+wds.map(w=>`<tr><th style="text-align:left">${WD[w]}</th>`+hk.map(h=>{const c=HM[w+'|'+h],v=val(c),a=v/mx;
   return `<td style="background:color-mix(in srgb,${base} ${Math.round(a*90+4)}%,transparent);color:${a>.55?on:ink}" title="${WD[w]} ${slot(h)} : ${fm(c?c.n:0)} appels, abandon ${fp(c&&c.n?c.l/c.n*100:null)}">${heat==='n'?fm(v):Math.round(v)+'%'}</td>`}).join('')+'</tr>').join('')+'</table>';
+ // --- registre des exports CSV (données à l'écran, filtres compris) ---
+ const E=window.WLEXPORT;
+ E['ae-ae1']={filename:'appels-entrants-par-periode.csv',headers:['Période','Reçus','Traités','Perdus'],rows:ks.map(k=>[lab(k),B[k].n,B[k].t,B[k].l])};
+ E['ae-ae2']={filename:'reactivite-de-la-reponse.csv',headers:['Catégorie','Appels'],rows:[['Décrochés en moins de 20 s',s.s],['Décrochés après 20 s',s.t-s.s],['Perdus',s.l]]};
+ E['ae-ae3']={filename:'appels-par-tranche-horaire.csv',headers:['Tranche horaire','Traités','Perdus',"Taux d'abandon (%)"],rows:hk.map(h=>[slot(h),TR[h]||0,HR[h].l,pn(HR[h].n?HR[h].l/HR[h].n*100:0)])};
+ E['ae-ae4']={filename:'moins-de-20s-et-abandon.csv',headers:['Mois','Traités en moins de 20 s (%)','Abandon (%)'],rows:mk4.map(k=>[MN[+k.slice(5,7)-1]+' '+k.slice(2,4),pn(M[k].t?M[k].s/M[k].t*100:0),pn(M[k].n?M[k].l/M[k].n*100:0)])};
+ E['ae-ae5']={filename:'appels-traites-par-agent.csv',headers:['Agent','Appels traités'],rows:ai.map(i=>[AG[i],A[i].t])};
+ E['ae-ae6']={filename:'durees-moyennes-par-agent.csv',headers:['Agent','Conversation (s)','Post-appel (s)','Total (s)'],rows:a6.map(i=>[AG[i],Math.round(A[i].D/A[i].t),Math.round(A[i].P/A[i].t),Math.round((A[i].D+A[i].P)/A[i].t)])};
+ E['ae-heat']={filename:'jour-et-tranche-horaire.csv',headers:['Jour',...hk.map(h=>hh(h))],rows:wds.map(w=>[WD[w],...hk.map(h=>{const c=HM[w+'|'+h];return heat==='n'?(c?c.n:0):(c&&c.n?pn(c.l/c.n*100):0)})])};
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
@@ -394,5 +458,6 @@ $('#out').onclick=async()=>{const t=sessionStorage.getItem(SK);try{if(t)await ca
  try{const r=await call({a:'data',t:t});if(r.ok)enter(r.rows,r.user,r.pages);else clear()}catch(x){}})();
 })();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>

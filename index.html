@@ -156,12 +156,12 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
     <article class="card c8"><div class="hd"><h2>Appels par période</h2><span class="seg" id="agran"><button data-g="d">Jour</button><button data-g="w">Semaine</button><button data-g="m">Mois</button></span></div><div class="cv"><canvas id="ae1"></canvas></div></article>
     <article class="card c4"><h2>Réactivité de la réponse</h2><div class="cv"><canvas id="ae2"></canvas></div></article>
     <article class="card c6"><h2>Appels par tranche horaire (taux d'abandon sous l'heure)</h2><div class="cv"><canvas id="ae3"></canvas></div></article>
-    <article class="card c6"><h2>Niveau de service et abandon par mois (%)</h2><div class="cv"><canvas id="ae4"></canvas></div></article>
+    <article class="card c6"><h2>Traités en moins de 20 s et abandon par mois (%)</h2><div class="cv"><canvas id="ae4"></canvas></div></article>
     <article class="card c6"><h2>Appels traités par agent</h2><div class="cv t"><canvas id="ae5"></canvas></div></article>
     <article class="card c6"><h2>Durées moyennes par agent (10 appels traités ou plus)</h2><div class="cv t"><canvas id="ae6"></canvas></div></article>
     <article class="card c12"><div class="hd"><h2>Jour de la semaine et tranche horaire</h2><span class="seg" id="aheat"><button data-m="n">Appels reçus</button><button data-m="a">Taux d'abandon</button></span></div><div class="tb" id="heat"></div></article>
    </section>
-   <footer id="anote">Durées calculées sur les appels traités. Niveau de service : appels décrochés en moins de 20 s sur appels reçus. DMT = conversation + post-appel.</footer>
+   <footer id="anote">Durées calculées sur les appels traités. Traités en moins de 20 s : part des appels traités décrochés en moins de 20 s. DMT = conversation + post-appel.</footer>
   </div>
  </main>
 </div>
@@ -312,7 +312,7 @@ function render(){
  const hk=Object.keys(HR).map(Number).sort((a,b)=>a-b),slot=h=>hh(h)+' à '+hh(h+1);
  const peak=hk.length?hk.reduce((a,b)=>HR[b].n>HR[a].n?b:a):null,minN=Math.max(20,s.n*.02),bad=hk.filter(h=>HR[h].n>=minN);
  const worst=bad.length?bad.reduce((a,b)=>HR[b].l/HR[b].n>HR[a].l/HR[a].n?b:a):null;
- const H=[['Taux de réponse',hv(P(s.t,s.n)),`${fm(s.t)} traités sur ${fm(s.n)} reçus`,'h1'],['Niveau de service 20 s',hv(P(s.s,s.n)),`${fm(s.s)} décrochés en moins de 20 s`,'h2'],['Taux d\'abandon',hv(P(s.l,s.n)),`${fm(s.l)} appels perdus`,'h3'],['Durée moyenne de traitement',ht(dmt),'conversation + post-appel','h4']];
+ const H=[['Taux de réponse',hv(P(s.t,s.n)),`${fm(s.t)} traités sur ${fm(s.n)} reçus`,'h1'],['Taux d\'abandon',hv(P(s.l,s.n)),`${fm(s.l)} appels perdus`,'h3'],['Durée moyenne de traitement',ht(dmt),'conversation + post-appel','h4']];
  $('#ahero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${h[1]}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Appels reçus',fm(s.n),`${days} jour(s) d'activité`,'n'],['Appels traités',fm(s.t),fp(P(s.t,s.n))+' des appels reçus','g'],['Appels perdus',fm(s.l),fp(P(s.l,s.n))+' des appels reçus','b'],
  ['Traités en moins de 20 s',fp(P(s.s,s.t)),`${fm(s.s)} sur ${fm(s.t)} traités`,'g'],['Conversation moyenne (DMC)',mmss(dmc),'minutes:secondes','n'],['Post-appel moyen',mmss(post),'minutes:secondes','n'],
@@ -335,9 +335,9 @@ function render(){
   {label:'Traités',data:hk.map(h=>TR[h]||0),backgroundColor:teal,stack:'a',dl:{pos:'in'}},{label:'Perdus',data:hk.map(h=>HR[h].l),backgroundColor:cor,stack:'a',dl:{pos:'in'}}]},
   {scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}},y1:{position:'right',min:0,max:100,grace:'10%',grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}}});
  // 4 mensuel
- const M={};R.forEach(r=>{const k=r[0].slice(0,7),b=M[k]||(M[k]={n:0,l:0,s:0});b.n+=r[3];b.l+=r[4];b.s+=r[6]});
+ const M={};R.forEach(r=>{const k=r[0].slice(0,7),b=M[k]||(M[k]={n:0,l:0,s:0,t:0});b.n+=r[3];b.l+=r[4];b.s+=r[6];b.t+=r[5]});
  const mk4=Object.keys(M).sort(),ml=mk4.length<=24,pl=(label,f,c,pos)=>({label,data:mk4.map(k=>+(f(M[k])).toFixed(1)),borderColor:c,backgroundColor:c,pointBackgroundColor:card,pointBorderWidth:2,tension:.35,dl:{pos,skip:!ml,fmt:v=>Math.round(v)}});
- mk('ae4','line',{labels:mk4.map(k=>MN[+k.slice(5,7)-1]+' '+k.slice(2,4)),datasets:[pl('Niveau de service',m=>m.s/m.n*100,teal,'top'),pl('Abandon',m=>m.l/m.n*100,cor,'bottom')]},{layout:{padding:{top:22,right:18}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}});
+ mk('ae4','line',{labels:mk4.map(k=>MN[+k.slice(5,7)-1]+' '+k.slice(2,4)),datasets:[pl('Traités en moins de 20 s',m=>m.t?m.s/m.t*100:0,teal,'top'),pl('Abandon',m=>m.l/m.n*100,cor,'bottom')]},{layout:{padding:{top:22,right:18}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}});
  // 5 / 6 agents
  const A={};R.forEach(r=>{if(r[2]<0)return;const a=A[r[2]]||(A[r[2]]={t:0,D:0,P:0});a.t+=r[5];a.D+=r[7];a.P+=r[8]});
  const ai=Object.keys(A).map(Number).filter(i=>A[i].t>0).sort((x,y)=>A[y].t-A[x].t);

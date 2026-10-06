@@ -25,10 +25,10 @@ p{margin:0}.mut{color:var(--mut);font-size:13px}
 .flt{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
 .flt label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mut)}
 input[type=date],input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
-#chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-#chips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
-#chips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
-#chips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
+#chips,#wchips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#chips button,#wchips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+#chips button:hover,#wchips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
+#chips button[aria-pressed=true],#wchips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
 input[type=search]{width:200px}input:focus-visible{box-shadow:0 0 calc(var(--blur)*1px) var(--teal)}
 .lnk{border-style:dashed}
 button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
@@ -120,7 +120,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 </section>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome Call</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome call</button></nav>
  <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
@@ -182,6 +182,39 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
     <article class="card c12"><div class="hd"><h2>Jour de la semaine et tranche horaire</h2><div class="hdc"><span class="seg" id="aheat"><button data-m="n">Appels reçus</button><button data-m="a">Taux d'abandon</button></span><button class="exp" type="button" data-exp="ae-heat" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div></div><div class="tb" id="heat"></div></article>
    </section>
    <footer id="anote">Durées calculées sur les appels traités. Traités en moins de 20 s : part des appels traités décrochés en moins de 20 s. DMT = conversation + post-appel.</footer>
+  </div>
+ </main>
+</div>
+<div id="p3" hidden>
+ <header class="top">
+  <div><h1>Welcome call</h1><p class="mut" id="wper"></p></div>
+  <div class="flt">
+   <label>Du <input type="date" id="wfrom"></label>
+   <label>Au <input type="date" id="wto"></label>
+   <label>Village <input type="search" id="wvq" placeholder="Rechercher un village" list="wvl" autocomplete="off"></label><datalist id="wvl"></datalist>
+   <label>CSA <span id="wchips" role="group" aria-label="Filtrer par CSA"></span></label>
+   <button class="lnk" id="wrst">Réinitialiser</button>
+  </div>
+  <p class="mut" id="wcnt" aria-live="polite"></p>
+ </header>
+ <main>
+  <p class="mut" id="wstate" style="padding:6px 0">Chargement des Welcome calls…</p>
+  <div id="wbody" hidden>
+   <section class="hero" id="whero"></section>
+   <section class="pills" id="wkp"></section>
+   <section class="grid">
+    <article class="card c8"><div class="hd"><h2>Appels par jour : aboutis et non aboutis</h2><button class="exp" type="button" data-exp="wc-w1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc1"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Statut des appels</h2><button class="exp" type="button" data-exp="wc-w2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc2"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Aboutis et non aboutis par CSA</h2><button class="exp" type="button" data-exp="wc-w3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc3"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Délai pour recevoir le compteur après paiement</h2><button class="exp" type="button" data-exp="wc-w4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc4"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Satisfaction : agent commercial et technicien</h2><button class="exp" type="button" data-exp="wc-w5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc5"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Questions Oui / Non</h2><button class="exp" type="button" data-exp="wc-w6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc6"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Mode de recharge</h2><button class="exp" type="button" data-exp="wc-w7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc7"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Top 10 des villages appelés</h2><button class="exp" type="button" data-exp="wc-w8" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="wc8"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Performance par CSA</h2><button class="exp" type="button" data-exp="wc-tag" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtag"></table></div></article>
+    <article class="card c12"><div class="hd"><h2>Insatisfactions et remarques des clients</h2><button class="exp" type="button" data-exp="wc-trem" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtrem"></table></div></article>
+   </section>
+   <footer>Les réponses au questionnaire ne concernent que les appels au statut Qualifié. Le livret (Q8) ne concerne que les clients monophasés.</footer>
   </div>
  </main>
 </div>
@@ -421,34 +454,101 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
 new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 };
 </script>
-<div id="p3" hidden>
-<header class="top"><div><h1>Welcome Call We Light</h1><p class="mut" id="wper"></p></div><div class="flt"><label>Du <input type="date" id="wfrom"></label><label>Au <input type="date" id="wto"></label><label>Village <input type="search" id="wvq" placeholder="Rechercher un village"></label><details class="dd"><summary id="wsum">Agents</summary><div class="ddp"><div class="ddb" id="wsel"><button data-a="all">Tous</button><button data-a="none">Aucun</button></div><div id="wlist"></div></div></details><button class="lnk" id="wrst">Réinitialiser</button></div><p class="mut" id="wcnt"></p></header>
-<main><section class="hero" id="whero"></section><section class="pills" id="wkp"></section><section class="grid">
-<article class="card c12"><div class="hd"><h2>Appels par jour : passés et aboutis</h2><button class="exp" type="button" data-exp="wc-day" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc0"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Qualification des appels</h2><button class="exp" type="button" data-exp="wc-q" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc1"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Délai d'installation du compteur</h2><button class="exp" type="button" data-exp="wc-q1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc2"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Fonctionnement du compteur</h2><button class="exp" type="button" data-exp="wc-q2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc3"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Satisfaction agent commercial</h2><button class="exp" type="button" data-exp="wc-q3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc4"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Consignes d'utilisation du compteur</h2><button class="exp" type="button" data-exp="wc-q4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc5"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Conseil coupon et recharge</h2><button class="exp" type="button" data-exp="wc-q5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc6"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Satisfaction installation technicien</h2><button class="exp" type="button" data-exp="wc-q6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc7"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Canal de rechargement</h2><button class="exp" type="button" data-exp="wc-q7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc8"></canvas></div></article>
-<article class="card c6"><div class="hd"><h2>Livret We Light reçu</h2><button class="exp" type="button" data-exp="wc-q8" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc9"></canvas></div></article>
-<article class="card c12"><div class="hd"><h2>Analyse par agent sur la période</h2><button class="exp" type="button" data-exp="wc-agent" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wagent"></table></div></article>
-<article class="card c12"><div class="hd"><h2>Remarques et motifs d'insatisfaction</h2><button class="exp" type="button" data-exp="wc-rem" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wrem"></table></div></article>
-</section></main></div>
 <script>
-window.startWC=function(X){const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim(),R0=Array.isArray(X&&X.rows)?X.rows:[],C={};window.WLEXPORT=window.WLEXPORT||{};const esc=x=>String(x||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));if(!R0.length){$('#wcnt').textContent='Aucune donnée dans l’onglet Welcome call.';return;}const ds=R0.map(r=>r.d).filter(Boolean).sort(),F=$('#wfrom'),T=$('#wto'),AG=[...new Set(R0.map(r=>r.a).filter(Boolean))].sort(),sel=new Set(AG);F.value=F.min=T.min=ds[0];T.value=F.max=T.max=ds[ds.length-1];$('#wlist').innerHTML=AG.map(a=>`<label><input type="checkbox" data-a="${esc(a)}" checked> ${esc(a)}</label>`).join('');const sync=()=>{[...$('#wlist').querySelectorAll('input')].forEach(x=>x.checked=sel.has(x.dataset.a));$('#wsum').textContent=`Agents (${sel.size}/${AG.length})`};$('#wlist').onchange=e=>{e.target.checked?sel.add(e.target.dataset.a):sel.delete(e.target.dataset.a);sync();render()};$('#wsel').onclick=e=>{const a=e.target.dataset.a;if(!a)return;sel.clear();if(a==='all')AG.forEach(x=>sel.add(x));sync();render()};sync();const pct=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %',cnt=(R,k)=>{const o={};R.forEach(r=>{const z=r[k]||'Non renseigné';o[z]=(o[z]||0)+1});return o},mk=(id,type,o,opt)=>{C[id]&&C[id].destroy();C[id]=new Chart($('#'+id),{type,data:o,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}},opt||{})})};
-function render(){wlTheme();const q=$('#wvq').value.toLowerCase(),R=R0.filter(r=>r.d>=F.value&&r.d<=T.value&&(r.v||'').toLowerCase().includes(q)&&sel.has(r.a)),Q=R.filter(r=>r.p==='Qualifié'),A=R.filter(r=>r.e==='ABOUTIS'),yes=k=>Q.filter(r=>(r[k]||'').startsWith('Oui/')).length,sat=k=>Q.filter(r=>(r[k]||'').startsWith('Je suis très satisfait')).length,ans=k=>Q.filter(r=>r[k]).length;
-$('#wper').textContent=`Appels Welcome Call du ${F.value} au ${T.value}`;$('#wcnt').textContent=`${R.length} appels sur ${R0.length}`;
-$('#whero').innerHTML=[["Taux d'aboutissement",pct(A.length,R.length),`${A.length} aboutis sur ${R.length}`,'h1'],['Taux de qualification',pct(Q.length,R.length),`${Q.length} qualifiés`,'h2'],['Satisfaction commerciale',pct(sat('q3'),ans('q3')),`${sat('q3')} très satisfaits`,'h3'],['Satisfaction technicien',pct(sat('q6'),ans('q6')),`${sat('q6')} très satisfaits`,'h4']].map(x=>`<div class="hc ${x[3]}"><span>${x[0]}</span><b>${fp(x[1])}</b><em>${x[2]}</em></div>`).join('');
-$('#wkp').innerHTML=[['Compteur fonctionne',fp(pct(yes('q2'),ans('q2'))),'Q2','g'],['Consignes données',fp(pct(yes('q4'),ans('q4'))),'Q4','g'],['Conseil recharge',fp(pct(yes('q5'),ans('q5'))),'Q5','g'],['Livret reçu',fp(pct(yes('q8'),ans('q8'))),'Q8','n'],['Remarques clients',Q.filter(r=>r.q10).length,'Q10','b'],['Villages couverts',new Set(R.map(r=>r.v)).size,'sélection','n']].map(x=>`<div class="pl ${x[3]}"><div><span>${x[0]}</span><em>${x[2]}</em></div><b>${x[1]}</b></div>`).join('');
-const DD=[...new Set(R.map(r=>r.d))].sort(),DL=DD.map(d=>d.slice(8)+'/'+d.slice(5,7)),DT=DD.map(d=>R.filter(r=>r.d===d).length),DA=DD.map(d=>R.filter(r=>r.d===d&&r.e==='ABOUTIS').length);mk('wc0','line',{labels:DL,datasets:[{label:'Appels passés',data:DT,borderColor:css('--teal'),backgroundColor:css('--teal'),pointBackgroundColor:css('--card'),pointBorderWidth:2,tension:.4,dl:{pos:'top'},tag:true},{label:'Aboutis',data:DA,borderColor:css('--navy'),backgroundColor:css('--navy'),pointBackgroundColor:css('--card'),pointBorderWidth:2,borderDash:[2,6],borderCapStyle:'round',tension:.4,dl:{pos:'bottom'}}]},{layout:{padding:{top:44,right:18,left:2,bottom:2}},scales:{y:{beginAtZero:true,grace:'10%',ticks:{precision:0}}},plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,pointStyle:'line',boxWidth:26,boxHeight:6}}}});window.WLEXPORT['wc-day']={filename:'welcome-appels-par-jour.csv',headers:['Date','Appels passés','Aboutis'],rows:DD.map((d,i)=>[d,DT[i],DA[i]])};
-const pal=[css('--teal'),css('--navy'),css('--amber'),css('--coral'),css('--sky'),css('--mut')], specs=[['wc1',R,'p','doughnut','wc-q'],['wc2',Q,'q1','bar','wc-q1'],['wc3',Q,'q2','doughnut','wc-q2'],['wc4',Q,'q3','bar','wc-q3'],['wc5',Q,'q4','doughnut','wc-q4'],['wc6',Q,'q5','doughnut','wc-q5'],['wc7',Q,'q6','bar','wc-q6'],['wc8',Q,'q7','doughnut','wc-q7'],['wc9',Q,'q8','doughnut','wc-q8']];
-specs.forEach(x=>{const a=Object.entries(cnt(x[1],x[2]));mk(x[0],x[3],{labels:a.map(z=>z[0].split('/')[0]),datasets:[{data:a.map(z=>z[1]),backgroundColor:pal,borderColor:css('--card'),dl:{}}]},x[3]==='bar'?{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}:{});window.WLEXPORT[x[4]]={filename:x[4]+'.csv',headers:['Réponse','Nombre'],rows:a.map(z=>[z[0],z[1]])}});
-const ag=[...new Set(R.map(r=>r.a).filter(Boolean))].sort();const ar=ag.map(a=>{const Z=R.filter(r=>r.a===a),zq=Z.filter(r=>r.p==='Qualifié'),za=Z.filter(r=>r.e==='ABOUTIS'),ya=k=>zq.filter(r=>(r[k]||'').startsWith('Oui/')).length,an=k=>zq.filter(r=>r[k]).length,sa=k=>zq.filter(r=>(r[k]||'').startsWith('Je suis très satisfait')).length;return[a,Z.length,za.length,fp(pct(za.length,Z.length)),zq.length,fp(pct(zq.length,Z.length)),fp(pct(sa('q3'),an('q3'))),fp(pct(sa('q6'),an('q6'))),fp(pct(ya('q2'),an('q2'))),fp(pct(ya('q4'),an('q4'))),fp(pct(ya('q5'),an('q5'))),fp(pct(ya('q8'),an('q8')))]});$('#wagent').innerHTML='<tr><th>Agent</th><th>Appels</th><th>Aboutis</th><th>Taux about.</th><th>Qualifiés</th><th>Taux qualif.</th><th>Sat. com.</th><th>Sat. tech.</th><th>Compteur OK</th><th>Consignes</th><th>Conseil recharge</th><th>Livret</th></tr>'+ar.map(x=>`<tr>${x.map((v,i)=>`<td class="${i?'n':''}">${esc(v)}</td>`).join('')}</tr>`).join('');window.WLEXPORT['wc-agent']={filename:'welcome-analyse-agent-periode.csv',headers:['Agent','Appels','Aboutis','Taux aboutissement','Qualifiés','Taux qualification','Sat. commerciale','Sat. technicien','Compteur OK','Consignes','Conseil recharge','Livret'],rows:ar};
-const rr=Q.filter(r=>r.q10||r.q6a||r.q3a);const rem=rr.map(r=>[r.d,r.v,r.a,r.q3a||'',r.q6a||'',r.q10||'']);$('#wrem').innerHTML='<tr><th>Date</th><th>Village</th><th>Agent</th><th>Motif commercial</th><th>Motif technicien</th><th>Remarque</th></tr>'+rem.map(x=>`<tr>${x.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('');window.WLEXPORT['wc-rem']={filename:'welcome-remarques.csv',headers:['Date','Village','Agent','Motif commercial','Motif technicien','Remarque'],rows:rem};}
-F.onchange=T.onchange=$('#wvq').oninput=render;$('#wrst').onclick=()=>{F.value=ds[0];T.value=ds[ds.length-1];$('#wvq').value='';sel.clear();AG.forEach(a=>sel.add(a));sync();render()};render()};
+window.startWC=function(DATA){
+const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
+const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+const nf=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const RW=DATA.rows,short=s=>s.length>24?s.slice(0,23)+'…':s;
+$('#wstate').hidden=false;
+if(!RW.length){$('#wstate').textContent='Aucune donnée dans l\'onglet Welcome call.';return}
+$('#wstate').hidden=true;$('#wbody').hidden=false;
+const dd=RW.map(r=>r.d).sort(),d0=dd[0],d1=dd[dd.length-1],wF=$('#wfrom'),wT=$('#wto');
+wF.min=wT.min=d0;wF.max=wT.max=d1;wF.value=d0;wT.value=d1;
+const AGS=[...new Set(RW.map(r=>r.a))].sort(),sel=new Set(AGS);
+$('#wvl').innerHTML=[...new Set(RW.map(r=>r.v))].sort().map(v=>`<option value="${esc(v)}">`).join('');
+const sync=()=>[...$('#wchips').children].forEach(b=>b.setAttribute('aria-pressed',sel.has(b.textContent)));
+AGS.forEach(c=>{const b=document.createElement('button');b.textContent=c;b.onclick=()=>{sel.has(c)?sel.delete(c):sel.add(c);if(!sel.size)AGS.forEach(x=>sel.add(x));sync();render()};$('#wchips').append(b)});
+sync();
+wF.onchange=wT.onchange=$('#wvq').oninput=()=>render();
+$('#wrst').onclick=()=>{$('#wvq').value='';wF.value=d0;wT.value=d1;AGS.forEach(x=>sel.add(x));sync();render()};
+const cnt=(R,k,v)=>R.filter(r=>r[k]===v).length;
+const st=R=>{const f=k=>R.filter(r=>r[k]).length,c=(k,v)=>cnt(R,k,v);
+ return{T:R.length,ab:R.filter(r=>r.e).length,q:c('s','Qualifié'),fn:c('s','Faux numero'),rf:c('s','Refus de répondre'),
+ n1:f('q1'),m1:c('q1','1'),m2:c('q1','2'),m3:c('q1','3'),n2:f('q2'),y2:c('q2','O'),n3:f('q3'),s3:c('q3','S'),o3:c('q3','M'),p3:c('q3','P'),
+ n4:f('q4'),y4:c('q4','O'),n5:f('q5'),y5:c('q5','O'),n6:f('q6'),s6:c('q6','S'),o6:c('q6','M'),p6:c('q6','P'),n7:f('q7'),cp:c('q7','C'),mv:c('q7','M'),n8:f('q8'),y8:c('q8','O'),
+ days:new Set(R.map(r=>r.d)).size,vil:new Set(R.map(r=>r.v).filter(v=>v!=='Non renseigné')).size,rem:R.filter(r=>r.r||r.t3||r.t6).length}};
+const chs={};
+function mk(id,type,data,opt){chs[id]&&chs[id].destroy();chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
+const noLeg={legend:{display:false}},int={y:{beginAtZero:true,ticks:{precision:0}}};
+const SS=['Qualifié','Refus de répondre','Responsable non disponible','Faux numero','Probleme de communication','Répondeur','Poste éteint','Sonne libre'];
+const SN={'Faux numero':'Faux numéro','Probleme de communication':'Problème de communication'},sn=x=>SN[x]||x;
+function render(){
+ const q=nf($('#wvq').value.trim()),R=RW.filter(r=>r.d>=wF.value&&r.d<=wT.value&&sel.has(r.a)&&nf(r.v).includes(q)),s=st(R);
+ wlTheme();
+ const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card');
+ $('#wper').textContent=`Welcome calls du ${fd(wF.value)} au ${fd(wT.value)}`;
+ $('#wcnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
+ const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
+ const H=[['Taux d\'aboutissement',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+  ['Satisfaction agent commercial',P(s.s3,s.n3),`${s.s3} très satisfaits sur ${s.n3} répondants`,'h3'],['Satisfaction technicien',P(s.s6,s.n6),`${s.s6} très satisfaits sur ${s.n6} répondants`,'h4']];
+ $('#whero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
+ const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Faux numéros',fm(s.fn),fp(P(s.fn,s.T))+' des appels','b'],
+ ['Refus de répondre',fm(s.rf),fp(P(s.rf,s.T))+' des appels','b'],['Compteur reçu en moins d\'1 mois',fp(P(s.m1,s.n1)),`${s.m1} sur ${s.n1}`,'g'],['Compteur reçu en plus de 2 mois',fp(P(s.m3,s.n1)),`${s.m3} sur ${s.n1}`,'b'],
+ ['Compteur qui fonctionne bien',fp(P(s.y2,s.n2)),`${s.y2} sur ${s.n2}`,'g'],['Instructions d\'utilisation données',fp(P(s.y4,s.n4)),`${s.y4} sur ${s.n4}`,'g'],['Coupon et recharge expliqués',fp(P(s.y5,s.n5)),`${s.y5} sur ${s.n5}`,'g'],
+ ['Livret remis (monophasés)',fp(P(s.y8,s.n8)),`${s.y8} sur ${s.n8}`,'g'],['Recharge via Cashpoint',fp(P(s.cp,s.n7)),`${s.cp} sur ${s.n7}`,'n'],['Recharge via Mvola',fp(P(s.mv,s.n7)),`${s.mv} sur ${s.n7}`,'n'],
+ ['Villages couverts',fm(s.vil),'hors non renseigné','n'],['Remarques recueillies',fm(s.rem),'motifs et commentaires','n']];
+ $('#wkp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
+ // 1 par jour
+ const ds=[...new Set(R.map(r=>r.d))].sort(),dAb=ds.map(d=>R.filter(r=>r.d===d&&r.e).length),dTt=ds.map(d=>R.filter(r=>r.d===d).length);
+ mk('wc1','bar',{labels:ds.map(d=>d.slice(8)+'/'+d.slice(5,7)),datasets:[{label:'Aboutis',data:dAb,backgroundColor:teal,stack:'a',dl:{pos:'in'}},{label:'Non aboutis',data:dTt.map((t,i)=>t-dAb[i]),backgroundColor:amb,stack:'a',dl:{pos:'in'}}]},{scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
+ // 2 statuts
+ mk('wc2','doughnut',{labels:SS.map(sn),datasets:[{data:SS.map(x=>cnt(R,'s',x)),backgroundColor:[teal,sky,nav,'#8E6BBF','#C98B5B',amb,cor,css('--mut')],borderColor:card,dl:{}}]},{cutout:'50%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true,font:{size:11}}}}});
+ // 3 par CSA
+ const cs=[...sel].sort(),ab=c=>R.filter(r=>r.a===c&&r.e).length;
+ mk('wc3','bar',{labels:cs,datasets:[{label:'Aboutis',data:cs.map(ab),backgroundColor:teal,dl:{pos:'in'}},{label:'Non aboutis',data:cs.map(c=>cnt(R,'a',c)-ab(c)),backgroundColor:amb,dl:{pos:'in'}}]},{scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
+ // 4 délai Q1
+ const DL=['Moins d\'1 mois','Entre 1 et 2 mois','Plus de 2 mois'];
+ mk('wc4','bar',{labels:DL,datasets:[{data:[s.m1,s.m2,s.m3],backgroundColor:[teal,amb,cor],dl:{}}]},{scales:int,plugins:noLeg});
+ // 5 satisfaction
+ const SAT=['Très satisfait','Moyennement satisfait','Pas satisfait'];
+ mk('wc5','bar',{labels:SAT,datasets:[{label:'Agent commercial',data:[s.s3,s.o3,s.p3],backgroundColor:teal,dl:{}},{label:'Technicien',data:[s.s6,s.o6,s.p6],backgroundColor:nav,dl:{}}]},{scales:int});
+ // 6 oui / non
+ const YN=[['Compteur qui fonctionne bien',s.y2,s.n2],['Instructions d\'utilisation données',s.y4,s.n4],['Coupon et recharge expliqués',s.y5,s.n5],['Livret remis (monophasés)',s.y8,s.n8]];
+ mk('wc6','bar',{labels:YN.map(x=>x[0]),datasets:[{label:'Oui',data:YN.map(x=>x[1]),backgroundColor:teal,dl:{pos:'in'}},{label:'Non',data:YN.map(x=>x[2]-x[1]),backgroundColor:cor,dl:{pos:'in'}}]},{indexAxis:'y',scales:{x:{stacked:true,beginAtZero:true,ticks:{precision:0}},y:{stacked:true}}});
+ // 7 recharge
+ mk('wc7','doughnut',{labels:['Cashpoint','Compte Mvola'],datasets:[{data:[s.cp,s.mv],backgroundColor:[amb,nav],borderColor:card,dl:{}}]},{cutout:'50%'});
+ // 8 villages
+ const vc={};R.forEach(r=>{if(r.v!=='Non renseigné')vc[r.v]=(vc[r.v]||0)+1});
+ const tv=Object.entries(vc).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,10);
+ mk('wc8','bar',{labels:tv.map(x=>x[0]),datasets:[{data:tv.map(x=>x[1]),backgroundColor:nav,dl:{}}]},{indexAxis:'y',plugins:noLeg,scales:{x:{beginAtZero:true,ticks:{precision:0}}},layout:{padding:{right:34}}});
+ // tableaux
+ const pc=cs.map(c=>[c,st(R.filter(r=>r.a===c))]);
+ $('#wtag').innerHTML='<tr><th>CSA</th><th class="n">Appels</th><th class="n">Aboutis</th><th class="n">Qualifiés</th><th class="n">Sat. commerciale</th><th class="n">Sat. technicien</th></tr>'+
+  pc.map(([c,x])=>`<tr><td>${esc(c)}</td><td class="n">${x.T}</td><td class="n">${fp(P(x.ab,x.T))}</td><td class="n">${x.q}</td><td class="n">${fp(P(x.s3,x.n3))}</td><td class="n">${fp(P(x.s6,x.n6))}</td></tr>`).join('');
+ const RM=[];R.forEach(r=>{if(r.t3)RM.push([r.d,r.v,r.a,'Insatisfaction agent commercial',r.t3]);if(r.t6)RM.push([r.d,r.v,r.a,'Insatisfaction technicien',r.t6]);if(r.r)RM.push([r.d,r.v,r.a,'Remarque du client',r.r])});
+ RM.sort((a,b)=>b[0].localeCompare(a[0]));
+ $('#wtrem').innerHTML='<tr><th>Date</th><th>Village</th><th>CSA</th><th>Type</th><th>Texte</th></tr>'+(RM.length?RM.map(x=>`<tr><td class="n">${fd(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]==='Remarque du client'?esc(x[3]):`<span class="tag">${esc(x[3])}</span>`}</td><td>${esc(x[4])}</td></tr>`).join(''):'<tr><td colspan="5">Aucune remarque sur cette sélection.</td></tr>');
+ // --- registre des exports CSV (données à l'écran, filtres compris) ---
+ const E=window.WLEXPORT;
+ E['wc-w1']={filename:'welcome-call-appels-par-jour.csv',headers:['Date','Aboutis','Non aboutis'],rows:ds.map((d,i)=>[d,dAb[i],dTt[i]-dAb[i]])};
+ E['wc-w2']={filename:'welcome-call-statut-des-appels.csv',headers:['Statut','Appels'],rows:SS.map(x=>[sn(x),cnt(R,'s',x)])};
+ E['wc-w3']={filename:'welcome-call-par-csa.csv',headers:['CSA','Aboutis','Non aboutis'],rows:cs.map(c=>[c,ab(c),cnt(R,'a',c)-ab(c)])};
+ E['wc-w4']={filename:'welcome-call-delai-compteur.csv',headers:['Délai','Clients'],rows:[[DL[0],s.m1],[DL[1],s.m2],[DL[2],s.m3]]};
+ E['wc-w5']={filename:'welcome-call-satisfaction.csv',headers:['Réponse','Agent commercial','Technicien'],rows:[[SAT[0],s.s3,s.s6],[SAT[1],s.o3,s.o6],[SAT[2],s.p3,s.p6]]};
+ E['wc-w6']={filename:'welcome-call-questions-oui-non.csv',headers:['Question','Oui','Non'],rows:YN.map(x=>[x[0],x[1],x[2]-x[1]])};
+ E['wc-w7']={filename:'welcome-call-mode-de-recharge.csv',headers:['Mode de recharge','Clients'],rows:[['Cashpoint',s.cp],['Compte Mvola',s.mv]]};
+ E['wc-w8']={filename:'welcome-call-top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
+ E['wc-tag']={filename:'welcome-call-performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Sat. commerciale (%)','Sat. technicien (%)'],rows:pc.map(([c,x])=>[c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.s3,x.n3)),pn(P(x.s6,x.n6))])};
+ E['wc-trem']={filename:'welcome-call-insatisfactions-et-remarques.csv',headers:['Date','Village','CSA','Type','Texte'],rows:RM};
+}
+render();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+};
 </script>
 <script>
 (function(){
@@ -460,15 +560,18 @@ const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-dig
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}};
 let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
-async function loadWC(){const c=$('#wcnt');try{const r=await call({a:'wc',t:sessionStorage.getItem(SK)});if(r.expired){clear();location.reload();return}if(!r.ok){c.textContent=r.msg||'Erreur de chargement Welcome Call.';return}wcOK=true;window.startWC(r)}catch(x){console.error('Welcome Call',x);c.textContent='Impossible de charger Welcome Call.'}}
 async function loadAE(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
  try{const r=await call({a:'ae',t:sessionStorage.getItem(SK)});
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
+async function loadWC(){const s=$('#wstate');s.hidden=false;s.textContent='Chargement des Welcome calls…';
+ try{const r=await call({a:'wc',t:sessionStorage.getItem(SK)});
+  if(r.ok){wcOK=true;window.startWC(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
+ catch(x){s.textContent='Impossible de charger les Welcome calls. Cliquez sur Actualiser pour réessayer.'}}
 function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function enter(rows,who,pages){PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
- if(PAGES.indexOf('CSA')>-1)window.start(rows);go(PAGES.indexOf('AE')>-1?'AE':PAGES[0])}
+ if(PAGES.indexOf('CSA')>-1)window.start(rows);go(['AE','CSA','WC'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
 async function login(){
  const l=$('#lg').value,p=$('#pw').value,b=$('#go'),e=$('#err');e.textContent='';
  if(!l.trim()||!p){e.textContent='Saisissez votre login et votre mot de passe.';return}

@@ -105,6 +105,14 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 .ddp label{display:flex;gap:8px;align-items:center;padding:4px 2px;font-size:13px;color:var(--ink)}
 #heat table{text-align:center}#heat th{text-align:center}#heat td{min-width:62px;border:2px solid var(--card);border-radius:6px;font-weight:600}
 @media(max-width:900px){.bar{padding:10px 14px}}
+.ht{display:flex;align-items:center;gap:8px;min-width:0}
+.info{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);font:italic 700 13px/1 Georgia,serif;cursor:help;padding:0;display:inline-grid;place-items:center;transition:color .2s,border-color .2s,box-shadow .2s}
+.info:hover,.info:focus-visible{color:var(--teal);border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) var(--teal);outline:none}
+#wltip{position:fixed;z-index:60;max-width:min(340px,calc(100vw - 16px));background:var(--card);border:1px solid var(--teal);border-radius:12px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 calc(var(--blur)*1.5px) -4px var(--teal);font-size:13px;line-height:1.45;color:var(--ink);pointer-events:none}
+#wltip b{display:block;font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+#wltip p{margin:0 0 6px;color:var(--mut)}
+#wltip .tl{color:var(--teal);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:8px 0 4px}
+#wltip ul{margin:0;padding-left:18px}#wltip li{margin:3px 0;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -263,6 +271,34 @@ document.addEventListener('click',function(e){
 });
 </script>
 <script>
+(function(){
+window.WLINFO={};
+window.wlInfo=function(id,what,read){window.WLINFO[id]={what:what,read:(read||[]).filter(Boolean)}};
+window.wlTop=function(a){let j=0;a.forEach((v,i)=>{if(v>a[j])j=i});return a.length?j:-1};
+const tip=document.createElement('div');tip.id='wltip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
+let cur=null,touch=false;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function open(b){const d=window.WLINFO[b.dataset.info],h=b.closest('.card').querySelector('h2');
+ tip.innerHTML='<b>'+esc(h?h.textContent:'')+'</b><p>'+esc(d?d.what:'Explication à venir.')+'</p>'+(d&&d.read.length?'<p class="tl">Analyse simple</p><ul>'+d.read.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p class="tl">Pas assez de données pour une analyse sur cette sélection.</p>');
+ tip.hidden=false;cur=b;b.setAttribute('aria-describedby','wltip');
+ const r=b.getBoundingClientRect(),w=tip.offsetWidth,h2=tip.offsetHeight;let x=Math.min(Math.max(8,r.left-8),innerWidth-w-8),y=r.bottom+8;
+ if(y+h2>innerHeight-8&&r.top-h2-8>8)y=r.top-h2-8;tip.style.left=x+'px';tip.style.top=y+'px'}
+function close(){tip.hidden=true;if(cur){cur.removeAttribute('aria-describedby');cur=null}}
+document.querySelectorAll('.card').forEach(card=>{const e=card.querySelector('.exp[data-exp]'),h=card.querySelector('h2');
+ if(!e||!h||!(card.querySelector('canvas')||card.querySelector('#heat')||card.querySelector('#funb')))return;
+ const b=document.createElement('button');b.className='info';b.type='button';b.textContent='i';b.dataset.info=e.dataset.exp;b.setAttribute('aria-label','Explication et analyse : '+h.textContent);
+ const w=document.createElement('div');w.className='ht';h.replaceWith(w);w.append(h,b)});
+document.addEventListener('pointerdown',e=>{touch=e.pointerType==='touch'});
+document.addEventListener('mouseover',e=>{if(touch)return;const b=e.target.closest&&e.target.closest('.info');if(b&&b!==cur)open(b)});
+document.addEventListener('mouseout',e=>{const b=e.target.closest&&e.target.closest('.info');if(b&&!(e.relatedTarget&&b.contains(e.relatedTarget)))close()});
+document.addEventListener('focusin',e=>{const b=e.target.closest&&e.target.closest('.info');if(b)open(b)});
+document.addEventListener('focusout',e=>{if(e.target.closest&&e.target.closest('.info'))close()});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.info');if(!b){close();return}if(e.pointerType==='mouse'){open(b);return}cur===b?close():open(b)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+addEventListener('scroll',close,{passive:true});
+})();
+</script>
+<script>
 window.start=function(D){
 const $=s=>document.querySelector(s),fm=n=>n==null?'—':n.toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null;
 const fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %',css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -345,6 +381,36 @@ function render(){
  E['csa-ch8']={filename:'top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
  E['csa-tcsa']={filename:'performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Résolution (%)','Sat. commerciale (%)','Sat. technicienne (%)'],rows:cs.map(c=>{const x=st(R.filter(r=>r.c===c));return [c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.res,x.n1)),pn(P(x.s2,x.n2)),pn(P(x.s4,x.n4))]})};
  E['csa-trem']={filename:'problemes-et-remarques.csv',headers:['Date','Village','CSA','Problème non résolu','Remarque'],rows:rr.map(r=>[r.d,r.v,r.c,r.t||'',r.r||''])};
+ try{
+ const nz=s.T>0,tp=window.wlTop,wi=window.wlInfo,rt=x=>x[2]?x[1]/x[2]*100:0,ft=v=>v.toFixed(1).replace('.',',');
+ const W={'csa-fun':`Suit les appels étape par étape : appels passés, aboutis (le client a décroché), qualifiés (le questionnaire a démarré), problème résolu, puis satisfaits du technicien. Le pourcentage indique la part conservée par rapport à l'étape précédente.`,
+  'csa-ch1':`Montre, jour par jour, le nombre d'appels passés (trait plein) et le nombre d'appels aboutis (pointillés). Plus les deux courbes sont proches, plus les clients décrochent.`,
+  'csa-ch2':`Répartit les appels selon leur résultat : qualifié, refus, faux numéro, répondeur, poste éteint, etc. Seul « Qualifié » donne des réponses au questionnaire.`,
+  'csa-ch3':`Compare, pour chaque CSA, le nombre d'appels aboutis (le client a décroché) et non aboutis.`,
+  'csa-ch4':`Part des clients qualifiés qui disent que leur problème est résolu ou non résolu.`,
+  'csa-ch5':`Nombre de clients satisfaits et pas satisfaits, pour l'agent commercial d'un côté et pour le technicien de l'autre.`,
+  'csa-ch6':`Avis des clients sur la rapidité de la résolution de leur problème : très rapide, moyennement rapide ou trop longue.`,
+  'csa-ch7':`Temps écoulé entre la réclamation du client et la résolution : une semaine, deux semaines ou plus d'un mois.`,
+  'csa-ch8':`Les 10 villages qui comptent le plus d'appels sur la période.`},Rd={};
+ if(nz){
+  const dr=fun.map((x,i)=>i&&fun[i-1][1]?[x[0],fun[i-1][0],x[1]/fun[i-1][1]*100]:null).filter(Boolean),lw=dr.length?dr.reduce((a,b)=>b[2]<a[2]?b:a):null;
+  Rd['csa-fun']=[`${fm(s.ab)} appels aboutis sur ${fm(s.T)} (${fp(P(s.ab,s.T))}), dont ${fm(s.q)} qualifiés.`,lw&&`Plus forte perte : de « ${lw[1]} » à « ${lw[0]} » (${fp(lw[2])} conservés).`];
+  const j1=tp(dTt);
+  Rd['csa-ch1']=[`Jour le plus chargé : ${lb[j1]} avec ${dTt[j1]} appels.`,`En moyenne ${ft(s.T/s.days)} appels par jour actif, dont ${fp(P(s.ab,s.T))} aboutis.`];
+  const cc=SS.map(x=>cn(R,'s',x)),j2=tp(cc);
+  Rd['csa-ch2']=[`Résultat le plus fréquent : ${SS[j2]} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.T-s.ab)} appels non aboutis (${fp(P(s.T-s.ab,s.T))}) : le client n'a pas décroché.`];
+  const ca=cs.map(c=>[c,ab(c),cn(R,'c',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
+  Rd['csa-ch3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  if(s.n1)Rd['csa-ch4']=[`${s.res} clients sur ${s.n1} (${fp(P(s.res,s.n1))}) disent que leur problème est résolu.`,s.n1>s.res&&`${s.n1-s.res} problème(s) restent à relancer.`];
+  const a2=P(s.s2,s.n2),a4=P(s.s4,s.n4);
+  if(s.n2||s.n4)Rd['csa-ch5']=[`Agent commercial : ${fp(a2)} de satisfaits (${s.s2} sur ${s.n2}).`,`Technicien : ${fp(a4)} de satisfaits (${s.s4} sur ${s.n4}).`,a2!=null&&a4!=null&&a2!==a4&&`${a2>a4?"L'agent commercial":'Le technicien'} est le mieux noté.`];
+  const l6=cn(R,'q6','L');
+  if(s.n6)Rd['csa-ch6']=[`${fp(P(s.t6,s.n6))} jugent la résolution très rapide (${s.t6} sur ${s.n6}).`,l6>0&&`${fp(P(l6,s.n6))} la jugent trop longue (${l6} client(s)).`];
+  if(s.n7)Rd['csa-ch7']=[`${fp(P(s.w1,s.n7))} ont attendu une semaine (${s.w1} sur ${s.n7}).`,s.wm>0&&`${s.wm} client(s) ont attendu plus d'un mois (${fp(P(s.wm,s.n7))}) : cas à surveiller.`];
+  Rd['csa-ch8']=[tv.length&&`Village le plus appelé : ${tv[0][0]} (${tv[0][1]} appels).`,tv.length>2&&`Les 3 premiers villages représentent ${fp(P(tv[0][1]+tv[1][1]+tv[2][1],s.T))} des appels.`];
+ }
+ Object.keys(W).forEach(k=>wi(k,W[k],Rd[k]));
+ }catch(e){}
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
@@ -449,6 +515,33 @@ function render(){
  E['ae-ae5']={filename:'appels-traites-par-agent.csv',headers:['Agent','Appels traités'],rows:ai.map(i=>[AG[i],A[i].t])};
  E['ae-ae6']={filename:'durees-moyennes-par-agent.csv',headers:['Agent','Conversation (s)','Post-appel (s)','Total (s)'],rows:a6.map(i=>[AG[i],Math.round(A[i].D/A[i].t),Math.round(A[i].P/A[i].t),Math.round((A[i].D+A[i].P)/A[i].t)])};
  E['ae-heat']={filename:'jour-et-tranche-horaire.csv',headers:['Jour',...hk.map(h=>hh(h))],rows:wds.map(w=>[WD[w],...hk.map(h=>{const c=HM[w+'|'+h];return heat==='n'?(c?c.n:0):(c&&c.n?pn(c.l/c.n*100):0)})])};
+ try{
+ const nz=s.n>0,tp=window.wlTop,wi=window.wlInfo,ft=v=>v.toFixed(1).replace('.',',');
+ const W={'ae-ae1':`Nombre d'appels reçus, traités (décrochés par un agent) et perdus (abandonnés), regroupés par jour, par semaine ou par mois selon le bouton choisi.`,
+  'ae-ae2':`Répartit tous les appels reçus : décrochés en moins de 20 s, décrochés après 20 s, ou perdus.`,
+  'ae-ae3':`Appels traités et perdus pour chaque tranche horaire. Sous chaque heure figure le taux d'abandon : la part d'appels perdus parmi les appels reçus.`,
+  'ae-ae4':`Pour chaque mois : la part des appels traités décrochés en moins de 20 s, et le taux d'abandon. Idéalement, la première courbe monte et la seconde descend.`,
+  'ae-ae5':`Nombre d'appels traités par chaque agent sur la période.`,
+  'ae-ae6':`Durée moyenne d'un appel traité, par agent : conversation (DMC) plus travail après l'appel (post-appel). Seuls les agents avec au moins 10 appels traités sont affichés.`,
+  'ae-heat':`Croise le jour de la semaine et l'heure. Selon le bouton : nombre d'appels reçus, ou taux d'abandon. Plus la case est colorée, plus la valeur est élevée.`},Rd={};
+ if(nz){
+  const j1=tp(ks.map(k=>B[k].n)),pre=gran==='w'?'semaine du ':'',un={d:'jour',w:'semaine',m:'mois'}[gran];
+  Rd['ae-ae1']=[`Période la plus chargée : ${pre}${lab(ks[j1])} avec ${fm(B[ks[j1]].n)} appels reçus.`,`En moyenne ${fm(s.n/ks.length)} appels reçus par ${un}.`,`${fp(P(s.l,s.n))} des appels reçus sont perdus.`];
+  Rd['ae-ae2']=[`${fp(P(s.s,s.n))} des appels reçus sont décrochés en moins de 20 s.`,`${fp(P(s.l,s.n))} sont perdus.`,s.t>0&&`Parmi les appels traités, ${fp(P(s.s,s.t))} sont décrochés en moins de 20 s.`];
+  const bestH=bad.length>1?bad.reduce((a,b)=>HR[b].l/HR[b].n<HR[a].l/HR[a].n?b:a):null;
+  Rd['ae-ae3']=[peak!=null&&`Heure la plus chargée : ${slot(peak)} avec ${fm(HR[peak].n)} appels.`,worst!=null&&`Taux d'abandon le plus élevé : ${slot(worst)} (${fp(P(HR[worst].l,HR[worst].n))}).`,bestH!=null&&bestH!==worst&&`Taux d'abandon le plus faible : ${slot(bestH)} (${fp(P(HR[bestH].l,HR[bestH].n))}).`];
+  const mlb=k=>MN[+k.slice(5,7)-1]+' '+k.slice(2,4),ar=k=>M[k].n?M[k].l/M[k].n*100:0;
+  if(mk4.length){const jw=mk4.reduce((a,b)=>ar(b)>ar(a)?b:a),jb=mk4.reduce((a,b)=>ar(b)<ar(a)?b:a),last=mk4[mk4.length-1],prev=mk4[mk4.length-2];
+   Rd['ae-ae4']=[`Mois le plus difficile : ${mlb(jw)} (${fp(ar(jw))} d'abandon).`,jb!==jw&&`Meilleur mois : ${mlb(jb)} (${fp(ar(jb))} d'abandon).`,prev&&`Dernier mois (${mlb(last)}) : ${fp(ar(last))} d'abandon, en ${ar(last)>ar(prev)?'hausse':'baisse'} de ${ft(Math.abs(ar(last)-ar(prev)))} points par rapport à ${mlb(prev)}.`]}
+  if(ai.length){const t3=ai.slice(0,3).reduce((x,i)=>x+A[i].t,0);
+   Rd['ae-ae5']=[`Agent le plus sollicité : ${AG[ai[0]]} (${fm(A[ai[0]].t)} appels traités, ${fp(P(A[ai[0]].t,s.t))} du total).`,ai.length>3&&`Les 3 premiers agents traitent ${fp(P(t3,s.t))} des appels.`,`${ai.length} agent(s) ont traité au moins un appel.`]}
+  if(a6.length){const dm=a6.map(i=>[AG[i],(A[i].D+A[i].P)/A[i].t]),lo=dm.reduce((a,b)=>b[1]>a[1]?b:a),sh=dm.reduce((a,b)=>b[1]<a[1]?b:a);
+   Rd['ae-ae6']=[`Moyenne générale : ${mmss(dmt)} par appel traité.`,dm.length>1&&`Durée la plus longue : ${lo[0]} (${mmss(lo[1])}).`,dm.length>1&&`La plus courte : ${sh[0]} (${mmss(sh[1])}).`]}
+  let hb=null;wds.forEach(w=>hk.forEach(h=>{const c=HM[w+'|'+h];if(!c||(heat!=='n'&&c.n<10))return;const v=val(c);if(!hb||v>hb[0])hb=[v,w,h]}));
+  Rd['ae-heat']=[hb&&(heat==='n'?`Créneau le plus chargé : ${WD[hb[1]]} ${slot(hb[2])} (${fm(hb[0])} appels).`:`Taux d'abandon le plus élevé : ${WD[hb[1]]} ${slot(hb[2])} (${fp(hb[0])}), parmi les créneaux de 10 appels ou plus.`)];
+ }
+ Object.keys(W).forEach(k=>wi(k,W[k],Rd[k]));
+ }catch(e){}
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
@@ -546,6 +639,32 @@ function render(){
  E['wc-w8']={filename:'welcome-call-top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
  E['wc-tag']={filename:'welcome-call-performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Sat. commerciale (%)','Sat. technicien (%)'],rows:pc.map(([c,x])=>[c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.s3,x.n3)),pn(P(x.s6,x.n6))])};
  E['wc-trem']={filename:'welcome-call-motifs-et-remarques.csv',headers:['Date','Village','CSA','Source','Texte'],rows:RM};
+ try{
+ const nz=s.T>0,tp=window.wlTop,wi=window.wlInfo,rt=x=>x[2]?x[1]/x[2]*100:0;
+ const W={'wc-w1':`Nombre d'appels Welcome call par jour : aboutis (le client a décroché) et non aboutis.`,
+  'wc-w2':`Répartit les appels selon leur résultat : qualifié, refus, faux numéro, répondeur, poste éteint, etc. Seul « Qualifié » donne des réponses au questionnaire.`,
+  'wc-w3':`Compare, pour chaque CSA, le nombre d'appels aboutis et non aboutis.`,
+  'wc-w4':`Temps que les clients disent avoir attendu pour recevoir leur compteur après paiement (question Q1).`,
+  'wc-w5':`Réponses des clients qualifiés sur leur satisfaction envers l'agent commercial (Q3) et envers le technicien (Q6).`,
+  'wc-w6':`Pour quatre questions de contrôle, nombre de clients qui répondent Oui et Non : compteur qui fonctionne bien (Q2), instructions d'utilisation données (Q4), coupon et recharge expliqués (Q5), livret remis (Q8, clients monophasés).`,
+  'wc-w7':`Façon dont les clients rechargent leur compteur : Cashpoint ou compte Mvola (Q7).`,
+  'wc-w8':`Les 10 villages qui comptent le plus d'appels Welcome call.`},Rd={};
+ if(nz){
+  const j1=tp(dTt);
+  Rd['wc-w1']=[`Jour le plus chargé : ${ds[j1].slice(8)+'/'+ds[j1].slice(5,7)} avec ${dTt[j1]} appels.`,`${fp(P(s.ab,s.T))} des appels ont abouti (${s.ab} sur ${s.T}).`];
+  const cc=SS.map(x=>cnt(R,'s',x)),j2=tp(cc);
+  Rd['wc-w2']=[`Résultat le plus fréquent : ${sn(SS[j2])} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.q)} appels qualifiés : ${fp(P(s.q,s.T))} de tous les appels, ${fp(P(s.q,s.ab))} des appels aboutis.`];
+  const ca=cs.map(c=>[c,ab(c),cnt(R,'a',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
+  Rd['wc-w3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  if(s.n1)Rd['wc-w4']=[`${fp(P(s.m1,s.n1))} ont reçu leur compteur en moins d'1 mois (${s.m1} sur ${s.n1}).`,s.m3>0&&`${s.m3} client(s) ont attendu plus de 2 mois : cas à surveiller.`];
+  if(s.n3||s.n6)Rd['wc-w5']=[`Agent commercial : ${fp(P(s.s3,s.n3))} très satisfaits (${s.s3} sur ${s.n3}).`,`Technicien : ${fp(P(s.s6,s.n6))} très satisfaits (${s.s6} sur ${s.n6}).`,(s.p3+s.p6)>0&&`${s.p3+s.p6} réponse(s) « pas satisfait » : voir le tableau des motifs.`];
+  const yv=YN.filter(x=>x[2]>0),wk=yv.length?yv.reduce((a,b)=>b[1]/b[2]<a[1]/a[2]?b:a):null,bt=yv.length?yv.reduce((a,b)=>b[1]/b[2]>a[1]/a[2]?b:a):null;
+  if(wk)Rd['wc-w6']=[`Point le plus faible : « ${wk[0]} » (${fp(P(wk[1],wk[2]))} de Oui, ${wk[2]-wk[1]} Non).`,yv.length>1&&wk!==bt&&`Point le plus solide : « ${bt[0]} » (${fp(P(bt[1],bt[2]))} de Oui).`];
+  if(s.n7)Rd['wc-w7']=[`${fp(P(s.cp,s.n7))} rechargent via Cashpoint (${s.cp} sur ${s.n7}).`,`${fp(P(s.mv,s.n7))} rechargent via compte Mvola (${s.mv} sur ${s.n7}).`];
+  Rd['wc-w8']=[tv.length&&`Village le plus appelé : ${tv[0][0]} (${tv[0][1]} appels).`,tv.length>2&&`Les 3 premiers villages représentent ${fp(P(tv[0][1]+tv[1][1]+tv[2][1],s.T))} des appels.`];
+ }
+ Object.keys(W).forEach(k=>wi(k,W[k],Rd[k]));
+ }catch(e){}
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);

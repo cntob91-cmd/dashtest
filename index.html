@@ -120,7 +120,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 </section>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome Call</button></nav>
  <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
@@ -421,6 +421,10 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
 new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 };
 </script>
+<div id="p3" hidden><header class="top"><div><h1>Welcome Call We Light</h1><p class="mut" id="wper"></p></div><div class="flt"><label>Du <input type="date" id="wfrom"></label><label>Au <input type="date" id="wto"></label><label>Village <input type="search" id="wvq" placeholder="Rechercher un village"></label><button class="lnk" id="wrst">Réinitialiser</button></div><p class="mut" id="wcnt"></p></header><main><section class="hero" id="whero"></section><section class="pills" id="wkp"></section><section class="grid"><article class="card c6"><h2>Qualification des appels</h2><div class="cv"><canvas id="wc1"></canvas></div></article><article class="card c6"><h2>Délai d'installation du compteur</h2><div class="cv"><canvas id="wc2"></canvas></div></article><article class="card c6"><h2>Satisfaction agent commercial</h2><div class="cv"><canvas id="wc3"></canvas></div></article><article class="card c6"><h2>Satisfaction installation technicien</h2><div class="cv"><canvas id="wc4"></canvas></div></article><article class="card c6"><h2>Canal de rechargement</h2><div class="cv"><canvas id="wc5"></canvas></div></article><article class="card c12"><h2>Remarques clients</h2><div class="tb"><table id="wrem"></table></div></article></section></main></div>
+<script>
+window.startWC=function(X){const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim(),R0=X.rows||[],C={};if(!R0.length)return;const ds=R0.map(r=>r.d).sort(),F=$('#wfrom'),T=$('#wto');F.value=F.min=T.min=ds[0];T.value=F.max=T.max=ds[ds.length-1];const pct=(a,b)=>b?(a/b*100).toFixed(1).replace('.',',')+' %':'—',cnt=(R,k)=>{const o={};R.forEach(r=>o[r[k]||'Non renseigné']=(o[r[k]||'Non renseigné']||0)+1);return o},mk=(id,type,o,opt)=>{C[id]&&C[id].destroy();C[id]=new Chart($('#'+id),{type,data:o,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}},opt||{})})};function render(){wlTheme();const q=$('#wvq').value.toLowerCase(),R=R0.filter(r=>r.d>=F.value&&r.d<=T.value&&r.v.toLowerCase().includes(q)),Q=R.filter(r=>r.p==='Qualifié'),A=R.filter(r=>r.e==='ABOUTIS');$('#wper').textContent=F.value+' au '+T.value;$('#wcnt').textContent=R.length+' appels sur '+R0.length;const sat=k=>Q.filter(r=>(r[k]||'').startsWith('Je suis très satisfait')).length,yes=k=>Q.filter(r=>(r[k]||'').startsWith('Oui/')).length;$('#whero').innerHTML=[["Taux d'aboutissement",pct(A.length,R.length),'h1'],['Taux de qualification',pct(Q.length,R.length),'h2'],['Satisfaction commerciale',pct(sat('q3'),Q.filter(r=>r.q3).length),'h3'],['Satisfaction technicien',pct(sat('q6'),Q.filter(r=>r.q6).length),'h4']].map(x=>`<div class="hc ${x[2]}"><span>${x[0]}</span><b>${x[1]}</b><em>Welcome Call</em></div>`).join('');$('#wkp').innerHTML=[['Compteur fonctionne',pct(yes('q2'),Q.filter(r=>r.q2).length)],['Consignes compteur',pct(yes('q4'),Q.filter(r=>r.q4).length)],['Conseil recharge',pct(yes('q5'),Q.filter(r=>r.q5).length)],['Livret reçu',pct(yes('q8'),Q.filter(r=>r.q8).length)]].map(x=>`<div class="pl g"><div><span>${x[0]}</span><em>Réponses qualifiées</em></div><b>${x[1]}</b></div>`).join('');const pal=[css('--teal'),css('--navy'),css('--amber'),css('--coral'),css('--sky'),css('--mut')];[['wc1',R,'p','doughnut'],['wc2',Q,'q1','bar'],['wc3',Q,'q3','doughnut'],['wc4',Q,'q6','doughnut'],['wc5',Q,'q7','doughnut']].forEach(x=>{const a=Object.entries(cnt(x[1],x[2]));mk(x[0],x[3],{labels:a.map(z=>z[0].split('/')[0]),datasets:[{data:a.map(z=>z[1]),backgroundColor:pal,borderColor:css('--card')}]},x[3]==='bar'?{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}:{})});const rr=Q.filter(r=>r.q10||r.q6a||r.q3a);$('#wrem').innerHTML='<tr><th>Date</th><th>Village</th><th>Agent</th><th>Remarque</th></tr>'+rr.map(r=>`<tr><td>${r.d}</td><td>${r.v}</td><td>${r.a}</td><td>${r.q10||r.q6a||r.q3a}</td></tr>`).join('')}F.onchange=T.onchange=$('#wvq').oninput=render;$('#wrst').onclick=()=>{F.value=ds[0];T.value=ds[ds.length-1];$('#wvq').value='';render()};render()};
+</script>
 <script>
 (function(){
 // Collez ici l'URL de votre déploiement Apps Script (se termine par /exec)
@@ -429,13 +433,14 @@ const $=s=>document.querySelector(s),SK='wl_tok',UK='wl_user';
 async function call(b){const r=await fetch(API,{method:'POST',body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()}
 const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}};
-let PAGES=['CSA'],cur='CSA',aeOK=false;
+let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
+async function loadWC(){try{const r=await call({a:'wc',t:sessionStorage.getItem(SK)});if(r.ok){wcOK=true;startWC(r)}}catch(x){}}
 async function loadAE(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
  try{const r=await call({a:'ae',t:sessionStorage.getItem(SK)});
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
-function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';tabs();if(p==='AE'&&!aeOK)loadAE()}
+function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function enter(rows,who,pages){PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
  if(PAGES.indexOf('CSA')>-1)window.start(rows);go(PAGES.indexOf('AE')>-1?'AE':PAGES[0])}

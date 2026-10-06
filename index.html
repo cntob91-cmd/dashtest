@@ -300,6 +300,7 @@ addEventListener('scroll',close,{passive:true});
 </script>
 <script>
 window.start=function(D){
+if(window.__init_csa)return;window.__init_csa=1;
 const $=s=>document.querySelector(s),fm=n=>n==null?'—':n.toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null;
 const fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %',css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
@@ -419,6 +420,7 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 </script>
 <script>
 window.startAE=function(DATA){
+if(window.__init_ae)return;window.__init_ae=1;
 const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
 const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
@@ -550,6 +552,7 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 </script>
 <script>
 window.startWC=function(DATA){
+if(window.__init_wc)return;window.__init_wc=1;
 const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
 const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
@@ -679,19 +682,21 @@ const $=s=>document.querySelector(s),SK='wl_tok',UK='wl_user';
 async function call(b){const r=await fetch(API,{method:'POST',body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()}
 const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}};
-let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false;
+let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,entered=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
-async function loadAE(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
+async function loadAE(){if(aeOK||aeBusy)return;aeBusy=true;try{await loadAE0()}finally{aeBusy=false}}
+async function loadAE0(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
  try{const r=await call({a:'ae',t:sessionStorage.getItem(SK)});
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
-async function loadWC(){const s=$('#wstate');s.hidden=false;s.textContent='Chargement des Welcome calls…';
+async function loadWC(){if(wcOK||wcBusy)return;wcBusy=true;try{await loadWC0()}finally{wcBusy=false}}
+async function loadWC0(){const s=$('#wstate');s.hidden=false;s.textContent='Chargement des Welcome calls…';
  try{const r=await call({a:'wc',t:sessionStorage.getItem(SK)});
   if(r.ok){wcOK=true;window.startWC(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les Welcome calls. Cliquez sur Actualiser pour réessayer.'}}
 function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
-function enter(rows,who,pages){PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
+function enter(rows,who,pages){if(entered)return;entered=true;PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
  if(PAGES.indexOf('CSA')>-1)window.start(rows);go(['AE','CSA','WC'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
 async function login(){
  const l=$('#lg').value,p=$('#pw').value,b=$('#go'),e=$('#err');e.textContent='';

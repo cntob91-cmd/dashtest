@@ -70,6 +70,7 @@ td.n,th.n{text-align:right;white-space:nowrap}
 tbody tr{transition:background .15s ease}
 tbody tr:hover td{background:color-mix(in srgb,var(--teal) 8%,transparent)}
 .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--coral);color:var(--coral)}
+.tag.ok{border-color:var(--teal);color:var(--teal)}
 footer{margin-top:16px;font-size:12px;color:var(--mut)}
 @media(max-width:900px){.c4,.c6,.c8{grid-column:span 12}.fb{grid-template-columns:120px 1fr 90px}main{padding:14px}.top{padding:10px 14px}}
 @media(prefers-reduced-motion:reduce){.fb i,.card,.hc,.pl{transition:none}.card:hover,.hc:hover,.pl:hover{transform:none}}
@@ -212,7 +213,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
     <article class="card c6"><div class="hd"><h2>Mode de recharge</h2><button class="exp" type="button" data-exp="wc-w7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="wc7"></canvas></div></article>
     <article class="card c6"><div class="hd"><h2>Top 10 des villages appelés</h2><button class="exp" type="button" data-exp="wc-w8" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="wc8"></canvas></div></article>
     <article class="card c6"><div class="hd"><h2>Performance par CSA</h2><button class="exp" type="button" data-exp="wc-tag" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtag"></table></div></article>
-    <article class="card c12"><div class="hd"><h2>Insatisfactions et remarques des clients</h2><button class="exp" type="button" data-exp="wc-trem" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtrem"></table></div></article>
+    <article class="card c12"><div class="hd"><h2>Motifs et remarques des clients</h2><button class="exp" type="button" data-exp="wc-trem" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtrem"></table></div></article>
    </section>
    <footer>Les réponses au questionnaire ne concernent que les appels au statut Qualifié. Le livret (Q8) ne concerne que les clients monophasés.</footer>
   </div>
@@ -529,9 +530,10 @@ function render(){
  const pc=cs.map(c=>[c,st(R.filter(r=>r.a===c))]);
  $('#wtag').innerHTML='<tr><th>CSA</th><th class="n">Appels</th><th class="n">Aboutis</th><th class="n">Qualifiés</th><th class="n">Sat. commerciale</th><th class="n">Sat. technicien</th></tr>'+
   pc.map(([c,x])=>`<tr><td>${esc(c)}</td><td class="n">${x.T}</td><td class="n">${fp(P(x.ab,x.T))}</td><td class="n">${x.q}</td><td class="n">${fp(P(x.s3,x.n3))}</td><td class="n">${fp(P(x.s6,x.n6))}</td></tr>`).join('');
- const RM=[];R.forEach(r=>{if(r.t3)RM.push([r.d,r.v,r.a,'Insatisfaction agent commercial',r.t3]);if(r.t6)RM.push([r.d,r.v,r.a,'Insatisfaction technicien',r.t6]);if(r.r)RM.push([r.d,r.v,r.a,'Remarque du client',r.r])});
+ const SL={S:'très satisfait',M:'moyennement satisfait',P:'pas satisfait'},src=(w,q)=>w+(SL[q]?' : '+SL[q]:'');
+ const RM=[];R.forEach(r=>{if(r.t3)RM.push([r.d,r.v,r.a,src('Agent commercial',r.q3),r.t3]);if(r.t6)RM.push([r.d,r.v,r.a,src('Technicien',r.q6),r.t6]);if(r.r)RM.push([r.d,r.v,r.a,'Remarque du client',r.r])});
  RM.sort((a,b)=>b[0].localeCompare(a[0]));
- $('#wtrem').innerHTML='<tr><th>Date</th><th>Village</th><th>CSA</th><th>Type</th><th>Texte</th></tr>'+(RM.length?RM.map(x=>`<tr><td class="n">${fd(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]==='Remarque du client'?esc(x[3]):`<span class="tag">${esc(x[3])}</span>`}</td><td>${esc(x[4])}</td></tr>`).join(''):'<tr><td colspan="5">Aucune remarque sur cette sélection.</td></tr>');
+ $('#wtrem').innerHTML='<tr><th>Date</th><th>Village</th><th>CSA</th><th>Source</th><th>Texte</th></tr>'+(RM.length?RM.map(x=>`<tr><td class="n">${fd(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]==='Remarque du client'?esc(x[3]):`<span class="tag${/très satisfait$/.test(x[3])?' ok':''}">${esc(x[3])}</span>`}</td><td>${esc(x[4])}</td></tr>`).join(''):'<tr><td colspan="5">Aucune remarque sur cette sélection.</td></tr>');
  // --- registre des exports CSV (données à l'écran, filtres compris) ---
  const E=window.WLEXPORT;
  E['wc-w1']={filename:'welcome-call-appels-par-jour.csv',headers:['Date','Aboutis','Non aboutis'],rows:ds.map((d,i)=>[d,dAb[i],dTt[i]-dAb[i]])};
@@ -543,7 +545,7 @@ function render(){
  E['wc-w7']={filename:'welcome-call-mode-de-recharge.csv',headers:['Mode de recharge','Clients'],rows:[['Cashpoint',s.cp],['Compte Mvola',s.mv]]};
  E['wc-w8']={filename:'welcome-call-top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
  E['wc-tag']={filename:'welcome-call-performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Sat. commerciale (%)','Sat. technicien (%)'],rows:pc.map(([c,x])=>[c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.s3,x.n3)),pn(P(x.s6,x.n6))])};
- E['wc-trem']={filename:'welcome-call-insatisfactions-et-remarques.csv',headers:['Date','Village','CSA','Type','Texte'],rows:RM};
+ E['wc-trem']={filename:'welcome-call-motifs-et-remarques.csv',headers:['Date','Village','CSA','Source','Texte'],rows:RM};
 }
 render();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);

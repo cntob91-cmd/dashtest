@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dashboard W.L</title>
+<title>Satisfaction client We Light</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <style>
@@ -25,10 +25,10 @@ p{margin:0}.mut{color:var(--mut);font-size:13px}
 .flt{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
 .flt label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mut)}
 input[type=date],input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
-#chips,#wchips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-#chips button,#wchips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
-#chips button:hover,#wchips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
-#chips button[aria-pressed=true],#wchips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
+#chips,#wchips,#richips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#chips button,#wchips button,#richips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+#chips button:hover,#wchips button:hover,#richips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
+#chips button[aria-pressed=true],#wchips button[aria-pressed=true],#richips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
 input[type=search]{width:200px}input:focus-visible{box-shadow:0 0 calc(var(--blur)*1px) var(--teal)}
 .lnk{border-style:dashed}
 button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
@@ -124,7 +124,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <section id="gate">
  <div class="gc">
   <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>
-  <h1>Accès réservé</h1><p class="mut">Dashboard W.L</p>
+  <h1>Accès réservé</h1><p class="mut">Satisfaction client We Light</p>
   <label for="lg">Login</label><input type="text" id="lg" autocomplete="username" autocapitalize="off" spellcheck="false">
   <label for="pw">Mot de passe</label><input type="password" id="pw" autocomplete="current-password">
   <label class="sh"><input type="checkbox" id="sp"> Afficher le mot de passe</label>
@@ -135,12 +135,12 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <div id="splash" hidden><span class="spin"></span>Reconnexion en cours…</div>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA"> Contrôle Qualité</button><button class="tab" data-p="WC">Welcome call</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome call</button><button class="tab" data-p="RI">Réveil des inactifs</button></nav>
  <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
 <header class="top">
- <div><h1>Contrôle Qualité</h1><p class="mut" id="per"></p></div>
+ <div><h1>Satisfaction client We Light</h1><p class="mut" id="per"></p></div>
  <div class="flt">
   <label>Du <input type="date" id="from"></label>
   <label>Au <input type="date" id="to"></label>
@@ -230,6 +230,38 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
     <article class="card c12"><div class="hd"><h2>Motifs et remarques des clients</h2><button class="exp" type="button" data-exp="wc-trem" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="wtrem"></table></div></article>
    </section>
    <footer>Les réponses au questionnaire ne concernent que les appels au statut Qualifié. Le livret (Q8) ne concerne que les clients monophasés.</footer>
+  </div>
+ </main>
+</div>
+<div id="p4" hidden>
+ <header class="top">
+  <div><h1>Réveil des inactifs</h1><p class="mut" id="riper"></p></div>
+  <div class="flt">
+   <label>Du <input type="date" id="rifrom"></label>
+   <label>Au <input type="date" id="rito"></label>
+   <label>Village <input type="search" id="rivq" placeholder="Rechercher un village" list="rivl" autocomplete="off"></label><datalist id="rivl"></datalist>
+   <label>CSA <span id="richips" role="group" aria-label="Filtrer par CSA"></span></label>
+   <button class="lnk" id="rirst">Réinitialiser</button>
+  </div>
+  <p class="mut" id="ricnt" aria-live="polite"></p>
+ </header>
+ <main>
+  <p class="mut" id="ristate" style="padding:6px 0">Chargement du réveil des inactifs…</p>
+  <div id="ribody" hidden>
+   <section class="hero" id="rihero"></section>
+   <section class="pills" id="rikp"></section>
+   <section class="grid">
+    <article class="card c8"><div class="hd"><h2>Appels par jour : aboutis et non aboutis</h2><button class="exp" type="button" data-exp="ri-r1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri1"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Résultat des appels</h2><button class="exp" type="button" data-exp="ri-r2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri2"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Aboutis et non aboutis par CSA</h2><button class="exp" type="button" data-exp="ri-r3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri3"></canvas></div></article>
+    <article class="card c8"><div class="hd"><h2>Pourquoi les clients ne rechargent plus</h2><button class="exp" type="button" data-exp="ri-r4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri4"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Type de compteur des clients qualifiés</h2><button class="exp" type="button" data-exp="ri-r5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri5"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Intentions des clients qualifiés</h2><button class="exp" type="button" data-exp="ri-r6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ri6"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Top 10 des villages appelés</h2><button class="exp" type="button" data-exp="ri-r7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ri7"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Performance par CSA</h2><button class="exp" type="button" data-exp="ri-tag" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="ritag"></table></div></article>
+    <article class="card c12"><div class="hd"><h2>Réponses des clients qualifiés</h2><button class="exp" type="button" data-exp="ri-tl" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="ritl"></table></div></article>
+   </section>
+   <footer>Les réponses au questionnaire ne concernent que les appels au statut Qualifié. « Aboutis » suit la colonne Statuts du fichier : un appel peut être abouti sans être qualifié (faux numéro, responsable non disponible, communication coupée).</footer>
   </div>
  </main>
 </div>
@@ -681,6 +713,127 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 };
 </script>
 <script>
+window.startRI=function(DATA){
+if(window.__init_ri)return;window.__init_ri=1;
+const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
+const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',',');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+const nf=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const RW=DATA.rows;
+$('#ristate').hidden=false;
+if(!RW.length){$('#ristate').textContent='Aucune donnée dans l\'onglet Réveil des inactifs.';return}
+$('#ristate').hidden=true;$('#ribody').hidden=false;
+const dd=RW.map(r=>r.d).sort(),d0=dd[0],d1=dd[dd.length-1],rF=$('#rifrom'),rT=$('#rito');
+rF.min=rT.min=d0;rF.max=rT.max=d1;rF.value=d0;rT.value=d1;
+const AGS=[...new Set(RW.map(r=>r.a))].sort(),sel=new Set(AGS);
+$('#rivl').innerHTML=[...new Set(RW.map(r=>r.v))].sort().map(v=>`<option value="${esc(v)}">`).join('');
+const sync=()=>[...$('#richips').children].forEach(b=>b.setAttribute('aria-pressed',sel.has(b.textContent)));
+AGS.forEach(c=>{const b=document.createElement('button');b.textContent=c;b.onclick=()=>{sel.has(c)?sel.delete(c):sel.add(c);if(!sel.size)AGS.forEach(x=>sel.add(x));sync();render()};$('#richips').append(b)});
+sync();
+rF.onchange=rT.onchange=$('#rivq').oninput=()=>render();
+$('#rirst').onclick=()=>{$('#rivq').value='';rF.value=d0;rT.value=d1;AGS.forEach(x=>sel.add(x));sync();render()};
+const QL='Qualifié',RS={D:'Déménagement',F:'Problème financier',V:'Pas souvent au village',M:'Plus de 2 compteurs',A:'Autres raisons'},RK=Object.keys(RS);
+const TYPES=['BC/ 100W','BC+ / 300W','MC / 600W','MC+ / 1 100W','HC / 2 600W','PRO Mono / 5 000W','PRO Tri / 8 000 W'];
+const SS=['Qualifié','Sonne libre','Poste éteint','Répondeur','Responsable non dispo','Compteur déjà actif','Faux numéro','Communication coupée'];
+const cnt=(R,k,v)=>R.filter(r=>r[k]===v).length;
+const st=R=>{const c=(k,v)=>cnt(R,k,v),f=k=>R.filter(r=>r[k]).length;
+ return{T:R.length,ab:R.filter(r=>r.e).length,q:c('s',QL),fn:c('s','Faux numéro'),rn:c('s','Responsable non dispo'),cc:c('s','Communication coupée'),ia:c('s','Compteur déjà actif'),
+ inj:c('s','Répondeur')+c('s','Poste éteint')+c('s','Sonne libre'),n3:f('q3'),r3:Object.fromEntries(RK.map(k=>[k,c('q3',k)])),n5:f('q5'),y5:c('q5','O'),no5:c('q5','N'),n4:f('q4'),y4:c('q4','O'),no4:c('q4','N'),
+ days:new Set(R.map(r=>r.d)).size,vil:new Set(R.map(r=>r.v).filter(v=>v!=='Non renseigné')).size}};
+const topK=x=>x.n3?RK.reduce((a,b)=>x.r3[b]>x.r3[a]?b:a):null;
+const chs={};
+function mk(id,type,data,opt){chs[id]&&chs[id].destroy();chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
+const noLeg={legend:{display:false}},int={y:{beginAtZero:true,ticks:{precision:0}}};
+function render(){
+ const q=nf($('#rivq').value.trim()),R=RW.filter(r=>r.d>=rF.value&&r.d<=rT.value&&sel.has(r.a)&&nf(r.v).includes(q)),s=st(R);
+ wlTheme();
+ const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card'),mut=css('--mut');
+ $('#riper').textContent=`Réveil des inactifs du ${fd(rF.value)} au ${fd(rT.value)}`;
+ $('#ricnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
+ const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
+ const H=[['Taux d\'aboutissement',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+  ['Veulent garder leur compteur',P(s.y5,s.n5),`${s.y5} sur ${s.n5} répondants`,'h3'],['Compteurs déjà actifs',P(s.ia,s.T),`${s.ia} sur ${s.T} appels`,'h4']];
+ $('#rihero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
+ const tk=topK(s),pc=(a,b)=>fp(P(a,b));
+ const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),pc(s.T-s.ab,s.T)+' des appels','b'],['Injoignables',fm(s.inj),'sonne libre, poste éteint, répondeur','b'],
+ ['Faux numéros',fm(s.fn),pc(s.fn,s.T)+' des appels','b'],['Responsable non disponible',fm(s.rn),pc(s.rn,s.T)+' des appels','n'],['Communication coupée',fm(s.cc),pc(s.cc,s.T)+' des appels','n'],
+ ['Qualifiés',fm(s.q),pc(s.q,s.T)+' des appels','g'],['Raison la plus citée',tk?pc(s.r3[tk],s.n3):'—',tk?`${RS[tk]} (${s.r3[tk]} sur ${s.n3})`:'','n'],
+ ['Plus de 2 compteurs',pc(s.r3.M,s.n3),`${s.r3.M} sur ${s.n3}`,'n'],['Déménagement',pc(s.r3.D,s.n3),`${s.r3.D} sur ${s.n3}`,'n'],['Problème financier',pc(s.r3.F,s.n3),`${s.r3.F} sur ${s.n3}`,'b'],
+ ['Utiliseront leurs autres compteurs',pc(s.y4,s.n4),`${s.y4} sur ${s.n4}`,'g'],['Villages couverts',fm(s.vil),'hors non renseigné','n']];
+ $('#rikp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
+ // 1 par jour
+ const ds=[...new Set(R.map(r=>r.d))].sort(),dAb=ds.map(d=>R.filter(r=>r.d===d&&r.e).length),dTt=ds.map(d=>R.filter(r=>r.d===d).length);
+ mk('ri1','bar',{labels:ds.map(d=>d.slice(8)+'/'+d.slice(5,7)),datasets:[{label:'Aboutis',data:dAb,backgroundColor:teal,stack:'a',dl:{pos:'in'}},{label:'Non aboutis',data:dTt.map((t,i)=>t-dAb[i]),backgroundColor:amb,stack:'a',dl:{pos:'in'}}]},{scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
+ // 2 résultat
+ mk('ri2','doughnut',{labels:SS,datasets:[{data:SS.map(x=>cnt(R,'s',x)),backgroundColor:[teal,nav,sky,'#8E6BBF',amb,'#C98B5B',cor,mut],borderColor:card,dl:{}}]},{cutout:'50%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true,font:{size:11}}}}});
+ // 3 par CSA
+ const cs=[...sel].sort(),ab=c=>R.filter(r=>r.a===c&&r.e).length;
+ mk('ri3','bar',{labels:cs,datasets:[{label:'Aboutis',data:cs.map(ab),backgroundColor:teal,dl:{pos:'in'}},{label:'Non aboutis',data:cs.map(c=>cnt(R,'a',c)-ab(c)),backgroundColor:amb,dl:{pos:'in'}}]},{scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
+ // 4 raisons
+ const rk=RK.slice().sort((a,b)=>s.r3[b]-s.r3[a]);
+ mk('ri4','bar',{labels:rk.map(k=>RS[k]),datasets:[{label:'Clients',data:rk.map(k=>s.r3[k]),backgroundColor:nav,dl:{}}]},{indexAxis:'y',plugins:noLeg,scales:{x:{beginAtZero:true,ticks:{precision:0}}},layout:{padding:{right:34}}});
+ // 5 type de compteur
+ const tc={};R.forEach(r=>{if(r.q2)tc[r.q2]=(tc[r.q2]||0)+1});
+ const tl=TYPES.filter(x=>tc[x]).concat(Object.keys(tc).filter(x=>TYPES.indexOf(x)<0).sort()),tN=tl.reduce((x,k)=>x+tc[k],0);
+ mk('ri5','bar',{labels:tl,datasets:[{label:'Clients',data:tl.map(k=>tc[k]),backgroundColor:teal,dl:{}}]},{indexAxis:'y',plugins:noLeg,scales:{x:{beginAtZero:true,ticks:{precision:0}}},layout:{padding:{right:34}}});
+ // 6 intentions
+ const sr=Math.max(0,s.q-s.n5),IN=[['Veulent garder leur compteur (Q5)',s.y5,s.no5,sr],['Utiliseront leurs autres compteurs (Q4-b)',s.y4,s.no4,0]];
+ mk('ri6','bar',{labels:IN.map(x=>x[0]),datasets:[{label:'Oui',data:IN.map(x=>x[1]),backgroundColor:teal,dl:{pos:'in'}},{label:'Non',data:IN.map(x=>x[2]),backgroundColor:cor,dl:{pos:'in'}},{label:'Sans réponse',data:IN.map(x=>x[3]),backgroundColor:mut,dl:{pos:'in'}}]},{indexAxis:'y',scales:{x:{stacked:true,beginAtZero:true,ticks:{precision:0}},y:{stacked:true}}});
+ // 7 villages
+ const vc={};R.forEach(r=>{if(r.v!=='Non renseigné')vc[r.v]=(vc[r.v]||0)+1});
+ const tv=Object.entries(vc).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,10);
+ mk('ri7','bar',{labels:tv.map(x=>x[0]),datasets:[{data:tv.map(x=>x[1]),backgroundColor:nav,dl:{}}]},{indexAxis:'y',plugins:noLeg,scales:{x:{beginAtZero:true,ticks:{precision:0}}},layout:{padding:{right:34}}});
+ // tableaux
+ const pr=cs.map(c=>{const x=st(R.filter(r=>r.a===c)),k=topK(x);return [c,x,k?`${RS[k]} (${x.r3[k]})`:'—']});
+ $('#ritag').innerHTML='<tr><th>CSA</th><th class="n">Appels</th><th class="n">Aboutis</th><th class="n">Qualifiés</th><th class="n">Veulent garder</th><th>Raison la plus citée</th></tr>'+
+  pr.map(([c,x,t])=>`<tr><td>${esc(c)}</td><td class="n">${x.T}</td><td class="n">${fp(P(x.ab,x.T))}</td><td class="n">${x.q}</td><td class="n">${fp(P(x.y5,x.n5))}</td><td>${esc(t)}</td></tr>`).join('');
+ const YN={O:'Oui',N:'Non'},LQ=R.filter(r=>r.s===QL).sort((a,b)=>b.d.localeCompare(a.d)||a.v.localeCompare(b.v)).map(r=>[r.d,r.v,r.a,r.q2||'—',RS[r.q3]||'—',YN[r.q5]||'—',YN[r.q4]||'—']);
+ $('#ritl').innerHTML='<tr><th>Date</th><th>Village</th><th>CSA</th><th>Compteur</th><th>Raison</th><th>Garder le compteur</th><th>Autres compteurs</th></tr>'+(LQ.length?LQ.map(x=>`<tr><td class="n">${fd(x[0])}</td>${x.slice(1).map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join(''):'<tr><td colspan="7">Aucun client qualifié sur cette sélection.</td></tr>');
+ // --- registre des exports CSV (données à l'écran, filtres compris) ---
+ const E=window.WLEXPORT;
+ E['ri-r1']={filename:'reveil-inactifs-appels-par-jour.csv',headers:['Date','Aboutis','Non aboutis'],rows:ds.map((d,i)=>[d,dAb[i],dTt[i]-dAb[i]])};
+ E['ri-r2']={filename:'reveil-inactifs-resultat-des-appels.csv',headers:['Résultat','Appels'],rows:SS.map(x=>[x,cnt(R,'s',x)])};
+ E['ri-r3']={filename:'reveil-inactifs-par-csa.csv',headers:['CSA','Aboutis','Non aboutis'],rows:cs.map(c=>[c,ab(c),cnt(R,'a',c)-ab(c)])};
+ E['ri-r4']={filename:'reveil-inactifs-raisons.csv',headers:['Raison','Clients'],rows:rk.map(k=>[RS[k],s.r3[k]])};
+ E['ri-r5']={filename:'reveil-inactifs-type-de-compteur.csv',headers:['Type de compteur','Clients'],rows:tl.map(k=>[k,tc[k]])};
+ E['ri-r6']={filename:'reveil-inactifs-intentions.csv',headers:['Question','Oui','Non','Sans réponse'],rows:IN};
+ E['ri-r7']={filename:'reveil-inactifs-top-10-villages.csv',headers:['Village','Appels'],rows:tv.map(x=>[x[0],x[1]])};
+ E['ri-tag']={filename:'reveil-inactifs-performance-par-csa.csv',headers:['CSA','Appels','Aboutis (%)','Qualifiés','Veulent garder (%)','Raison la plus citée'],rows:pr.map(([c,x,t])=>[c,x.T,pn(P(x.ab,x.T)),x.q,pn(P(x.y5,x.n5)),t])};
+ E['ri-tl']={filename:'reveil-inactifs-reponses-des-clients-qualifies.csv',headers:['Date','Village','CSA','Compteur','Raison','Garder le compteur','Autres compteurs'],rows:LQ};
+ // --- bulles d'explication et d'analyse ---
+ try{
+ const nz=s.T>0,tp=window.wlTop,wi=window.wlInfo,rt=x=>x[2]?x[1]/x[2]*100:0;
+ const W={'ri-r1':`Nombre d'appels par jour : aboutis et non aboutis, selon la colonne Statuts du fichier.`,
+  'ri-r2':`Répartit les appels selon leur qualification : qualifié, sonne libre, poste éteint, répondeur, responsable non disponible, compteur déjà actif, faux numéro, communication coupée. Seul « Qualifié » donne des réponses au questionnaire.`,
+  'ri-r3':`Compare, pour chaque CSA, le nombre d'appels aboutis et non aboutis.`,
+  'ri-r4':`Raisons données par les clients qualifiés pour expliquer qu'ils ne rechargent plus leur compteur (Q3).`,
+  'ri-r5':`Type de compteur (puissance) des clients qualifiés (Q2), du plus petit au plus puissant.`,
+  'ri-r6':`Intentions des clients qualifiés : veulent-ils garder leur compteur (Q5), et utiliseront-ils leurs autres compteurs quand ils en ont plus de deux (Q4-b) ?`,
+  'ri-r7':`Les 10 villages qui comptent le plus d'appels de réveil des inactifs.`},Rd={};
+ if(nz){
+  const j1=tp(dTt);
+  Rd['ri-r1']=[`Jour le plus chargé : ${ds[j1].slice(8)+'/'+ds[j1].slice(5,7)} avec ${dTt[j1]} appels.`,`${fp(P(s.ab,s.T))} des appels ont abouti (${s.ab} sur ${s.T}).`];
+  const cc=SS.map(x=>cnt(R,'s',x)),j2=tp(cc);
+  Rd['ri-r2']=[`Résultat le plus fréquent : ${SS[j2]} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.q)} appels qualifiés (${fp(P(s.q,s.T))} de tous les appels).`,`${fm(s.inj)} appels injoignables (${fp(P(s.inj,s.T))}) : sonne libre, poste éteint ou répondeur.`];
+  const ca=cs.map(c=>[c,ab(c),cnt(R,'a',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
+  Rd['ri-r3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  if(tk)Rd['ri-r4']=[`Raison la plus citée : ${RS[tk]} (${s.r3[tk]} sur ${s.n3}, ${fp(P(s.r3[tk],s.n3))}).`,tk==='A'&&`« Autres raisons » domine : le détail n'est pas saisi dans le fichier, il serait utile de le préciser pendant l'appel.`,s.r3.M>0&&tk!=='M'&&`${s.r3.M} client(s) ont plus de 2 compteurs (${fp(P(s.r3.M,s.n3))}).`,s.r3.F>0&&`${s.r3.F} client(s) évoquent un problème financier.`];
+  if(tl.length){const j5=tp(tl.map(k=>tc[k])),low=(tc[TYPES[0]]||0)+(tc[TYPES[1]]||0);
+   Rd['ri-r5']=[`Type le plus fréquent : ${tl[j5]} (${tc[tl[j5]]} clients, ${fp(P(tc[tl[j5]],tN))}).`,`${tl.length} type(s) de compteur différent(s).`,low>0&&`Les compteurs de 300 W ou moins représentent ${fp(P(low,tN))} des clients.`]}
+  if(s.n5||s.n4)Rd['ri-r6']=[s.n5>0&&`${s.y5} sur ${s.n5} veulent garder leur compteur (${fp(P(s.y5,s.n5))}).`,sr>0&&`${sr} client(s) qualifié(s) n'ont pas répondu à cette question.`,s.n4>0&&`${s.y4} client(s) disposant de plusieurs compteurs utiliseront les autres.`];
+  Rd['ri-r7']=[tv.length&&`Village le plus appelé : ${tv[0][0]} (${tv[0][1]} appels).`,tv.length>2&&`Les 3 premiers villages représentent ${fp(P(tv[0][1]+tv[1][1]+tv[2][1],s.T))} des appels.`];
+ }
+ Object.keys(W).forEach(k=>wi(k,W[k],Rd[k]));
+ }catch(e){}
+}
+render();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+};
+</script>
+<script>
 (function(){
 // Collez ici l'URL de votre déploiement Apps Script (se termine par /exec)
 const API='https://script.google.com/macros/s/AKfycbyvVeGwHOruJ4jI0L2KgOVIb1qeWOpwQupa3zXDGnDiumSV4eCDF850P-19oBRLL9Ip/exec';
@@ -691,22 +844,27 @@ const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-dig
 const getTok=()=>{try{const v=sessionStorage.getItem(SK);if(v)return v}catch(x){}const m=/^wl:([^|]+)/.exec(window.name||'');return m?m[1]:null};
 const setTok=v=>{try{sessionStorage.setItem(SK,v)}catch(x){}try{window.name='wl:'+v}catch(x){}};
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}try{if(/^wl:/.test(window.name))window.name=''}catch(x){}};
-let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,entered=false;
+let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,riOK=false,riBusy=false,entered=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
 async function take(k,a){let r=null;if(pre[k]){try{r=await pre[k]}catch(x){}pre[k]=null}return r||call({a:a,t:getTok()})}
-function prefetch(here){const t=getTok();[['AE','ae'],['WC','wc']].forEach(([k,a])=>{if(k!==here&&PAGES.indexOf(k)>-1&&!pre[k]&&!(k==='AE'?aeOK:wcOK)){pre[k]=call({a:a,t:t});pre[k].catch(()=>{})}})}
-function startPage(){const h=(location.hash||'').slice(1).toUpperCase();return PAGES.indexOf(h)>-1?h:(['AE','CSA','WC'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
+function prefetch(here){const t=getTok();[['AE','ae'],['WC','wc'],['RI','ri']].forEach(([k,a])=>{if(k!==here&&PAGES.indexOf(k)>-1&&!pre[k]&&!(k==='AE'?aeOK:k==='WC'?wcOK:riOK)){pre[k]=call({a:a,t:t});pre[k].catch(()=>{})}})}
+function startPage(){const h=(location.hash||'').slice(1).toUpperCase();return PAGES.indexOf(h)>-1?h:(['AE','CSA','WC','RI'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
 async function loadAE(){if(aeOK||aeBusy)return;aeBusy=true;try{await loadAE0()}finally{aeBusy=false}}
 async function loadAE0(){const s=$('#astate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des appels entrants…';
  try{const r=await take('AE','ae');
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
+async function loadRI(){if(riOK||riBusy)return;riBusy=true;try{await loadRI0()}finally{riBusy=false}}
+async function loadRI0(){const s=$('#ristate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement du réveil des inactifs…';
+ try{const r=await take('RI','ri');
+  if(r.ok){riOK=true;window.startRI(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
+ catch(x){s.textContent='Impossible de charger le réveil des inactifs. Cliquez sur Actualiser pour réessayer.'}}
 async function loadWC(){if(wcOK||wcBusy)return;wcBusy=true;try{await loadWC0()}finally{wcBusy=false}}
 async function loadWC0(){const s=$('#wstate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des Welcome calls…';
  try{const r=await take('WC','wc');
   if(r.ok){wcOK=true;window.startWC(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les Welcome calls. Cliquez sur Actualiser pour réessayer.'}}
-function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC();try{history.replaceState(null,'',location.pathname+location.search+'#'+p.toLowerCase())}catch(x){}}
+function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';$('#p4').hidden=p!=='RI';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC();if(p==='RI'&&!riOK)loadRI();try{history.replaceState(null,'',location.pathname+location.search+'#'+p.toLowerCase())}catch(x){}}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function enter(rows,who,pages){if(entered)return;entered=true;PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
  if(PAGES.indexOf('CSA')>-1)window.start(rows);const sp=startPage();go(sp);setTimeout(()=>prefetch(sp),300)}

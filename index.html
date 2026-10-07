@@ -113,13 +113,16 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 #wltip p{margin:0 0 6px;color:var(--mut)}
 #wltip .tl{color:var(--teal);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:8px 0 4px}
 #wltip ul{margin:0;padding-left:18px}#wltip li{margin:3px 0;color:var(--ink)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:wlsp .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes wlsp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
 </style>
 </head>
 <body>
 <section id="gate">
  <div class="gc">
   <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>
-  <h1>Accès réservé</h1><p class="mut">Dashboard W.L</p>
+  <h1>Accès réservé</h1><p class="mut">Satisfaction client We Light</p>
   <label for="lg">Login</label><input type="text" id="lg" autocomplete="username" autocapitalize="off" spellcheck="false">
   <label for="pw">Mot de passe</label><input type="password" id="pw" autocomplete="current-password">
   <label class="sh"><input type="checkbox" id="sp"> Afficher le mot de passe</label>
@@ -129,12 +132,12 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 </section>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Contrôle Qualité</button><button class="tab" data-p="WC">Welcome call</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome call</button></nav>
  <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
 <header class="top">
- <div><h1>Contrôle Qualité</h1><p class="mut" id="per"></p></div>
+ <div><h1>Satisfaction client We Light</h1><p class="mut" id="per"></p></div>
  <div class="flt">
   <label>Du <input type="date" id="from"></label>
   <label>Au <input type="date" id="to"></label>
@@ -679,25 +682,29 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 // Collez ici l'URL de votre déploiement Apps Script (se termine par /exec)
 const API='https://script.google.com/macros/s/AKfycbyvVeGwHOruJ4jI0L2KgOVIb1qeWOpwQupa3zXDGnDiumSV4eCDF850P-19oBRLL9Ip/exec';
 const $=s=>document.querySelector(s),SK='wl_tok',UK='wl_user';
-async function call(b){const r=await fetch(API,{method:'POST',body:JSON.stringify(b)});if(!r.ok)throw 0;return r.json()}
+const FRESH=(()=>{try{const v=sessionStorage.getItem('wl_fresh')==='1';sessionStorage.removeItem('wl_fresh');return v}catch(x){return false}})(),pre={};
+async function call(b){const r=await fetch(API,{method:'POST',body:JSON.stringify(FRESH?Object.assign({fresh:1},b):b)});if(!r.ok)throw 0;return r.json()}
 const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}};
 let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,entered=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
+async function take(k,a){let r=null;if(pre[k]){try{r=await pre[k]}catch(x){}pre[k]=null}return r||call({a:a,t:sessionStorage.getItem(SK)})}
+function prefetch(here){const t=sessionStorage.getItem(SK);[['AE','ae'],['WC','wc']].forEach(([k,a])=>{if(k!==here&&PAGES.indexOf(k)>-1&&!pre[k]&&!(k==='AE'?aeOK:wcOK)){pre[k]=call({a:a,t:t});pre[k].catch(()=>{})}})}
+function startPage(){const h=(location.hash||'').slice(1).toUpperCase();return PAGES.indexOf(h)>-1?h:(['AE','CSA','WC'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
 async function loadAE(){if(aeOK||aeBusy)return;aeBusy=true;try{await loadAE0()}finally{aeBusy=false}}
-async function loadAE0(){const s=$('#astate');s.hidden=false;s.textContent='Chargement des appels entrants…';
- try{const r=await call({a:'ae',t:sessionStorage.getItem(SK)});
+async function loadAE0(){const s=$('#astate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des appels entrants…';
+ try{const r=await take('AE','ae');
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
 async function loadWC(){if(wcOK||wcBusy)return;wcBusy=true;try{await loadWC0()}finally{wcBusy=false}}
-async function loadWC0(){const s=$('#wstate');s.hidden=false;s.textContent='Chargement des Welcome calls…';
- try{const r=await call({a:'wc',t:sessionStorage.getItem(SK)});
+async function loadWC0(){const s=$('#wstate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des Welcome calls…';
+ try{const r=await take('WC','wc');
   if(r.ok){wcOK=true;window.startWC(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les Welcome calls. Cliquez sur Actualiser pour réessayer.'}}
-function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC()}
+function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC();try{history.replaceState(null,'',location.pathname+location.search+'#'+p.toLowerCase())}catch(x){}}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function enter(rows,who,pages){if(entered)return;entered=true;PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
- if(PAGES.indexOf('CSA')>-1)window.start(rows);go(['AE','CSA','WC'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
+ if(PAGES.indexOf('CSA')>-1)window.start(rows);const sp=startPage();go(sp);setTimeout(()=>prefetch(sp),300)}
 async function login(){
  const l=$('#lg').value,p=$('#pw').value,b=$('#go'),e=$('#err');e.textContent='';
  if(!l.trim()||!p){e.textContent='Saisissez votre login et votre mot de passe.';return}
@@ -711,7 +718,7 @@ async function login(){
 $('#go').onclick=login;
 [$('#lg'),$('#pw')].forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')login()}));
 $('#sp').onchange=e=>{$('#pw').type=e.target.checked?'text':'password'};
-$('#rf').onclick=()=>location.reload();
+$('#rf').onclick=()=>{try{sessionStorage.setItem('wl_fresh','1')}catch(x){}location.reload()};
 $('#out').onclick=async()=>{const t=sessionStorage.getItem(SK);try{if(t)await call({a:'logout',t:t})}catch(x){}clear();location.reload()};
 (async()=>{let t;try{t=sessionStorage.getItem(SK)}catch(x){}if(!t||API.indexOf('COLLEZ')>-1)return;
  try{const r=await call({a:'data',t:t});if(r.ok)enter(r.rows,r.user,r.pages);else clear()}catch(x){}})();

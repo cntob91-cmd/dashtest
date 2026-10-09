@@ -118,6 +118,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 @media(prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
 #splash{min-height:100vh;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--mut);font-size:14px}
 #splash .spin{width:26px;height:26px;margin:0}
+.h5{background:linear-gradient(135deg,#D97706,#B45309);--c1:#F59E0B}
 </style>
 </head>
 <body>
@@ -371,8 +372,8 @@ function render(){
  const fun=[['Appels passés',s.T],['Appels aboutis',s.ab],['Qualifiés',s.q],['Problème résolu',s.res],['Satisfaits du technicien',s.s4]];
  $('#funb').innerHTML=fun.map((x,i)=>`<div class="fb"><span style="text-align:left">${x[0]}</span><div><i style="width:${s.T?x[1]/s.T*100:0}%"></i></div><span><b>${fm(x[1])}</b><small>${i?fp(P(x[1],fun[i-1][1])):''}</small></span></div>`).join('');
  // KPI
- const hv=v=>{if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
- const HERO=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
+ const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
+ const HERO=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Qualifiés / aboutis',`${s.q}<small> / ${s.ab}</small>`,'nombre d\'appels qualifiés et aboutis','h5'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
  $('#hero').innerHTML=HERO.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.T))+' des appels','n'],
  ['Problèmes non résolus',fm(s.n1-s.res),'à relancer','b'],['Résolution très rapide',fp(P(s.t6,s.n6)),`${s.t6} sur ${s.n6}`,'g'],['Attente d\'1 semaine',fp(P(s.w1,s.n7)),`${s.w1} sur ${s.n7}`,'g'],
@@ -499,7 +500,7 @@ function render(){
  const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),card=css('--card'),ink=css('--ink');
  $('#aper').textContent=`Appels entrants du ${fd(aF.value)} au ${fd(aT.value)}`;
  $('#acnt').textContent=s.n?`${fm(s.n)} appels sur ${fm(RW.reduce((x,r)=>x+r[3],0))}`+(all()?'':' (appels perdus exclus : ils n\'ont pas d\'agent)'):'Aucun appel sur cette sélection.';
- const hv=v=>{if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
+ const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
  const ht=x=>{const q=dur(x);return q?`${q[0]}<small> min </small>${q[1]}<small> s</small>`:'—'};
  const dmc=s.t?s.D/s.t:null,post=s.t?s.P/s.t:null,dmt=s.t?(s.D+s.P)/s.t:null;
  const days=new Set(R.map(r=>r[0])).size,ag=new Set(R.filter(r=>r[5]).map(r=>r[2])).size;
@@ -627,8 +628,8 @@ function render(){
  const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card');
  $('#wper').textContent=`Welcome calls du ${fd(wF.value)} au ${fd(wT.value)}`;
  $('#wcnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
- const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
- const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+ const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
+ const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Qualifiés / aboutis',`${s.q}<small> / ${s.ab}</small>`,'nombre d\'appels qualifiés et aboutis','h5'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
   ['Satisfaction agent commercial',P(s.s3,s.n3),`${s.s3} très satisfaits sur ${s.n3} répondants`,'h3'],['Satisfaction technicien',P(s.s6,s.n6),`${s.s6} très satisfaits sur ${s.n6} répondants`,'h4']];
  $('#whero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Faux numéros',fm(s.fn),fp(P(s.fn,s.T))+' des appels','b'],
@@ -752,8 +753,8 @@ function render(){
  const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card'),mut=css('--mut');
  $('#riper').textContent=`Réveil des inactifs du ${fd(rF.value)} au ${fd(rT.value)}`;
  $('#ricnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
- const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
- const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+ const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
+ const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Qualifiés / aboutis',`${s.q}<small> / ${s.ab}</small>`,'nombre d\'appels qualifiés et aboutis','h5'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
   ['Veulent garder leur compteur',P(s.y5,s.n5),`${s.y5} sur ${s.n5} répondants`,'h3'],['Compteurs déjà actifs',P(s.ia,s.ab),`${s.ia} sur ${s.ab} appels aboutis`,'h4']];
  $('#rihero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const tk=topK(s),pc=(a,b)=>fp(P(a,b));

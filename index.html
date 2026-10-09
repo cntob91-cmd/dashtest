@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dashboard W.L</title>
+<title>Satisfaction client We Light</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <style>
@@ -124,7 +124,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <section id="gate">
  <div class="gc">
   <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>
-  <h1>Accès réservé</h1><p class="mut">Dashboard W.L</p>
+  <h1>Accès réservé</h1><p class="mut">Satisfaction client We Light</p>
   <label for="lg">Login</label><input type="text" id="lg" autocomplete="username" autocapitalize="off" spellcheck="false">
   <label for="pw">Mot de passe</label><input type="password" id="pw" autocomplete="current-password">
   <label class="sh"><input type="checkbox" id="sp"> Afficher le mot de passe</label>
@@ -135,12 +135,12 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <div id="splash" hidden><span class="spin"></span>Reconnexion en cours…</div>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Contrôle Qualité</button><button class="tab" data-p="WC">Welcome call</button><button class="tab" data-p="RI">Réveil des inactifs</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Satisfaction client</button><button class="tab" data-p="WC">Welcome call</button><button class="tab" data-p="RI">Réveil des inactifs</button></nav>
  <div class="usr"><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
 <header class="top">
- <div><h1>Contrôle Qualité</h1><p class="mut" id="per"></p></div>
+ <div><h1>Satisfaction client We Light</h1><p class="mut" id="per"></p></div>
  <div class="flt">
   <label>Du <input type="date" id="from"></label>
   <label>Au <input type="date" id="to"></label>
@@ -372,7 +372,7 @@ function render(){
  $('#funb').innerHTML=fun.map((x,i)=>`<div class="fb"><span style="text-align:left">${x[0]}</span><div><i style="width:${s.T?x[1]/s.T*100:0}%"></i></div><span><b>${fm(x[1])}</b><small>${i?fp(P(x[1],fun[i-1][1])):''}</small></span></div>`).join('');
  // KPI
  const hv=v=>{if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
- const HERO=[['Taux d\'aboutissement',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
+ const HERO=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
  $('#hero').innerHTML=HERO.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.T))+' des appels','n'],
  ['Problèmes non résolus',fm(s.n1-s.res),'à relancer','b'],['Résolution très rapide',fp(P(s.t6,s.n6)),`${s.t6} sur ${s.n6}`,'g'],['Attente d\'1 semaine',fp(P(s.w1,s.n7)),`${s.w1} sur ${s.n7}`,'g'],
@@ -439,7 +439,7 @@ function render(){
   const cc=SS.map(x=>cn(R,'s',x)),j2=tp(cc);
   Rd['csa-ch2']=[`Résultat le plus fréquent : ${SS[j2]} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.T-s.ab)} appels non aboutis (${fp(P(s.T-s.ab,s.T))}) : le client n'a pas décroché.`];
   const ca=cs.map(c=>[c,ab(c),cn(R,'c',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
-  Rd['csa-ch3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  Rd['csa-ch3']=ca.length>1?[`Meilleur taux d'aboutis : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
   if(s.n1)Rd['csa-ch4']=[`${s.res} clients sur ${s.n1} (${fp(P(s.res,s.n1))}) disent que leur problème est résolu.`,s.n1>s.res&&`${s.n1-s.res} problème(s) restent à relancer.`];
   const a2=P(s.s2,s.n2),a4=P(s.s4,s.n4);
   if(s.n2||s.n4)Rd['csa-ch5']=[`Agent commercial : ${fp(a2)} de satisfaits (${s.s2} sur ${s.n2}).`,`Technicien : ${fp(a4)} de satisfaits (${s.s4} sur ${s.n4}).`,a2!=null&&a4!=null&&a2!==a4&&`${a2>a4?"L'agent commercial":'Le technicien'} est le mieux noté.`];
@@ -628,7 +628,7 @@ function render(){
  $('#wper').textContent=`Welcome calls du ${fd(wF.value)} au ${fd(wT.value)}`;
  $('#wcnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
  const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
- const H=[['Taux d\'aboutissement',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+ const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
   ['Satisfaction agent commercial',P(s.s3,s.n3),`${s.s3} très satisfaits sur ${s.n3} répondants`,'h3'],['Satisfaction technicien',P(s.s6,s.n6),`${s.s6} très satisfaits sur ${s.n6} répondants`,'h4']];
  $('#whero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Faux numéros',fm(s.fn),fp(P(s.fn,s.T))+' des appels','b'],
@@ -696,7 +696,7 @@ function render(){
   const cc=SS.map(x=>cnt(R,'s',x)),j2=tp(cc);
   Rd['wc-w2']=[`Résultat le plus fréquent : ${sn(SS[j2])} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.q)} appels qualifiés : ${fp(P(s.q,s.T))} de tous les appels, ${fp(P(s.q,s.ab))} des appels aboutis.`];
   const ca=cs.map(c=>[c,ab(c),cnt(R,'a',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
-  Rd['wc-w3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  Rd['wc-w3']=ca.length>1?[`Meilleur taux d'aboutis : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
   if(s.n1)Rd['wc-w4']=[`${fp(P(s.m1,s.n1))} ont reçu leur compteur en moins d'1 mois (${s.m1} sur ${s.n1}).`,s.m3>0&&`${s.m3} client(s) ont attendu plus de 2 mois : cas à surveiller.`];
   if(s.n3||s.n6)Rd['wc-w5']=[`Agent commercial : ${fp(P(s.s3,s.n3))} très satisfaits (${s.s3} sur ${s.n3}).`,`Technicien : ${fp(P(s.s6,s.n6))} très satisfaits (${s.s6} sur ${s.n6}).`,(s.p3+s.p6)>0&&`${s.p3+s.p6} réponse(s) « pas satisfait » : voir le tableau des motifs.`];
   const yv=YN.filter(x=>x[2]>0),wk=yv.length?yv.reduce((a,b)=>b[1]/b[2]<a[1]/a[2]?b:a):null,bt=yv.length?yv.reduce((a,b)=>b[1]/b[2]>a[1]/a[2]?b:a):null;
@@ -753,8 +753,8 @@ function render(){
  $('#riper').textContent=`Réveil des inactifs du ${fd(rF.value)} au ${fd(rT.value)}`;
  $('#ricnt').textContent=s.T?`${s.T} appels sur ${RW.length}`:'Aucun appel sur cette sélection : élargissez les dates, les CSA ou la recherche.';
  const hv=v=>{if(v==null)return '—';const x=v.toFixed(1).split('.');return `${x[0]}<small>,${x[1]} %</small>`};
- const H=[['Taux d\'aboutissement',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
-  ['Veulent garder leur compteur',P(s.y5,s.n5),`${s.y5} sur ${s.n5} répondants`,'h3'],['Compteurs déjà actifs',P(s.ia,s.T),`${s.ia} sur ${s.T} appels`,'h4']];
+ const H=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Taux de qualification',P(s.q,s.ab),`${s.q} qualifiés sur ${s.ab} appels aboutis`,'h2'],
+  ['Veulent garder leur compteur',P(s.y5,s.n5),`${s.y5} sur ${s.n5} répondants`,'h3'],['Compteurs déjà actifs',P(s.ia,s.ab),`${s.ia} sur ${s.ab} appels aboutis`,'h4']];
  $('#rihero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const tk=topK(s),pc=(a,b)=>fp(P(a,b));
  const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),pc(s.T-s.ab,s.T)+' des appels','b'],['Injoignables',fm(s.inj),'sonne libre, poste éteint, répondeur','b'],
@@ -818,7 +818,7 @@ function render(){
   const cc=SS.map(x=>cnt(R,'s',x)),j2=tp(cc);
   Rd['ri-r2']=[`Résultat le plus fréquent : ${SS[j2]} (${cc[j2]} appels, ${fp(P(cc[j2],s.T))}).`,`${fm(s.q)} appels qualifiés (${fp(P(s.q,s.T))} de tous les appels).`,`${fm(s.inj)} appels injoignables (${fp(P(s.inj,s.T))}) : sonne libre, poste éteint ou répondeur.`];
   const ca=cs.map(c=>[c,ab(c),cnt(R,'a',c)]).filter(x=>x[2]>0),bs=ca.length?ca.reduce((a,b)=>rt(b)>rt(a)?b:a):null,ws=ca.length?ca.reduce((a,b)=>rt(b)<rt(a)?b:a):null;
-  Rd['ri-r3']=ca.length>1?[`Meilleur taux d'aboutissement : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
+  Rd['ri-r3']=ca.length>1?[`Meilleur taux d'aboutis : ${bs[0]} (${fp(rt(bs))}, ${bs[1]} sur ${bs[2]}).`,`Taux le plus faible : ${ws[0]} (${fp(rt(ws))}, ${ws[1]} sur ${ws[2]}).`]:ca.length?[`${ca[0][0]} : ${fp(rt(ca[0]))} d'appels aboutis (${ca[0][1]} sur ${ca[0][2]}).`]:[];
   if(tk)Rd['ri-r4']=[`Raison la plus citée : ${RS[tk]} (${s.r3[tk]} sur ${s.n3}, ${fp(P(s.r3[tk],s.n3))}).`,tk==='A'&&`« Autres raisons » domine : le détail n'est pas saisi dans le fichier, il serait utile de le préciser pendant l'appel.`,s.r3.M>0&&tk!=='M'&&`${s.r3.M} client(s) ont plus de 2 compteurs (${fp(P(s.r3.M,s.n3))}).`,s.r3.F>0&&`${s.r3.F} client(s) évoquent un problème financier.`];
   if(tl.length){const j5=tp(tl.map(k=>tc[k])),low=(tc[TYPES[0]]||0)+(tc[TYPES[1]]||0);
    Rd['ri-r5']=[`Type le plus fréquent : ${tl[j5]} (${tc[tl[j5]]} clients, ${fp(P(tc[tl[j5]],tN))}).`,`${tl.length} type(s) de compteur différent(s).`,low>0&&`Les compteurs de 300 W ou moins représentent ${fp(P(low,tN))} des clients.`]}

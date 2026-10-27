@@ -305,7 +305,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
     <article class="card c12"><div class="hd"><h2>Synthèse par agent</h2><button class="exp" type="button" data-exp="ha-tag" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="hatag"></table></div></article>
     <article class="card c12"><div class="hd"><h2>Détail par agent et par jour</h2><button class="exp" type="button" data-exp="ha-tdj" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="hatdj"></table></div></article>
    </section>
-   <footer>Présence = attente + supervision + traitement + post-travail + pause. Travail = attente + supervision + traitement + post-travail (la présence hors pause). Taux d'occupation = (traitement + post-travail) / travail. Horaires de référence : 8h00 à 17h00 avec 5 minutes de tolérance ; journée courte : moins de 6 h de présence (réglages en haut du script de la page).</footer>
+   <footer>Présence = attente + supervision + traitement + post-travail + pause. Travail = attente + supervision + traitement + post-travail (la présence hors pause). Taux d'occupation = travail / présence. Horaires de référence : 8h00 à 17h00 avec 5 minutes de tolérance ; journée courte : moins de 6 h de présence (réglages en haut du script de la page).</footer>
   </div>
  </main>
 </div>
@@ -455,7 +455,7 @@ function render(){
  const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
  const HERO=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Qualifiés / aboutis',`${s.q}<small> / ${s.ab}</small>`,'nombre d\'appels qualifiés et aboutis','h5'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
  $('#hero').innerHTML=HERO.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
- const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.ab))+' des appels','n'],
+ const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.T))+' des appels','n'],
  ['Problèmes non résolus',fm(s.n1-s.res),'à relancer','b'],['Résolution très rapide',fp(P(s.t6,s.n6)),`${s.t6} sur ${s.n6}`,'g'],['Attente d\'1 semaine',fp(P(s.w1,s.n7)),`${s.w1} sur ${s.n7}`,'g'],
  ['Attente de plus d\'1 mois',fp(P(s.wm,s.n7)),`${s.wm} sur ${s.n7}`,'b'],['Appels par jour actif',s.days?(s.T/s.days).toFixed(1).replace('.',','):'—','moyenne','n'],['Villages couverts',fm(s.vil),'hors non renseigné','n'],['Remarques recueillies',fm(s.rem),'problèmes ou commentaires','n']];
  $('#kp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
@@ -942,7 +942,7 @@ hF.onchange=hT.onchange=()=>render();
 $('#harst').onclick=()=>{hF.value=d0;hT.value=d1;AG.forEach((_,k)=>sel.add(k));sync();render()};
 [...$('#haheat').children].forEach(b=>b.onclick=()=>{heat=b.dataset.m;render()});
 const Z=()=>({att:0,sup:0,trt:0,post:0,pause:0}),add=(x,r)=>{x.att+=r[3];x.sup+=r[4];x.trt+=r[5];x.post+=r[6];x.pause+=r[7];return x};
-const pres=x=>x.att+x.sup+x.trt+x.post+x.pause,trav=x=>x.att+x.sup+x.trt+x.post,disp=trav,occ=x=>P(x.trt+x.post,trav(x));
+const pres=x=>x.att+x.sup+x.trt+x.post+x.pause,trav=x=>x.att+x.sup+x.trt+x.post,disp=trav,occ=x=>P(trav(x),pres(x));
 const chs={};
 function mk(id,type,data,opt){chs[id]&&chs[id].destroy();chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
 const noLeg={legend:{display:false}},mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
@@ -961,7 +961,7 @@ function render(){
  const ab=ak.filter(i=>pres(AS[i])>=3600),busy=ab.length?ab.reduce((a,b)=>occ(AS[b])>occ(AS[a])?b:a):null,rest=ab.length?ab.reduce((a,b)=>AS[b].pause/pres(AS[b])>AS[a].pause/pres(AS[a])?b:a):null;
  // --- cartes principales
  const hv=v=>typeof v==='string'?v:v==null?'—':`${v.toFixed(1).split('.')[0]}<small>,${v.toFixed(1).split('.')[1]} %</small>`;
- const H=[["Taux d'occupation",occ(s),'(traitement + post-travail) / temps de travail','h1'],['Temps de présence',`${Math.floor(PR/3600)}<small> h ${pad(Math.floor(PR%3600/60))} min</small>`,`${nJ} journée(s), ${nA} agent(s)`,'h2'],
+ const H=[["Taux d'occupation",occ(s),'temps de travail / temps de présence','h1'],['Temps de présence',`${Math.floor(PR/3600)}<small> h ${pad(Math.floor(PR%3600/60))} min</small>`,`${nJ} journée(s), ${nA} agent(s)`,'h2'],
   ['Temps de travail',`${Math.floor(TRV/3600)}<small> h ${pad(Math.floor(TRV%3600/60))} min</small>`,`${fp(P(TRV,PR))} de la présence, hors pause`,'h3'],['Taux de traitement',P(s.trt,PR),`${dur(s.trt)} en conversation`,'h4'],['Taux de pause',P(s.pause,PR),`${dur(s.pause)} de pause`,'h5']];
  $('#hahero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
  const K=[['Agents connectés',fm(nA),'sur la période','n'],['Journées de présence',fm(nJ),'agent × jour','n'],['Présence moyenne par journée',nJ?dur(PR/nJ):'—','temps connecté','n'],
@@ -1033,8 +1033,8 @@ function render(){
  const W={'ha-h1':`Répartition du temps de connexion de chaque jour : attente (disponible), traitement des appels, post-travail et pause, en heures.`,
   'ha-h2':`Part de chaque activité dans le temps de connexion total des agents sélectionnés.`,
   'ha-h3':`Temps passé par chaque agent dans chaque état (attente, traitement, post-travail, pause), en heures.`,
-  'ha-h4':`Pour chaque agent : le taux d'occupation (traitement et post-travail sur le temps de travail, hors pause) et la part du temps de connexion passée en pause.`,
-  'ha-h5':`Temps par tranche horaire, tous agents confondus. Sous chaque heure figure le taux d'occupation : plus il est élevé, plus les agents sont sollicités.`,
+  'ha-h4':`Pour chaque agent : le taux d'occupation (temps de travail sur temps de présence, c'est-à-dire hors pause) et la part du temps de connexion passée en pause.`,
+  'ha-h5':`Temps par tranche horaire, tous agents confondus. Sous chaque heure figure le taux d'occupation (travail / présence) : plus il est élevé, moins les agents sont en pause.`,
   'ha-h6':`Part du temps de connexion passée en pause pour chaque tranche horaire.`,
   'ha-h7':`Heure de connexion et de déconnexion de chaque agent, jour par jour. Chaque barre va de la connexion à la déconnexion.`,
   'ha-h8':`Temps de présence de chaque agent chaque jour, en heures. Une barre courte signale une journée incomplète.`,
@@ -1046,7 +1046,7 @@ function render(){
   if(ak.length){const o=ak.map(i=>occ(AS[i])||0),jo=tp(o),pz=ak.map(i=>AS[i].pause/pres(AS[i])),jp=tp(pz);
    Rd['ha-h3']=[`Plus long temps de connexion : ${AG[ak[tp(ak.map(i=>pres(AS[i])))]]} (${dur(pres(AS[ak[tp(ak.map(i=>pres(AS[i])))]]))}).`,`Plus de temps de traitement : ${AG[ak[tp(ak.map(i=>AS[i].trt))]]} (${dur(AS[ak[tp(ak.map(i=>AS[i].trt))]].trt)}).`];
    Rd['ha-h4']=[`Agent le plus occupé : ${AG[ak[jo]]} (${fp(o[jo])}).`,`Plus forte part de pause : ${AG[ak[jp]]} (${fp(pz[jp]*100)}).`,ak.length>1&&`Occupation moyenne du groupe : ${fp(occ(s))}.`]}
-  Rd['ha-h5']=[peak!=null&&`Heure la plus chargée : ${slot(peak)} (occupation ${fp(occ(HR[peak]))}).`,hb.length>1&&`Heure la plus calme : ${slot(hb.reduce((a,b)=>occ(HR[b])<occ(HR[a])?b:a))} (occupation ${fp(Math.min(...hb.map(h=>occ(HR[h]))))}).`,`Occupation générale : ${fp(occ(s))} : le reste du temps de travail est de l'attente.`];
+  Rd['ha-h5']=[peak!=null&&`Heure la plus chargée : ${slot(peak)} (occupation ${fp(occ(HR[peak]))}).`,hb.length>1&&`Heure la plus calme : ${slot(hb.reduce((a,b)=>occ(HR[b])<occ(HR[a])?b:a))} (occupation ${fp(Math.min(...hb.map(h=>occ(HR[h]))))}).`,`Occupation générale : ${fp(occ(s))} : le reste du temps de présence est de la pause.`];
   Rd['ha-h6']=[pk!=null&&`Heure avec le plus de pause : ${slot(pk)} (${fp(P(HR[pk].pause,pres(HR[pk])))} du temps connecté).`,`Part de pause générale : ${fp(P(s.pause,PR))}.`];
   Rd['ha-h7']=DL.length?[`Connexion moyenne ${tod(mean(DL.map(d=>d[2])))}, déconnexion moyenne ${tod(mean(DL.map(d=>d[3])))}.`,late>0&&`${late} connexion(s) après ${tod(REF_S+TOL)}.`,early>0&&`${early} déconnexion(s) avant ${tod(REF_E-TOL)}.`]:[];
   Rd['ha-h8']=[shortD>0?`${shortD} journée(s) de moins de ${SHORT/3600} h de présence.`:`Aucune journée de moins de ${SHORT/3600} h de présence.`,nJ>0&&`Présence moyenne par journée : ${dur(PR/nJ)}.`];

@@ -25,10 +25,10 @@ p{margin:0}.mut{color:var(--mut);font-size:13px}
 .flt{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
 .flt label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mut)}
 input[type=date],input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
-#chips,#wchips,#richips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-#chips button,#wchips button,#richips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
-#chips button:hover,#wchips button:hover,#richips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
-#chips button[aria-pressed=true],#wchips button[aria-pressed=true],#richips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
+#chips,#wchips,#richips,#hachips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#chips button,#wchips button,#richips button,#hachips button,.lnk{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+#chips button:hover,#wchips button:hover,#richips button:hover,#hachips button:hover,.lnk:hover{border-color:var(--teal);box-shadow:0 0 calc(var(--blur)*1px) -2px var(--teal)}
+#chips button[aria-pressed=true],#wchips button[aria-pressed=true],#richips button[aria-pressed=true],#hachips button[aria-pressed=true]{background:var(--navy);color:var(--on);border-color:var(--navy);box-shadow:0 0 calc(var(--blur)*1px) var(--navy)}
 input[type=search]{width:200px}input:focus-visible{box-shadow:0 0 calc(var(--blur)*1px) var(--teal)}
 .lnk{border-style:dashed}
 button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
@@ -141,7 +141,7 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
 <div id="splash" hidden><span class="spin"></span>Reconnexion en cours…</div>
 <div id="app" hidden>
 <div class="bar">
- <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Contrôle Qualité</button><button class="tab" data-p="WC">Welcome call</button><button class="tab" data-p="RI">Réveil des inactifs</button></nav>
+ <nav id="tabs" class="tabs" hidden><button class="tab" data-p="AE">Appels entrants</button><button class="tab" data-p="CSA">Contrôle Qualité</button><button class="tab" data-p="WC">Welcome call</button><button class="tab" data-p="RI">Réveil des inactifs</button><button class="tab" data-p="HA">Heures agents</button></nav>
  <div class="usr"><label class="mut" style="display:flex;gap:6px;align-items:center">Fond <select id="bgs" aria-label="Choisir le fond animé"><option value="aurora">Aurore</option><option value="stars">Constellation</option><option value="grid">Grille néon</option><option value="waves">Vagues</option><option value="none">Aucun</option></select></label><span class="mut" id="who"></span><button class="lnk" id="rf">Actualiser</button><button class="lnk" id="out">Se déconnecter</button></div>
 </div>
 <div id="p1">
@@ -275,6 +275,40 @@ footer{margin-top:16px;font-size:12px;color:var(--mut)}
   </div>
  </main>
 </div>
+<div id="p5" hidden>
+ <header class="top">
+  <div><h1>Heures agents</h1><p class="mut" id="haper"></p></div>
+  <div class="flt">
+   <label>Du <input type="date" id="hafrom"></label>
+   <label>Au <input type="date" id="hato"></label>
+   <label>Agent <span id="hachips" role="group" aria-label="Filtrer par agent"></span></label>
+   <button class="lnk" id="harst">Réinitialiser</button>
+  </div>
+  <p class="mut" id="hacnt" aria-live="polite"></p>
+  <span class="logo" role="img" aria-label="Connecteo"></span>
+ </header>
+ <main>
+  <p class="mut" id="hastate" style="padding:6px 0">Chargement des heures agents…</p>
+  <div id="habody" hidden>
+   <section class="hero" id="hahero"></section>
+   <section class="pills" id="hakp"></section>
+   <section class="grid">
+    <article class="card c8"><div class="hd"><h2>Répartition du temps par jour (heures)</h2><button class="exp" type="button" data-exp="ha-h1" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha1"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Répartition du temps de connexion</h2><button class="exp" type="button" data-exp="ha-h2" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha2"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Temps par agent (heures)</h2><button class="exp" type="button" data-exp="ha-h3" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha3"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Occupation et pause par agent (%)</h2><button class="exp" type="button" data-exp="ha-h4" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha4"></canvas></div></article>
+    <article class="card c8"><div class="hd"><h2>Charge par tranche horaire</h2><button class="exp" type="button" data-exp="ha-h5" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha5"></canvas></div></article>
+    <article class="card c4"><div class="hd"><h2>Pause par tranche horaire (%)</h2><button class="exp" type="button" data-exp="ha-h6" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv"><canvas id="ha6"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Connexions et déconnexions</h2><button class="exp" type="button" data-exp="ha-h7" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ha7"></canvas></div></article>
+    <article class="card c6"><div class="hd"><h2>Présence par agent et par jour (heures)</h2><button class="exp" type="button" data-exp="ha-h8" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="cv t"><canvas id="ha8"></canvas></div></article>
+    <article class="card c12"><div class="hd"><h2>Agent et tranche horaire</h2><span class="seg" id="haheat"><button data-m="o">Occupation</button><button data-m="p">Pause</button><button data-m="t">Traitement (min)</button></span><button class="exp" type="button" data-exp="ha-heat" title="Exporter ce graphique en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb" id="hheat"></div></article>
+    <article class="card c12"><div class="hd"><h2>Synthèse par agent</h2><button class="exp" type="button" data-exp="ha-tag" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="hatag"></table></div></article>
+    <article class="card c12"><div class="hd"><h2>Détail par agent et par jour</h2><button class="exp" type="button" data-exp="ha-tdj" title="Exporter ce tableau en CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>CSV</button></div><div class="tb"><table id="hatdj"></table></div></article>
+   </section>
+   <footer>Présence = attente + supervision + traitement + post-travail + pause. Travail = attente + supervision + traitement + post-travail (la présence hors pause). Taux d'occupation = (traitement + post-travail) / travail. Horaires de référence : 8h00 à 17h00 avec 5 minutes de tolérance ; journée courte : moins de 6 h de présence (réglages en haut du script de la page).</footer>
+  </div>
+ </main>
+</div>
 </div>
 <script>
 (function(){
@@ -370,7 +404,7 @@ function open(b){const d=window.WLINFO[b.dataset.info],h=b.closest('.card').quer
  if(y+h2>innerHeight-8&&r.top-h2-8>8)y=r.top-h2-8;tip.style.left=x+'px';tip.style.top=y+'px'}
 function close(){tip.hidden=true;if(cur){cur.removeAttribute('aria-describedby');cur=null}}
 document.querySelectorAll('.card').forEach(card=>{const e=card.querySelector('.exp[data-exp]'),h=card.querySelector('h2');
- if(!e||!h||!(card.querySelector('canvas')||card.querySelector('#heat')||card.querySelector('#funb')))return;
+ if(!e||!h||!(card.querySelector('canvas')||card.querySelector('#heat,#hheat')||card.querySelector('#funb')))return;
  const b=document.createElement('button');b.className='info';b.type='button';b.textContent='i';b.dataset.info=e.dataset.exp;b.setAttribute('aria-label','Explication et analyse : '+h.textContent);
  const w=document.createElement('div');w.className='ht';h.replaceWith(w);w.append(h,b)});
 document.addEventListener('pointerdown',e=>{touch=e.pointerType==='touch'});
@@ -881,6 +915,153 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 };
 </script>
 <script>
+window.startHA=function(DATA){
+if(window.__init_ha)return;window.__init_ha=1;
+// Réglages : horaires de référence (secondes depuis minuit), tolérance et seuil de journée courte
+const REF_S=8*3600,REF_E=17*3600,TOL=300,SHORT=6*3600;
+const $=s=>document.querySelector(s),css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fm=n=>n==null?'—':Math.round(n).toLocaleString('fr-FR'),P=(a,b)=>b?a/b*100:null,fp=v=>v==null?'—':v.toFixed(1).replace('.',',')+' %';
+const pn=v=>v==null?'':(Math.round(v*10)/10).toString().replace('.',','),ft=v=>v.toFixed(1).replace('.',',');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}),dm=d=>d.slice(8)+'/'+d.slice(5,7);
+const pad=n=>String(n).padStart(2,'0'),hh=h=>pad(h)+'h',slot=h=>hh(h)+' à '+hh(h+1);
+const dur=s=>{s=Math.round(s);if(s>=3600)return Math.floor(s/3600)+' h '+pad(Math.floor(s%3600/60))+' min';if(s>=60)return Math.floor(s/60)+' min '+pad(s%60)+' s';return s+' s'};
+const tod=s=>{s=Math.round(s);return pad(Math.floor(s/3600))+'h'+pad(Math.floor(s%3600/60))},hrs=s=>s/3600,fh=s=>ft(s/3600)+' h';
+const short=s=>s.length>24?s.slice(0,23)+'…':s;
+const AG=DATA.ag,RW=DATA.rows,DY=DATA.days,CVN=['--sky','--navy','--teal','--amber','--coral'];
+$('#hastate').hidden=false;
+if(!RW.length){$('#hastate').textContent='Aucune donnée dans l\'onglet heure agent.';return}
+$('#hastate').hidden=true;$('#habody').hidden=false;
+const dd=RW.map(r=>r[0]).sort(),d0=dd[0],d1=dd[dd.length-1],hF=$('#hafrom'),hT=$('#hato');
+hF.min=hT.min=d0;hF.max=hT.max=d1;hF.value=d0;hT.value=d1;
+const sel=new Set(AG.map((_,i)=>i)),SO=AG.map((_,i)=>i).sort((a,b)=>AG[a].localeCompare(AG[b]));let heat='o';
+const sync=()=>[...$('#hachips').children].forEach(b=>b.setAttribute('aria-pressed',sel.has(+b.dataset.i)));
+SO.forEach(i=>{const b=document.createElement('button');b.textContent=short(AG[i]);b.title=AG[i];b.dataset.i=i;b.onclick=()=>{sel.has(i)?sel.delete(i):sel.add(i);if(!sel.size)AG.forEach((_,k)=>sel.add(k));sync();render()};$('#hachips').append(b)});
+sync();
+hF.onchange=hT.onchange=()=>render();
+$('#harst').onclick=()=>{hF.value=d0;hT.value=d1;AG.forEach((_,k)=>sel.add(k));sync();render()};
+[...$('#haheat').children].forEach(b=>b.onclick=()=>{heat=b.dataset.m;render()});
+const Z=()=>({att:0,sup:0,trt:0,post:0,pause:0}),add=(x,r)=>{x.att+=r[3];x.sup+=r[4];x.trt+=r[5];x.post+=r[6];x.pause+=r[7];return x};
+const pres=x=>x.att+x.sup+x.trt+x.post+x.pause,trav=x=>x.att+x.sup+x.trt+x.post,disp=trav,occ=x=>P(x.trt+x.post,trav(x));
+const chs={};
+function mk(id,type,data,opt){chs[id]&&chs[id].destroy();chs[id]=new Chart($('#'+id),{type,data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,usePointStyle:true}}}},opt||{})})}
+const noLeg={legend:{display:false}},mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+function render(){
+ const R=RW.filter(r=>r[0]>=hF.value&&r[0]<=hT.value&&sel.has(r[1])),DS=DY.filter(d=>d[0]>=hF.value&&d[0]<=hT.value&&sel.has(d[1])),s=R.reduce(add,Z()),PR=pres(s);
+ wlTheme();
+ const teal=css('--teal'),amb=css('--amber'),cor=css('--coral'),nav=css('--navy'),sky=css('--sky'),card=css('--card'),mut=css('--mut'),COL=CVN.map(v=>css(v)),ink=css('--ink'),on=css('--on');
+ $('#haper').textContent=`Heures agents du ${fd(hF.value)} au ${fd(hT.value)}`;
+ $('#hacnt').textContent=PR?`${DS.length} journée(s) de présence, ${new Set(DS.map(d=>d[1])).size} agent(s)`:'Aucune donnée sur cette sélection : élargissez les dates ou les agents.';
+ // --- statistiques
+ const TRV=trav(s),nJ=DS.length,nA=new Set(DS.map(d=>d[1])).size,amp=DS.map(d=>d[3]-d[2]),pD=DS.reduce((x,d)=>x+d[4],0);
+ const HR={};R.forEach(r=>{add(HR[r[2]]||(HR[r[2]]=Z()),r)});const hk=Object.keys(HR).map(Number).sort((a,b)=>a-b);
+ const AS={};R.forEach(r=>{add(AS[r[1]]||(AS[r[1]]=Z()),r)});const ak=SO.filter(i=>AS[i]);
+ const late=DS.filter(d=>d[2]>REF_S+TOL).length,early=DS.filter(d=>d[3]<REF_E-TOL).length,shortD=DS.filter(d=>d[4]<SHORT).length;
+ const hb=hk.filter(h=>disp(HR[h])>=1800),peak=hb.length?hb.reduce((a,b)=>occ(HR[b])>occ(HR[a])?b:a):null,hp=hk.filter(h=>pres(HR[h])>=1800),pk=hp.length?hp.reduce((a,b)=>HR[b].pause/pres(HR[b])>HR[a].pause/pres(HR[a])?b:a):null;
+ const ab=ak.filter(i=>pres(AS[i])>=3600),busy=ab.length?ab.reduce((a,b)=>occ(AS[b])>occ(AS[a])?b:a):null,rest=ab.length?ab.reduce((a,b)=>AS[b].pause/pres(AS[b])>AS[a].pause/pres(AS[a])?b:a):null;
+ // --- cartes principales
+ const hv=v=>typeof v==='string'?v:v==null?'—':`${v.toFixed(1).split('.')[0]}<small>,${v.toFixed(1).split('.')[1]} %</small>`;
+ const H=[["Taux d'occupation",occ(s),'(traitement + post-travail) / temps de travail','h1'],['Temps de présence',`${Math.floor(PR/3600)}<small> h ${pad(Math.floor(PR%3600/60))} min</small>`,`${nJ} journée(s), ${nA} agent(s)`,'h2'],
+  ['Temps de travail',`${Math.floor(TRV/3600)}<small> h ${pad(Math.floor(TRV%3600/60))} min</small>`,`${fp(P(TRV,PR))} de la présence, hors pause`,'h3'],['Taux de traitement',P(s.trt,PR),`${dur(s.trt)} en conversation`,'h4'],['Taux de pause',P(s.pause,PR),`${dur(s.pause)} de pause`,'h5']];
+ $('#hahero').innerHTML=H.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
+ const K=[['Agents connectés',fm(nA),'sur la période','n'],['Journées de présence',fm(nJ),'agent × jour','n'],['Présence moyenne par journée',nJ?dur(PR/nJ):'—','temps connecté','n'],
+ ['Temps de travail',dur(TRV),'présence hors pause','g'],['Taux de travail',fp(P(TRV,PR)),'travail / présence','g'],['Travail moyen par journée',nJ?dur(TRV/nJ):'—','temps de travail par agent et par jour','n'],
+ ['Temps d\'attente',dur(s.att),fp(P(s.att,PR))+' de la présence','g'],['Taux d\'attente',fp(P(s.att,TRV)),'attente / temps de travail','n'],['Traitement / travail',fp(P(s.trt,TRV)),'traitement / temps de travail','g'],['Temps de traitement',dur(s.trt),nJ?dur(s.trt/nJ)+' par journée':'','g'],['Temps de post-travail',dur(s.post),fp(P(s.post,PR))+' de la présence','n'],
+ ['Temps de pause',dur(s.pause),nJ?dur(s.pause/nJ)+' par journée':'','b'],['Temps de supervision',dur(s.sup),fp(P(s.sup,PR))+' de la présence','n'],
+ ['Taux de productivité',fp(P(s.trt+s.post,PR)),'(traitement + post-travail) / présence','g'],['Post-travail / traitement',fp(P(s.post,s.trt)),'poids du travail après appel','n'],
+ ['Connexion moyenne',nJ?tod(mean(DS.map(d=>d[2]))):'—','heure de connexion','n'],['Déconnexion moyenne',nJ?tod(mean(DS.map(d=>d[3]))):'—','heure de déconnexion','n'],
+ ['Amplitude moyenne',nJ?dur(mean(amp)):'—','de la connexion à la déconnexion','n'],['Couverture',fp(P(pD,amp.reduce((x,y)=>x+y,0))),'présence / amplitude','n'],
+ ['Connexions tardives',fm(late),`après ${tod(REF_S+TOL)}`,late?'b':'g'],['Déconnexions anticipées',fm(early),`avant ${tod(REF_E-TOL)}`,early?'b':'g'],['Journées courtes',fm(shortD),`moins de ${SHORT/3600} h de présence`,shortD?'b':'g'],
+ ['Heure la plus chargée',peak==null?'—':hh(peak),peak==null?'':`${slot(peak)} : occupation ${fp(occ(HR[peak]))}`,'n'],['Heure de pause maximale',pk==null?'—':hh(pk),pk==null?'':`${slot(pk)} : ${fp(P(HR[pk].pause,pres(HR[pk])))} de pause`,'n'],
+ ['Agent le plus occupé',busy==null?'—':fp(occ(AS[busy])),busy==null?'':short(AG[busy]),'g'],['Agent avec le plus de pause',rest==null?'—':fp(P(AS[rest].pause,pres(AS[rest]))),rest==null?'':short(AG[rest])+', part de la présence','b']];
+ $('#hakp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
+ const STY=[['Attente',teal,'att'],['Traitement',nav,'trt'],['Post-travail',amb,'post'],['Pause',cor,'pause']].concat(s.sup>0?[['Supervision',sky,'sup']]:[]);
+ const hf=v=>ft(v)+' h',h1=x=>+(x/3600).toFixed(2);
+ // 1 par jour
+ const ds=[...new Set(R.map(r=>r[0]))].sort(),DD=ds.map(d=>R.filter(r=>r[0]===d).reduce(add,Z()));
+ mk('ha1','bar',{labels:ds.map(dm),datasets:STY.map(x=>({label:x[0],data:DD.map(d=>h1(d[x[2]])),backgroundColor:x[1],stack:'a',dl:{pos:'in',fmt:hf}}))},{scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v+' h'}}}});
+ // 2 répartition
+ mk('ha2','doughnut',{labels:STY.map(x=>x[0]),datasets:[{data:STY.map(x=>h1(s[x[2]])),backgroundColor:STY.map(x=>x[1]),borderColor:card,dl:{fmt:v=>Math.round(P(v*3600,PR))+' %'}}]},{cutout:'50%'});
+ // 3 par agent
+ mk('ha3','bar',{labels:ak.map(i=>short(AG[i])),datasets:STY.map(x=>({label:x[0],data:ak.map(i=>h1(AS[i][x[2]])),backgroundColor:x[1],dl:{pos:'in',fmt:hf}}))},{indexAxis:'y',scales:{x:{stacked:true,beginAtZero:true,ticks:{callback:v=>v+' h'}},y:{stacked:true}}});
+ // 4 occupation et pause par agent
+ mk('ha4','bar',{labels:ak.map(i=>short(AG[i])),datasets:[{label:"Taux d'occupation",data:ak.map(i=>+(occ(AS[i])||0).toFixed(1)),backgroundColor:nav,dl:{fmt:v=>ft(v)+' %'}},{label:'Part de pause',data:ak.map(i=>+(P(AS[i].pause,pres(AS[i]))||0).toFixed(1)),backgroundColor:cor,dl:{fmt:v=>ft(v)+' %'}}]},{scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}},layout:{padding:{top:26}}});
+ // 5 charge par tranche horaire
+ mk('ha5','bar',{labels:hk.map(h=>[hh(h),Math.round(occ(HR[h])||0)+' %']),datasets:[{type:'line',label:"Taux d'occupation",data:hk.map(h=>+(occ(HR[h])||0).toFixed(1)),borderColor:ink,backgroundColor:ink,pointBackgroundColor:card,pointBorderWidth:2,tension:.35,yAxisID:'y1',order:0}].concat(STY.map(x=>({label:x[0],data:hk.map(h=>h1(HR[h][x[2]])),backgroundColor:x[1],stack:'a',dl:{pos:'in',fmt:hf}})))},
+  {scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v+' h'}},y1:{position:'right',min:0,max:100,grid:{drawOnChartArea:false},ticks:{callback:v=>v+'%'}}}});
+ // 6 pause par heure
+ mk('ha6','bar',{labels:hk.map(hh),datasets:[{label:'Part de pause',data:hk.map(h=>+(P(HR[h].pause,pres(HR[h]))||0).toFixed(1)),backgroundColor:cor,dl:{fmt:v=>Math.round(v)+'%'}}]},{plugins:noLeg,scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}},layout:{padding:{top:26}}});
+ // 7 connexions et déconnexions
+ const DL=DS.slice().sort((a,b)=>a[0].localeCompare(b[0])||AG[a[1]].localeCompare(AG[b[1]]));
+ mk('ha7','bar',{labels:DL.map(d=>short(AG[d[1]])+' '+dm(d[0])),datasets:[{label:'Connecté',data:DL.map(d=>[hrs(d[2]),hrs(d[3])]),backgroundColor:DL.map(d=>COL[d[1]%COL.length]),borderSkipped:false}]},
+  {indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const d=DL[c.dataIndex];return `Connexion ${tod(d[2])}, déconnexion ${tod(d[3])} (présence ${dur(d[4])})`}}}},scales:{x:{min:6,max:18,ticks:{stepSize:1,callback:v=>v+'h'}}}});
+ // 8 présence par agent et par jour
+ const pj=(a,d)=>h1(R.filter(r=>r[1]===a&&r[0]===d).reduce((x,r)=>x+r[3]+r[4]+r[5]+r[6]+r[7],0));
+ mk('ha8','bar',{labels:ds.map(dm),datasets:SO.filter(i=>sel.has(i)).map(i=>({label:short(AG[i]),data:ds.map(d=>pj(i,d)),backgroundColor:COL[i%COL.length],dl:{fmt:hf}}))},{scales:{y:{beginAtZero:true,ticks:{callback:v=>v+' h'}}},layout:{padding:{top:26}}});
+ // 9 carte de chaleur agent x heure
+ const HM={};R.forEach(r=>{add(HM[r[1]+'|'+r[2]]||(HM[r[1]+'|'+r[2]]=Z()),r)});
+ const cell=c=>!c||!pres(c)?null:heat==='o'?occ(c):heat==='p'?P(c.pause,pres(c)):c.trt/60;
+ for(const b of $('#haheat').children)b.setAttribute('aria-pressed',b.dataset.m===heat);
+ const mx=Math.max(1,...ak.flatMap(i=>hk.map(h=>cell(HM[i+'|'+h])||0))),base=heat==='o'?'var(--teal)':heat==='p'?'var(--coral)':'var(--navy)';
+ $('#hheat').innerHTML='<table><tr><th></th>'+hk.map(h=>`<th>${hh(h)}</th>`).join('')+'</tr>'+ak.map(i=>`<tr><th style="text-align:left">${esc(short(AG[i]))}</th>`+hk.map(h=>{const v=cell(HM[i+'|'+h]),a=(v||0)/mx;
+  return `<td style="background:${v==null?'transparent':`color-mix(in srgb,${base} ${Math.round(a*90+4)}%,transparent)`};color:${a>.55?on:ink}" title="${esc(AG[i])}, ${slot(h)} : ${v==null?'pas connecté':heat==='t'?ft(v)+' min de traitement':fp(v)}">${v==null?'':heat==='t'?Math.round(v):Math.round(v)+'%'}</td>`}).join('')+'</tr>').join('')+'</table>';
+ // tableaux
+ const TA=ak.map(i=>{const x=AS[i],ds_=DS.filter(d=>d[1]===i);return [AG[i],ds_.length,x,ds_.length?tod(mean(ds_.map(d=>d[2]))):'—',ds_.length?tod(mean(ds_.map(d=>d[3]))):'—']});
+ $('#hatag').innerHTML='<tr><th>Agent</th><th class="n">Journées</th><th class="n">Présence</th><th class="n">Travail</th><th class="n">Attente</th><th class="n">Traitement</th><th class="n">Post-travail</th><th class="n">Pause</th><th class="n">Taux de travail</th><th class="n">Occupation</th><th class="n">Part de pause</th><th class="n">Connexion moy.</th><th class="n">Déconnexion moy.</th></tr>'+
+  TA.map(([n,j,x,c,e])=>`<tr><td>${esc(n)}</td><td class="n">${j}</td><td class="n">${dur(pres(x))}</td><td class="n">${dur(trav(x))}</td><td class="n">${dur(x.att)}</td><td class="n">${dur(x.trt)}</td><td class="n">${dur(x.post)}</td><td class="n">${dur(x.pause)}</td><td class="n">${fp(P(trav(x),pres(x)))}</td><td class="n">${fp(occ(x))}</td><td class="n">${fp(P(x.pause,pres(x)))}</td><td class="n">${c}</td><td class="n">${e}</td></tr>`).join('');
+ const DJ=DL.slice().reverse().map(d=>{const x=R.filter(r=>r[1]===d[1]&&r[0]===d[0]).reduce(add,Z());return [d,x]});
+ $('#hatdj').innerHTML='<tr><th>Date</th><th>Agent</th><th class="n">Connexion</th><th class="n">Déconnexion</th><th class="n">Présence</th><th class="n">Travail</th><th class="n">Attente</th><th class="n">Traitement</th><th class="n">Post-travail</th><th class="n">Pause</th><th class="n">Occupation</th></tr>'+
+  (DJ.length?DJ.map(([d,x])=>`<tr><td>${fd(d[0])}</td><td>${esc(AG[d[1]])}</td><td class="n">${tod(d[2])}</td><td class="n">${tod(d[3])}</td><td class="n">${dur(d[4])}</td><td class="n">${dur(trav(x))}</td><td class="n">${dur(x.att)}</td><td class="n">${dur(x.trt)}</td><td class="n">${dur(x.post)}</td><td class="n">${dur(x.pause)}</td><td class="n">${fp(occ(x))}</td></tr>`).join(''):'<tr><td colspan="11">Aucune journée sur cette sélection.</td></tr>');
+ // --- registre des exports CSV (données à l'écran, filtres compris) ---
+ const E=window.WLEXPORT,hr2=x=>pn(x/3600);
+ E['ha-h1']={filename:'heures-agents-temps-par-jour.csv',headers:['Date','Présence (h)','Travail (h)','Attente (h)','Traitement (h)','Post-travail (h)','Pause (h)','Supervision (h)'],rows:ds.map((d,i)=>[d,hr2(pres(DD[i])),hr2(trav(DD[i])),hr2(DD[i].att),hr2(DD[i].trt),hr2(DD[i].post),hr2(DD[i].pause),hr2(DD[i].sup)])};
+ E['ha-h2']={filename:'heures-agents-repartition-du-temps.csv',headers:['État','Temps (h)','Part de la présence (%)'],rows:STY.map(x=>[x[0],hr2(s[x[2]]),pn(P(s[x[2]],PR))])};
+ E['ha-h3']={filename:'heures-agents-temps-par-agent.csv',headers:['Agent','Présence (h)','Travail (h)','Attente (h)','Traitement (h)','Post-travail (h)','Pause (h)','Supervision (h)'],rows:ak.map(i=>[AG[i],hr2(pres(AS[i])),hr2(trav(AS[i])),hr2(AS[i].att),hr2(AS[i].trt),hr2(AS[i].post),hr2(AS[i].pause),hr2(AS[i].sup)])};
+ E['ha-h4']={filename:'heures-agents-occupation-et-pause.csv',headers:['Agent',"Taux d'occupation (%)",'Part de pause (%)'],rows:ak.map(i=>[AG[i],pn(occ(AS[i])),pn(P(AS[i].pause,pres(AS[i])))])};
+ E['ha-h5']={filename:'heures-agents-charge-par-tranche-horaire.csv',headers:['Tranche horaire','Attente (h)','Traitement (h)','Post-travail (h)','Pause (h)',"Taux d'occupation (%)"],rows:hk.map(h=>[slot(h),hr2(HR[h].att),hr2(HR[h].trt),hr2(HR[h].post),hr2(HR[h].pause),pn(occ(HR[h]))])};
+ E['ha-h6']={filename:'heures-agents-pause-par-tranche-horaire.csv',headers:['Tranche horaire','Pause (h)','Part de pause (%)'],rows:hk.map(h=>[slot(h),hr2(HR[h].pause),pn(P(HR[h].pause,pres(HR[h])))])};
+ E['ha-h7']={filename:'heures-agents-connexions.csv',headers:['Date','Agent','Connexion','Déconnexion','Présence (h)'],rows:DL.map(d=>[d[0],AG[d[1]],tod(d[2]),tod(d[3]),hr2(d[4])])};
+ E['ha-h8']={filename:'heures-agents-presence-par-jour.csv',headers:['Date'].concat(SO.filter(i=>sel.has(i)).map(i=>AG[i]+' (h)')),rows:ds.map(d=>[d].concat(SO.filter(i=>sel.has(i)).map(i=>pn(pj(i,d)))))};
+ E['ha-heat']={filename:'heures-agents-agent-et-tranche-horaire.csv',headers:['Agent','Tranche horaire',"Taux d'occupation (%)",'Part de pause (%)','Traitement (min)'],rows:ak.flatMap(i=>hk.map(h=>{const c=HM[i+'|'+h];return [AG[i],slot(h),c&&pres(c)?pn(occ(c)):'',c&&pres(c)?pn(P(c.pause,pres(c))):'',c?pn(c.trt/60):'']}))};
+ E['ha-tag']={filename:'heures-agents-synthese-par-agent.csv',headers:['Agent','Journées','Présence (h)','Travail (h)','Attente (h)','Traitement (h)','Post-travail (h)','Pause (h)','Taux de travail (%)',"Taux d'occupation (%)",'Part de pause (%)','Connexion moyenne','Déconnexion moyenne'],
+  rows:TA.map(([n,j,x,c,e])=>[n,j,hr2(pres(x)),hr2(trav(x)),hr2(x.att),hr2(x.trt),hr2(x.post),hr2(x.pause),pn(P(trav(x),pres(x))),pn(occ(x)),pn(P(x.pause,pres(x))),c,e])};
+ E['ha-tdj']={filename:'heures-agents-detail-par-agent-et-jour.csv',headers:['Date','Agent','Connexion','Déconnexion','Présence (h)','Travail (h)','Attente (h)','Traitement (h)','Post-travail (h)','Pause (h)',"Taux d'occupation (%)"],
+  rows:DJ.map(([d,x])=>[d[0],AG[d[1]],tod(d[2]),tod(d[3]),hr2(d[4]),hr2(trav(x)),hr2(x.att),hr2(x.trt),hr2(x.post),hr2(x.pause),pn(occ(x))])};
+ // --- bulles d'explication et d'analyse ---
+ try{
+ const nz=PR>0,tp=window.wlTop,wi=window.wlInfo;
+ const W={'ha-h1':`Répartition du temps de connexion de chaque jour : attente (disponible), traitement des appels, post-travail et pause, en heures.`,
+  'ha-h2':`Part de chaque activité dans le temps de connexion total des agents sélectionnés.`,
+  'ha-h3':`Temps passé par chaque agent dans chaque état (attente, traitement, post-travail, pause), en heures.`,
+  'ha-h4':`Pour chaque agent : le taux d'occupation (traitement et post-travail sur le temps de travail, hors pause) et la part du temps de connexion passée en pause.`,
+  'ha-h5':`Temps par tranche horaire, tous agents confondus. Sous chaque heure figure le taux d'occupation : plus il est élevé, plus les agents sont sollicités.`,
+  'ha-h6':`Part du temps de connexion passée en pause pour chaque tranche horaire.`,
+  'ha-h7':`Heure de connexion et de déconnexion de chaque agent, jour par jour. Chaque barre va de la connexion à la déconnexion.`,
+  'ha-h8':`Temps de présence de chaque agent chaque jour, en heures. Une barre courte signale une journée incomplète.`,
+  'ha-heat':`Croise chaque agent et chaque heure. Selon le bouton : taux d'occupation, part de pause, ou minutes de traitement. Plus la case est colorée, plus la valeur est élevée.`},Rd={};
+ if(nz){
+  const sh=STY.map(x=>[x[0],s[x[2]]]),jm=tp(sh.map(x=>x[1]));
+  Rd['ha-h1']=[`Journée la plus longue : ${dm(ds[tp(DD.map(pres))])} (${dur(pres(DD[tp(DD.map(pres))]))} de présence au total).`,`En moyenne ${dur(PR/ds.length)} de présence par jour, dont ${dur(s.pause/ds.length)} de pause.`];
+  Rd['ha-h2']=[`${sh[jm][0]} représente la plus grande part : ${fp(P(sh[jm][1],PR))} du temps de connexion.`,`Traitement et post-travail : ${fp(P(s.trt+s.post,PR))} du temps, pause : ${fp(P(s.pause,PR))}.`];
+  if(ak.length){const o=ak.map(i=>occ(AS[i])||0),jo=tp(o),pz=ak.map(i=>AS[i].pause/pres(AS[i])),jp=tp(pz);
+   Rd['ha-h3']=[`Plus long temps de connexion : ${AG[ak[tp(ak.map(i=>pres(AS[i])))]]} (${dur(pres(AS[ak[tp(ak.map(i=>pres(AS[i])))]]))}).`,`Plus de temps de traitement : ${AG[ak[tp(ak.map(i=>AS[i].trt))]]} (${dur(AS[ak[tp(ak.map(i=>AS[i].trt))]].trt)}).`];
+   Rd['ha-h4']=[`Agent le plus occupé : ${AG[ak[jo]]} (${fp(o[jo])}).`,`Plus forte part de pause : ${AG[ak[jp]]} (${fp(pz[jp]*100)}).`,ak.length>1&&`Occupation moyenne du groupe : ${fp(occ(s))}.`]}
+  Rd['ha-h5']=[peak!=null&&`Heure la plus chargée : ${slot(peak)} (occupation ${fp(occ(HR[peak]))}).`,hb.length>1&&`Heure la plus calme : ${slot(hb.reduce((a,b)=>occ(HR[b])<occ(HR[a])?b:a))} (occupation ${fp(Math.min(...hb.map(h=>occ(HR[h]))))}).`,`Occupation générale : ${fp(occ(s))} : le reste du temps de travail est de l'attente.`];
+  Rd['ha-h6']=[pk!=null&&`Heure avec le plus de pause : ${slot(pk)} (${fp(P(HR[pk].pause,pres(HR[pk])))} du temps connecté).`,`Part de pause générale : ${fp(P(s.pause,PR))}.`];
+  Rd['ha-h7']=DL.length?[`Connexion moyenne ${tod(mean(DL.map(d=>d[2])))}, déconnexion moyenne ${tod(mean(DL.map(d=>d[3])))}.`,late>0&&`${late} connexion(s) après ${tod(REF_S+TOL)}.`,early>0&&`${early} déconnexion(s) avant ${tod(REF_E-TOL)}.`]:[];
+  Rd['ha-h8']=[shortD>0?`${shortD} journée(s) de moins de ${SHORT/3600} h de présence.`:`Aucune journée de moins de ${SHORT/3600} h de présence.`,nJ>0&&`Présence moyenne par journée : ${dur(PR/nJ)}.`];
+  let hb2=null;ak.forEach(i=>hk.forEach(h=>{const v=cell(HM[i+'|'+h]);if(v==null)return;if(!hb2||v>hb2[0])hb2=[v,i,h]}));
+  Rd['ha-heat']=[hb2&&`Valeur la plus haute : ${AG[hb2[1]]} à ${slot(hb2[2])} (${heat==='t'?ft(hb2[0])+' min de traitement':fp(hb2[0])}).`];
+ }
+ Object.keys(W).forEach(k=>wi(k,W[k],Rd[k]));
+ }catch(e){}
+}
+render();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+};
+</script>
+<script>
 (function(){
 // Collez ici l'URL de votre déploiement Apps Script (se termine par /exec)
 const API='https://script.google.com/macros/s/AKfycbyvVeGwHOruJ4jI0L2KgOVIb1qeWOpwQupa3zXDGnDiumSV4eCDF850P-19oBRLL9Ip/exec';
@@ -891,16 +1072,21 @@ const hm=()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-dig
 const getTok=()=>{try{const v=sessionStorage.getItem(SK);if(v)return v}catch(x){}const m=/^wl:([^|]+)/.exec(window.name||'');return m?m[1]:null};
 const setTok=v=>{try{sessionStorage.setItem(SK,v)}catch(x){}try{window.name='wl:'+v}catch(x){}};
 const clear=()=>{try{sessionStorage.removeItem(SK);sessionStorage.removeItem(UK)}catch(x){}try{if(/^wl:/.test(window.name))window.name=''}catch(x){}};
-let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,riOK=false,riBusy=false,entered=false;
+let PAGES=['CSA'],cur='CSA',aeOK=false,wcOK=false,aeBusy=false,wcBusy=false,riOK=false,riBusy=false,haOK=false,haBusy=false,entered=false;
 function tabs(){document.querySelectorAll('.tab').forEach(b=>{b.hidden=PAGES.indexOf(b.dataset.p)<0;b.setAttribute('aria-pressed',b.dataset.p===cur)});$('#tabs').hidden=PAGES.length<2}
 async function take(k,a){let r=null;if(pre[k]){try{r=await pre[k]}catch(x){}pre[k]=null}return r||call({a:a,t:getTok()})}
-function prefetch(here){const t=getTok();[['AE','ae'],['WC','wc'],['RI','ri']].forEach(([k,a])=>{if(k!==here&&PAGES.indexOf(k)>-1&&!pre[k]&&!(k==='AE'?aeOK:k==='WC'?wcOK:riOK)){pre[k]=call({a:a,t:t});pre[k].catch(()=>{})}})}
-function startPage(){const h=(location.hash||'').slice(1).toUpperCase();return PAGES.indexOf(h)>-1?h:(['AE','CSA','WC','RI'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
+function prefetch(here){const t=getTok();[['AE','ae'],['WC','wc'],['RI','ri'],['HA','ha']].forEach(([k,a])=>{if(k!==here&&PAGES.indexOf(k)>-1&&!pre[k]&&!(k==='AE'?aeOK:k==='WC'?wcOK:k==='RI'?riOK:haOK)){pre[k]=call({a:a,t:t});pre[k].catch(()=>{})}})}
+function startPage(){const h=(location.hash||'').slice(1).toUpperCase();return PAGES.indexOf(h)>-1?h:(['AE','CSA','WC','RI','HA'].find(p=>PAGES.indexOf(p)>-1)||PAGES[0])}
 async function loadAE(){if(aeOK||aeBusy)return;aeBusy=true;try{await loadAE0()}finally{aeBusy=false}}
 async function loadAE0(){const s=$('#astate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des appels entrants…';
  try{const r=await take('AE','ae');
   if(r.ok){aeOK=true;window.startAE(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les appels entrants. Cliquez sur Actualiser pour réessayer.'}}
+async function loadHA(){if(haOK||haBusy)return;haBusy=true;try{await loadHA0()}finally{haBusy=false}}
+async function loadHA0(){const s=$('#hastate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement des heures agents…';
+ try{const r=await take('HA','ha');
+  if(r.ok){haOK=true;window.startHA(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
+ catch(x){s.textContent='Impossible de charger les heures agents. Cliquez sur Actualiser pour réessayer.'}}
 async function loadRI(){if(riOK||riBusy)return;riBusy=true;try{await loadRI0()}finally{riBusy=false}}
 async function loadRI0(){const s=$('#ristate');s.hidden=false;s.innerHTML='<span class="spin"></span>Chargement du réveil des inactifs…';
  try{const r=await take('RI','ri');
@@ -911,7 +1097,7 @@ async function loadWC0(){const s=$('#wstate');s.hidden=false;s.innerHTML='<span 
  try{const r=await take('WC','wc');
   if(r.ok){wcOK=true;window.startWC(r)}else if(r.expired){clear();location.reload()}else s.textContent=r.msg||'Erreur de chargement.'}
  catch(x){s.textContent='Impossible de charger les Welcome calls. Cliquez sur Actualiser pour réessayer.'}}
-function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';$('#p4').hidden=p!=='RI';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC();if(p==='RI'&&!riOK)loadRI();try{history.replaceState(null,'',location.pathname+location.search+'#'+p.toLowerCase())}catch(x){}}
+function go(p){cur=p;$('#p1').hidden=p!=='CSA';$('#p2').hidden=p!=='AE';$('#p3').hidden=p!=='WC';$('#p4').hidden=p!=='RI';$('#p5').hidden=p!=='HA';tabs();if(p==='AE'&&!aeOK)loadAE();if(p==='WC'&&!wcOK)loadWC();if(p==='RI'&&!riOK)loadRI();if(p==='HA'&&!haOK)loadHA();try{history.replaceState(null,'',location.pathname+location.search+'#'+p.toLowerCase())}catch(x){}}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function enter(rows,who,pages){if(entered)return;entered=true;PAGES=pages&&pages.length?pages:['CSA'];$('#gate').hidden=true;$('#app').hidden=false;$('#who').textContent='Connecté : '+who+' (données de '+hm()+')';
  if(PAGES.indexOf('CSA')>-1)window.start(rows);const sp=startPage();go(sp);setTimeout(()=>prefetch(sp),300)}

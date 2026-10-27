@@ -455,7 +455,7 @@ function render(){
  const hv=v=>{if(typeof v==='string')return v;if(v==null)return '—';const q=v.toFixed(1).split('.');return `${q[0]}<small>,${q[1]} %</small>`};
  const HERO=[['Taux d\'aboutis',P(s.ab,s.T),`${s.ab} aboutis sur ${s.T} appels`,'h1'],['Qualifiés / aboutis',`${s.q}<small> / ${s.ab}</small>`,'nombre d\'appels qualifiés et aboutis','h5'],['Taux de résolution',P(s.res,s.n1),`${s.res} résolus sur ${s.n1}`,'h2'],['Satisfaction technicien',P(s.s4,s.n4),`${s.s4} satisfaits sur ${s.n4}`,'h3'],['Satisfaction agent commercial',P(s.s2,s.n2),`${s.s2} satisfaits sur ${s.n2}`,'h4']];
  $('#hero').innerHTML=HERO.map(h=>`<div class="hc ${h[3]}"><span>${h[0]}</span><b>${hv(h[1])}</b><em>${h[2]}</em></div>`).join('');
- const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.T))+' des appels','n'],
+ const K=[['Appels passés',fm(s.T),`${s.days} jour(s) d'appels`,'n'],['Non aboutis',fm(s.T-s.ab),fp(P(s.T-s.ab,s.T))+' des appels','b'],['Qualifiés',fm(s.q),fp(P(s.q,s.ab))+' des appels','n'],
  ['Problèmes non résolus',fm(s.n1-s.res),'à relancer','b'],['Résolution très rapide',fp(P(s.t6,s.n6)),`${s.t6} sur ${s.n6}`,'g'],['Attente d\'1 semaine',fp(P(s.w1,s.n7)),`${s.w1} sur ${s.n7}`,'g'],
  ['Attente de plus d\'1 mois',fp(P(s.wm,s.n7)),`${s.wm} sur ${s.n7}`,'b'],['Appels par jour actif',s.days?(s.T/s.days).toFixed(1).replace('.',','):'—','moyenne','n'],['Villages couverts',fm(s.vil),'hors non renseigné','n'],['Remarques recueillies',fm(s.rem),'problèmes ou commentaires','n']];
  $('#kp').innerHTML=K.map(k=>`<div class="pl ${k[3]}"><div><span>${k[0]}</span><em>${k[2]}</em></div><b>${k[1]}</b></div>`).join('');
